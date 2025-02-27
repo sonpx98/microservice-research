@@ -1,0 +1,21 @@
+{
+  "name": "module-federation",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "remote-react-app-vite",
+      "remote-react-app",
+      "remote-vue-app",
+      "host-app",
+      "shared-store"
+    ]
+  },
+  "scripts": {
+    "start": "npx lerna run --parallel start",
+    "build": "npx lerna run build",
+    "stop":"kill-port 3000 3001 3002 3003 3005"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}
