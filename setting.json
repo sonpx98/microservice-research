@@ -1,0 +1,73 @@
+{
+    "window.commandCenter": true,
+    "cursor.chat.premiumChatAutoScrollWhenAtBottom": true,
+    "workbench.colorTheme": "One Dark Pro Night Flat",
+    "files.autoSave": "onFocusChange",
+    "files.autoSaveDelay": 500,
+    "workbench.editor.closeOnFileDelete": false,
+    "files.hotExit": "off",
+    "window.confirmBeforeClose": "always",
+    "cursor.composer.shouldAllowCustomModes": true,
+    "cursor.composer.collapsePaneInputBoxPills": true,
+    "cursor.terminal.usePreviewBox": true,
+    "roo-cline.allowedCommands": [
+      "npm test",
+      "npm install",
+      "tsc",
+      "git log",
+      "git diff",
+      "git show"
+    ],
+    "update.releaseTrack": "prerelease",
+    "diffEditor.maxComputationTime": 0,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.formatDocument": "explicit"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "cursor.composer.textSizeScale": 1.15,
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[vue]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[css]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[scss]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[markdown]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[rust]": {
+      "editor.defaultFormatter": "rust-lang.rust-analyzer",
+      "editor.formatOnSave": true
+    },
+    "rusty.rustfmtPath": "/home/cpyrighted/.cargo/bin/rustfmt",
+    "prettier.singleQuote": true,
+    "prettier.semi": false,
+    "prettier.printWidth": 100,
+    "prettier.requireConfig": false,
+    "rust-analyzer.linkedProjects": [
+      "/mnt/SStorage/Projects/Sync-Apps/Sync-DB/Test-Versions/0.0.5/ui/src-tauri/Cargo.toml"
+    ]
+  }
