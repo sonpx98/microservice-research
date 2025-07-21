@@ -1,11 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import federation from '@originjs/vite-plugin-federation'
 import path from "path"
-import tailwindcss from "@tailwindcss/vite"
+import baseConfig from '../../vite.config.base'
+import { mergeConfig } from 'vite';
 
 // https://vite.dev/config/
-export default defineConfig({
+export default mergeConfig(baseConfig, {
   server: {
     port: 5002,
     cors: true    
@@ -14,8 +13,6 @@ export default defineConfig({
     port: 5002,
   },
   plugins: [
-    react(),    
-    tailwindcss(),
     federation({
         name: 'cv-generator',
         filename: 'remoteEntry.js',
