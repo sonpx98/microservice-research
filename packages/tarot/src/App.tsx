@@ -1,7 +1,7 @@
 function App() {
   return (
     <>
-      <h1>Flash Card Fav</h1>
+      <h1>Tarot Reader</h1>
     </>
   );
 }  
