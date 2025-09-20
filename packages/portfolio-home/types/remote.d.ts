@@ -8,3 +8,8 @@ declare module 'flash-card-fav/*' {
   const component: any;
   export default component;
 }
+
+declare module 'tarot/*' {
+  const component: any;
+  export default component;
+}

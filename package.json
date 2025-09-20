@@ -5,17 +5,22 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "npx lerna run --parallel start",
-    "build:remotes": "lerna run build --scope=cv-generator --scope=flash-card-fav --parallel",
-    "preview:remotes": "lerna run preview --scope=cv-generator --scope=flash-card-fav --parallel",
-    "start:remotes": "lerna run build --scope=cv-generator --scope=flash-card-fav --parallel & lerna run preview --scope=cv-generator --scope=flash-card-fav --parallel",
-    "start:shell": "lerna run start --scope=shell --parallel",
-    "start:all": "lerna run build --scope=cv-generator --scope=flash-card-fav --parallel & lerna run preview --scope=cv-generator --scope=flash-card-fav --parallel & lerna run start --scope=shell --parallel",
-    "build": "npx lerna run build",
-    "stop":"kill-port",
-    "preview": "npx lerna run --parallel preview"
+    "start": "pnpm lerna run --parallel start",
+    "build": "pnpm lerna run build",
+    "preview": "pnpm lerna run --parallel preview",
+    "start:dev": "pnpm lerna run start --scope=portfolio-home --scope=cv-generator --scope=flash-card-fav --scope=tarot --parallel",
+    "start:remotes": "pnpm build:remotes && pnpm preview:remotes",
+    "start:portfolio": "cd packages/portfolio-home && pnpm start",
+    "build:remotes": "pnpm lerna run build --scope=cv-generator --scope=flash-card-fav --scope=tarot --parallel",
+    "preview:remotes": "pnpm lerna run preview --scope=cv-generator --scope=flash-card-fav --scope=tarot --parallel",
+    "stop": "kill-port"
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "@originjs/vite-plugin-federation": "^1.4.1",
+    "@tailwindcss/vite": "^4.1.13",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.0",
+    "lerna": "^4.0.0",
+    "vite": "^7.1.6"
   }
 }

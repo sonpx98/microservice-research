@@ -6,11 +6,19 @@ import { mergeConfig } from 'vite';
 // https://vite.dev/config/
 export default mergeConfig(baseConfig, {
   server: {
-    port: 5000,
+    port: 5004,
+    cors: true
+  },
+  preview: {
+    port: 5004,
   },
   plugins: [
     federation({
-        name: 'shell',
+        name: 'portfolio-home',
+        filename: 'remoteEntry.js',
+        exposes: {
+          './app': './src/App.tsx',
+        },
         remotes: {
           'flash-card-fav': "http://localhost:5001/assets/remoteEntry.js",
           'cv-generator': "http://localhost:5002/assets/remoteEntry.js",
