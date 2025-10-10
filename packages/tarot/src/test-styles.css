@@ -1,0 +1,32 @@
+/* Test file để check TailwindCSS prefix generation */
+.test-prefixed-classes {
+  /* This should generate .tw:text-red-500 in final CSS */
+}
+
+.tarot-app-wrapper .tw:text-red-500 {
+  color: #ef4444 !important;
+}
+
+.tarot-app-wrapper .tw:bg-blue-500 {
+  background-color: #3b82f6 !important;
+}
+
+.tarot-app-wrapper .tw:p-4 {
+  padding: 1rem !important;
+}
+
+.tarot-app-wrapper .tw:m-4 {
+  margin: 1rem !important;
+}
+
+.tarot-app-wrapper .tw:flex {
+  display: flex !important;
+}
+
+.tarot-app-wrapper .tw:justify-center {
+  justify-content: center !important;
+}
+
+.tarot-app-wrapper .tw:items-center {
+  align-items: center !important;
+}

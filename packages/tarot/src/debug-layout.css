@@ -1,0 +1,69 @@
+/* Layout Test & Debug CSS */
+
+.debug-layout * {
+  outline: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+.debug-layout .tarot-card {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.debug-layout .card-container {
+  background: rgba(0, 0, 255, 0.1);
+}
+
+/* Test different screen sizes */
+@media (max-width: 640px) {
+  .responsive-test::before {
+    content: "Mobile: ";
+    color: red;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .responsive-test::before {
+    content: "Tablet: ";
+    color: orange;
+    font-weight: bold;
+  }
+}
+
+@media (min-width: 1025px) {
+  .responsive-test::before {
+    content: "Desktop: ";
+    color: green;
+    font-weight: bold;
+  }
+}
+
+/* Ensure proper spacing */
+.tarot-cards-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(0.75rem, 4vw, 2rem);
+  max-width: 100%;
+  padding: 0 1rem;
+}
+
+.tarot-card-wrapper {
+  flex: 1;
+  min-width: 0;
+  max-width: clamp(100px, 20vw, 180px);
+}
+
+/* Fix for aspect ratio issues */
+.aspect-ratio-2-3 {
+  aspect-ratio: 2/3;
+  width: 100%;
+  position: relative;
+}
+
+/* Prevent text overflow */
+.card-title {
+  word-wrap: break-word;
+  hyphens: auto;
+  text-align: center;
+  line-height: 1.2;
+}
