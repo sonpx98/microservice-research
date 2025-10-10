@@ -1,7 +1,7 @@
 import { User, Briefcase, Code2, Mail, Github, Linkedin } from 'lucide-react';
 import React, { useState } from 'react';
 
-type ProjectType = 'cv-generator' | 'flash-card-fav' | 'tarot' | null;
+type ProjectType = 'flash-card-fav' | 'tarot' | 'snake-game' | null;
 
 // Fallback components for when remotes are not available
 const RemoteUnavailable = ({ title }: { title: string }) => (
@@ -19,11 +19,11 @@ const RemoteUnavailable = ({ title }: { title: string }) => (
 );
 
 // Lazy load micro-frontends with fallback
-const createLazyComponent = (importFn: () => Promise<any>, title: string) => {
+const createLazyComponent = (importFn: () => Promise<{ default: React.ComponentType }>, title: string) => {
   return React.lazy(async () => {
     try {
       return await importFn();
-    } catch (error) {
+    } catch {
       // Return fallback component if remote is not available
       return {
         default: () => <RemoteUnavailable title={title} />
@@ -36,25 +36,19 @@ const FlashCardFav = createLazyComponent(
   () => import('flash-card-fav/app'),
   'Flash Card App'
 );
-const CvGenerator = createLazyComponent(
-  () => import('cv-generator/app'),
-  'CV Generator'
-);
 const Tarot = createLazyComponent(
   () => import('tarot/app'),
   'Tarot Reader'
+);
+const SnakeGame = createLazyComponent(
+  () => import('snake-game/app'),
+  'Snake Game'
 );
 
 function App() {
   const [selectedProject, setSelectedProject] = useState<ProjectType>(null);
 
   const projects = [
-    {
-      id: 'cv-generator' as ProjectType,
-      title: 'CV Generator',
-      description: 'Create professional resumes with ease',
-      component: CvGenerator
-    },
     {
       id: 'flash-card-fav' as ProjectType,
       title: 'Flash Card App',
@@ -66,6 +60,12 @@ function App() {
       title: 'Tarot Reader',
       description: 'Digital tarot card reading experience',
       component: Tarot
+    },
+    {
+      id: 'snake-game' as ProjectType,
+      title: 'Snake Game',
+      description: 'Classic snake game with simple controls',
+      component: SnakeGame
     }
   ];
 

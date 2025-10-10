@@ -21,10 +21,10 @@ export default mergeConfig(baseConfig, {
         },
         remotes: {
           'flash-card-fav': "http://localhost:5001/assets/remoteEntry.js",
-          'cv-generator': "http://localhost:5002/assets/remoteEntry.js",
           'tarot': "http://localhost:5003/assets/remoteEntry.js",
+          'snake-game': "http://localhost:5006/assets/remoteEntry.js",
         },
-        shared: ['react', 'react-dom', 'react-router-dom', 'tailwindcss']
+        shared: ['react', 'react-dom', 'react-router-dom']
     })],
     resolve: {
       alias: {
