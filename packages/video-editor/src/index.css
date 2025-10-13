@@ -55,10 +55,10 @@
   --videoeditor-spacing-80: 20rem;
   --videoeditor-spacing-96: 24rem;
   --videoeditor-spacing-px: 1px;
-  --videoeditor-spacing-0.5: 0.125rem;
-  --videoeditor-spacing-1.5: 0.375rem;
-  --videoeditor-spacing-2.5: 0.625rem;
-  --videoeditor-spacing-3.5: 0.875rem;
+  --videoeditor-spacing-0_5: 0.125rem;
+  --videoeditor-spacing-1_5: 0.375rem;
+  --videoeditor-spacing-2_5: 0.625rem;
+  --videoeditor-spacing-3_5: 0.875rem;
 }
 
 body {
