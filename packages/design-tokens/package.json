@@ -1,0 +1,41 @@
+{
+  "name": "@microservice-research/design-tokens",
+  "version": "0.0.1",
+  "description": "Shared design tokens for micro-frontend portfolio",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./colors": {
+      "import": "./dist/colors.js",
+      "types": "./dist/colors.d.ts"
+    },
+    "./spacing": {
+      "import": "./dist/spacing.js",
+      "types": "./dist/spacing.d.ts"
+    },
+    "./typography": {
+      "import": "./dist/typography.js",
+      "types": "./dist/typography.d.ts"
+    },
+    "./css": {
+      "import": "./dist/css-variables.js",
+      "types": "./dist/css-variables.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "~5.6.2"
+  },
+  "files": [
+    "dist"
+  ]
+}
