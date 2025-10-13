@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss" prefix(snake);
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
