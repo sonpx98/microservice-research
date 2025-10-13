@@ -62,9 +62,10 @@ pnpm preview
 ## Architecture
 
 This package consumes other micro-frontends as remote modules:
-- `flash-card-fav/app`: Interactive flashcard application
 - `cv-generator/app`: Resume/CV builder
 - `tarot/app`: Digital tarot reading experience
+- `snake-game/app`: Classic snake game
+- `video-editor/app`: Web-based video editing tool
 
 When remotes are unavailable (not running), graceful fallback components are shown with instructions.
 

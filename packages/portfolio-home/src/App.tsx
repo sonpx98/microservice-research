@@ -1,7 +1,7 @@
 import { User, Briefcase, Code2, Mail, Github, Linkedin } from 'lucide-react';
 import React, { useState } from 'react';
 
-type ProjectType = 'flash-card-fav' | 'tarot' | 'snake-game' | 'video-editor' | null;
+type ProjectType = 'tarot' | 'snake-game' | 'video-editor' | null;
 
 // Fallback components for when remotes are not available
 const RemoteUnavailable = ({ title }: { title: string }) => (
@@ -32,10 +32,6 @@ const createLazyComponent = (importFn: () => Promise<{ default: React.ComponentT
   });
 };
 
-const FlashCardFav = createLazyComponent(
-  () => import('flash-card-fav/app'),
-  'Flash Card App'
-);
 const Tarot = createLazyComponent(
   () => import('tarot/app'),
   'Tarot Reader'
@@ -53,12 +49,6 @@ function App() {
   const [selectedProject, setSelectedProject] = useState<ProjectType>(null);
 
   const projects = [
-    {
-      id: 'flash-card-fav' as ProjectType,
-      title: 'Flash Card App',
-      description: 'Interactive learning with flashcards',
-      component: FlashCardFav
-    },
     {
       id: 'tarot' as ProjectType,
       title: 'Tarot Reader',
