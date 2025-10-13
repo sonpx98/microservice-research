@@ -8,11 +8,11 @@
     "start": "pnpm lerna run --parallel start",
     "build": "pnpm lerna run build",
     "preview": "pnpm lerna run --parallel preview",
-    "start:dev": "pnpm lerna run start --scope=portfolio-home --scope=flash-card-fav --scope=tarot --scope=snake-game --parallel",
+    "start:dev": "pnpm lerna run start --scope=portfolio-home --scope=flash-card-fav --scope=tarot --scope=snake-game --scope=video-editor --parallel",
     "start:remotes": "pnpm build:remotes && pnpm preview:remotes",
     "start:portfolio": "cd packages/portfolio-home && pnpm start",
-    "build:remotes": "pnpm lerna run build --scope=flash-card-fav --scope=tarot --scope=snake-game --parallel",
-    "preview:remotes": "pnpm lerna run preview --scope=flash-card-fav --scope=tarot --scope=snake-game --parallel",
+    "build:remotes": "pnpm lerna run build --scope=flash-card-fav --scope=tarot --scope=snake-game --scope=video-editor --parallel",
+    "preview:remotes": "pnpm lerna run preview --scope=flash-card-fav --scope=tarot --scope=snake-game --scope=video-editor --parallel",
     "stop": "kill-port"
   },
   "devDependencies": {

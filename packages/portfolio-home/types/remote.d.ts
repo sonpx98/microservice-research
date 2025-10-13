@@ -13,3 +13,8 @@ declare module 'snake-game/*' {
   const component: any;
   export default component;
 }
+
+declare module 'video-editor/*' {
+  const component: any;
+  export default component;
+}
