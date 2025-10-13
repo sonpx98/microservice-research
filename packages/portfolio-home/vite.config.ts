@@ -23,6 +23,7 @@ export default mergeConfig(baseConfig, {
           'flash-card-fav': "http://localhost:5001/assets/remoteEntry.js",
           'tarot': "http://localhost:5003/assets/remoteEntry.js",
           'snake-game': "http://localhost:5006/assets/remoteEntry.js",
+          'video-editor': "http://localhost:5005/assets/remoteEntry.js",
         },
         shared: ['react', 'react-dom', 'react-router-dom']
     })],

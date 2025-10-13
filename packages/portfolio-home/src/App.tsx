@@ -1,7 +1,7 @@
 import { User, Briefcase, Code2, Mail, Github, Linkedin } from 'lucide-react';
 import React, { useState } from 'react';
 
-type ProjectType = 'flash-card-fav' | 'tarot' | 'snake-game' | null;
+type ProjectType = 'flash-card-fav' | 'tarot' | 'snake-game' | 'video-editor' | null;
 
 // Fallback components for when remotes are not available
 const RemoteUnavailable = ({ title }: { title: string }) => (
@@ -44,6 +44,10 @@ const SnakeGame = createLazyComponent(
   () => import('snake-game/app'),
   'Snake Game'
 );
+const VideoEditor = createLazyComponent(
+  () => import('video-editor/app'),
+  'Video Editor'
+);
 
 function App() {
   const [selectedProject, setSelectedProject] = useState<ProjectType>(null);
@@ -66,6 +70,12 @@ function App() {
       title: 'Snake Game',
       description: 'Classic snake game with simple controls',
       component: SnakeGame
+    },
+    {
+      id: 'video-editor' as ProjectType,
+      title: 'Video Editor',
+      description: 'Web-based video editing with cutting tools',
+      component: VideoEditor
     }
   ];
 
