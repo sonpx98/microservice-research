@@ -35,8 +35,8 @@ When running, you'll have access to:
 - **Portfolio Home** (`packages/portfolio-home`): Main landing page that consumes other micro-frontends
 - **Remote Apps**: Independent applications that expose themselves via Module Federation
   - `cv-generator`: Resume/CV builder
-  - `flash-card-fav`: Interactive flashcard app
   - `tarot`: Digital tarot reading experience
+  - `video-editor`: Video editing application
 
 ## 🔧 Development Scripts
 
