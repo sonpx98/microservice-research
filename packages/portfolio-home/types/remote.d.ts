@@ -13,3 +13,8 @@ declare module 'video-editor/*' {
   const component: any;
   export default component;
 }
+
+declare module 'interface-generator/*' {
+  const component: any;
+  export default component;
+}
