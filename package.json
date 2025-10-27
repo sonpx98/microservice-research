@@ -1,6 +1,11 @@
 {
   "name": "module-federation",
   "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
   "scripts": {
     "start": "pnpm lerna run --parallel start",
     "build": "pnpm lerna run build",

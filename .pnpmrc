@@ -1,0 +1,9 @@
+# .pnpmrc
+shamefully-hoist=true
+strict-peer-dependencies=false
+auto-install-peers=true
+resolution-mode=highest
+
+# Vercel-specific
+side-effects-cache=false
+store-dir=node_modules/.pnpm-store
