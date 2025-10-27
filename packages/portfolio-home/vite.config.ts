@@ -6,6 +6,17 @@ import { generateCSP, DEV_REMOTE_HOSTS, PROD_REMOTE_HOSTS } from '../shared/csp-
 
 const isDev = process.env.NODE_ENV !== 'production';
 
+// Remote URLs cho development và production
+const getRemoteUrl = (app: string, port: number, prodDomain?: string) => {
+  if (isDev) {
+    return `http://localhost:${port}/assets/remoteEntry.js`;
+  }
+  // Sử dụng production domain nếu có, fallback to localhost cho standalone mode
+  return prodDomain 
+    ? `https://${prodDomain}/assets/remoteEntry.js`
+    : `http://localhost:${port}/assets/remoteEntry.js`;
+};
+
 const cspDirectives = generateCSP({
   remoteHosts: isDev ? DEV_REMOTE_HOSTS : PROD_REMOTE_HOSTS,
   scriptEndpoints: ['https://cdn.jsdelivr.net'],
@@ -41,10 +52,10 @@ export default mergeConfig(baseConfig, {
           './app': './src/App.tsx',
         },
         remotes: {
-          'tarot': "http://localhost:5003/assets/remoteEntry.js",
-          'snake-game': "http://localhost:5006/assets/remoteEntry.js",
-          'video-editor': "http://localhost:5005/assets/remoteEntry.js",
-          'interface-generator': "http://localhost:5007/assets/remoteEntry.js",
+          'tarot': getRemoteUrl('tarot', 5003, process.env.VITE_TAROT_URL),
+          'snake-game': getRemoteUrl('snake-game', 5006, process.env.VITE_SNAKE_GAME_URL),
+          'video-editor': getRemoteUrl('video-editor', 5005, process.env.VITE_VIDEO_EDITOR_URL),
+          'interface-generator': getRemoteUrl('interface-generator', 5007, process.env.VITE_INTERFACE_GENERATOR_URL),
         },
         shared: ['react', 'react-dom', 'react-router-dom']
     })],
