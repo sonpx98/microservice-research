@@ -8,9 +8,12 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate-css": "node scripts/generate-css.mjs"
+    "generate-css": "node scripts/generate-css.mjs",
+    "postinstall": "node scripts/setup-ffmpeg.js",
+    "setup-ffmpeg": "node scripts/setup-ffmpeg.js"
   },
   "dependencies": {
+    "@ffmpeg/core": "0.12.6",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@microservice-research/design-tokens": "workspace:*",
