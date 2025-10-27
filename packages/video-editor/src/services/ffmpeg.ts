@@ -1,5 +1,5 @@
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
+import { fetchFile } from '@ffmpeg/util';
 
 class FFmpegService {
   private ffmpeg: FFmpeg | null = null;
@@ -21,85 +21,57 @@ class FFmpegService {
     // Check browser compatibility first
     if (!crossOriginIsolated) {
       console.warn('Browser is not cross-origin isolated. FFmpeg.wasm requires COOP/COEP headers.');
+      throw new Error('Cross-origin isolation required for FFmpeg. Please ensure COOP/COEP headers are set.');
     }
 
     if (typeof SharedArrayBuffer === 'undefined') {
       console.warn('SharedArrayBuffer not available. FFmpeg.wasm may not work properly.');
+      throw new Error('SharedArrayBuffer not available. FFmpeg requires this feature.');
     }
 
     try {
       this.ffmpeg = new FFmpeg();
       
-      // Try multiple CDN sources for FFmpeg core files  
-      const cdnUrls = [
-        // Working URLs with correct paths
-        'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd',
-        'https://unpkg.com/@ffmpeg/core@0.12.4/dist/umd', 
-        'https://unpkg.com/@ffmpeg/core@0.12.2/dist/umd',
-        // Alternative approach: try different distribution paths
-        'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm',
-        'https://unpkg.com/@ffmpeg/core@0.12.4/dist/esm'
-      ];
-
-      let loadSuccess = false;
-      let lastError: Error | null = null;
-
-      for (const baseURL of cdnUrls) {
+      // Try local assets first
+      const baseURL = window.location.origin;
+      const coreURL = `${baseURL}/ffmpeg/ffmpeg-core.js`;
+      const wasmURL = `${baseURL}/ffmpeg/ffmpeg-core.wasm`;
+      
+      console.log(`Loading FFmpeg from local assets:`);
+      console.log(`Core JS: ${coreURL}`);
+      console.log(`WASM: ${wasmURL}`);
+      
+      try {
+        // Validate that local assets are available
+        const coreAvailable = await this.validateURL(coreURL);
+        const wasmAvailable = await this.validateURL(wasmURL);
+        
+        if (!coreAvailable || !wasmAvailable) {
+          throw new Error('Local FFmpeg assets not available');
+        }
+        
+        // Load FFmpeg with local assets
+        console.log('🔄 Starting FFmpeg load with local assets...');
+        await this.ffmpeg.load({
+          coreURL,
+          wasmURL,
+        });
+        
+        console.log('✅ FFmpeg loaded successfully from local assets');
+        
+      } catch (localError) {
+        console.warn('❌ Failed to load from local assets, trying CDN fallback:', localError);
+        
+        // Fallback to CDN 
         try {
-          console.log(`Trying to load FFmpeg from: ${baseURL}`);
-          
-          // Validate URLs first
-          const coreJSURL = `${baseURL}/ffmpeg-core.js`;
-          const wasmURL = `${baseURL}/ffmpeg-core.wasm`;
-          
-          console.log(`Checking availability of: ${coreJSURL}`);
-          const coreAvailable = await this.validateURL(coreJSURL);
-          
-          if (!coreAvailable) {
-            console.warn(`❌ Core JS not available at: ${coreJSURL}`);
-            throw new Error('Core JS file not available');
-          }
-          
-          console.log(`Checking availability of: ${wasmURL}`);
-          const wasmAvailable = await this.validateURL(wasmURL);
-          
-          if (!wasmAvailable) {
-            console.warn(`❌ WASM not available at: ${wasmURL}`);
-            throw new Error('WASM file not available');
-          }
-          
-          // Convert to blob URLs
-          const coreURL = await toBlobURL(coreJSURL, 'text/javascript');
-          const wasmBlobURL = await toBlobURL(wasmURL, 'application/wasm');
-          
-          // Add timeout for loading
-          const loadPromise = this.ffmpeg.load({
-            coreURL,
-            wasmURL: wasmBlobURL,
-          });
-
-          // 20 second timeout
-          const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Load timeout after 20s')), 20000)
-          );
-
-          await Promise.race([loadPromise, timeoutPromise]);
-          
-          loadSuccess = true;
-          console.log(`✅ FFmpeg loaded successfully from: ${baseURL}`);
-          break;
-          
-        } catch (error) {
-          console.warn(`❌ Failed to load from ${baseURL}:`, error);
-          lastError = error as Error;
-          continue;
+          await this.ffmpeg.load();
+          console.log('✅ FFmpeg loaded successfully from CDN');
+        } catch (cdnError) {
+          console.error('❌ CDN fallback also failed:', cdnError);
+          throw new Error(`Failed to load FFmpeg from both local assets and CDN. Local error: ${localError instanceof Error ? localError.message : localError}. CDN error: ${cdnError instanceof Error ? cdnError.message : cdnError}`);
         }
       }
-
-      if (!loadSuccess) {
-        throw lastError || new Error('All CDN sources failed');
-      }
-
+      
       this.isLoaded = true;
       
     } catch (error) {

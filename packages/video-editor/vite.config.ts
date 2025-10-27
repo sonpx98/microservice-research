@@ -1,40 +1,53 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from "@tailwindcss/vite"
-import federation from '@originjs/vite-plugin-federation'
-import { resolve } from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import federation from "@originjs/vite-plugin-federation";
+import { resolve } from "path";
 
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
     federation({
-      name: 'video-editor',
-      filename: 'remoteEntry.js',
+      name: "video-editor",
+      filename: "remoteEntry.js",
       exposes: {
-        './app': './src/App.tsx',
+        "./app": "./src/App.tsx",
       },
-      shared: ['react', 'react-dom', 'tailwindcss']
-    })
+      shared: ["react", "react-dom", "tailwindcss"],
+    }),
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      "@": resolve(__dirname, "./src"),
     },
   },
   build: {
     modulePreload: false,
-    target: 'esnext',
+    target: "esnext",
     minify: false,
-    cssCodeSplit: false
+    cssCodeSplit: false,
   },
   server: {
+    port: 5005,
+    cors: true,
     headers: {
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-      'Cross-Origin-Opener-Policy': 'same-origin',
+      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Resource-Policy": "cross-origin",
+    },
+  },
+  preview: {
+    port: 5005,
+    cors: true,
+    headers: {
+      "Cross-Origin-Embedder-Policy": "require-corp", 
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Resource-Policy": "cross-origin",
     },
   },
   optimizeDeps: {
-    exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util']
-  }
-})
+    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
+    include: ["@ffmpeg/core"],
+  },
+});

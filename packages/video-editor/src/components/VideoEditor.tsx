@@ -42,6 +42,9 @@ const VideoEditor: React.FC = () => {
     const initFFmpeg = async () => {
       try {
         console.log('Initializing FFmpeg...');
+        console.log('Cross-origin isolated:', crossOriginIsolated);
+        console.log('SharedArrayBuffer available:', typeof SharedArrayBuffer !== 'undefined');
+        
         await ffmpegService.initialize();
         setFFmpegReady(true);
         console.log('FFmpeg initialized successfully');
@@ -58,7 +61,15 @@ const VideoEditor: React.FC = () => {
       } catch (error) {
         console.error('Failed to initialize FFmpeg:', error);
         setFallbackMode(true);
-        setFFmpegError('Video engine failed to load. Using fallback mode (screenshot export only).');
+        
+        // More specific error message based on the error
+        if (error instanceof Error && error.message.includes('Cross-origin isolation')) {
+          setFFmpegError('Video editing requires running the app standalone. Click "Open Standalone" to use full features.');
+        } else if (error instanceof Error && error.message.includes('SharedArrayBuffer')) {
+          setFFmpegError('Your browser doesn\'t support advanced video editing. Please use a modern browser like Chrome or Firefox.');
+        } else {
+          setFFmpegError('Video engine failed to load. Using fallback mode (screenshot export only).');
+        }
       }
     };
     
@@ -587,10 +598,27 @@ const VideoEditor: React.FC = () => {
                 )}
 
                 {fallbackMode && (
-                  <div className="videoeditor:p-3 videoeditor:bg-yellow-50 videoeditor:border videoeditor:border-yellow-200 videoeditor:rounded-lg">
-                    <p className="videoeditor:text-sm videoeditor:text-yellow-800">
-                      🔧 <strong>Fallback Mode:</strong> Video processing engine unavailable. Will export screenshots of segment start frames instead.
-                    </p>
+                  <div className="videoeditor:p-4 videoeditor:bg-yellow-50 videoeditor:border videoeditor:border-yellow-200 videoeditor:rounded-lg videoeditor:space-y-3">
+                    <div className="videoeditor:flex videoeditor:items-start videoeditor:gap-2">
+                      <Icon Icon={AlertCircle} className="videoeditor:h-5 videoeditor:w-5 videoeditor:text-yellow-600 videoeditor:mt-0.5 videoeditor:flex-shrink-0" />
+                      <div className="videoeditor:space-y-2">
+                        <p className="videoeditor:text-sm videoeditor:text-yellow-800 videoeditor:font-medium">
+                          Video Engine Unavailable
+                        </p>
+                        <p className="videoeditor:text-sm videoeditor:text-yellow-700">
+                          {ffmpegError}
+                        </p>
+                        {ffmpegError.includes('standalone') && (
+                          <Button
+                            onClick={() => window.open('http://localhost:5005', '_blank')}
+                            size="sm"
+                            className="videoeditor:bg-yellow-600 hover:videoeditor:bg-yellow-700"
+                          >
+                            Open Standalone Video Editor
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 )}
 
