@@ -1,0 +1,39 @@
+{
+  "buildCommand": "cd ../.. && pnpm install && pnpm --filter portfolio-home build",
+  "devCommand": "pnpm dev", 
+  "installCommand": "cd ../.. && pnpm install",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "ignoreCommand": "bash -c 'if [ \"$VERCEL_GIT_COMMIT_REF\" != \"master\" ] && [ \"$VERCEL_ENV\" != \"production\" ]; then exit 1; fi'",
+  "headers": [
+    {
+      "source": "/assets/remoteEntry.js",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin", 
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
