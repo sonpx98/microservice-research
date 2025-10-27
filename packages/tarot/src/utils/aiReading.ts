@@ -2,7 +2,9 @@ import type { TarotCard } from '../data/tarotCards';
 import type { ReadingType } from '../data/readingTypes';
 
 // Groq API - Free tier với Llama 3.1
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_API_URL = import.meta.env.DEV 
+  ? '/api/groq/openai/v1/chat/completions'  // Use proxy in development
+  : 'https://api.groq.com/openai/v1/chat/completions'; // Direct in production
 
 export interface AIReadingResponse {
   interpretation: string;
@@ -38,13 +40,13 @@ Chủ đề tập trung: ${readingType.title} (${readingType.description})
 
 Hãy trả về kết quả theo định dạng markdown sau:
 
-**Giải thích tổng quan**
+**interpretation**
 [Giải thích chi tiết hành trình qua 3 thời kỳ trong ngữ cảnh ${context}, kết nối các lá bài thành một câu chuyện mạch lạc, 150-200 từ]
 
-**Lời khuyên thực tế**
+**advice**
 [Lời khuyên cụ thể và thực tế để áp dụng vào cuộc sống, phù hợp với chủ đề ${readingType.title}, 100-150 từ]
 
-**Suy ngẫm sâu sắc**
+**meditation**
 [Những suy ngẫm sâu sắc về bài học cuộc sống và ý nghĩa tinh thần, 100-120 từ]`;
 }
 
@@ -118,13 +120,13 @@ export async function generateAIReading(
 
 Hãy trả về kết quả theo định dạng markdown sau:
 
-**Giải thích tổng quan**
+**interpretation**
 [Giải thích chi tiết hành trình qua 3 thời kỳ, kết nối các lá bài thành một câu chuyện mạch lạc, 150-200 từ]
 
-**Lời khuyên thực tế**
+**advice**
 [Lời khuyên cụ thể và thực tế để áp dụng vào cuộc sống, 100-150 từ]
 
-**Suy ngẫm sâu sắc**
+**meditation**
 [Những suy ngẫm sâu sắc về bài học cuộc sống và ý nghĩa tinh thần, 100-120 từ]`;
 
     const response = await fetch(GROQ_API_URL, {
@@ -151,7 +153,9 @@ Hãy trả về kết quả theo định dạng markdown sau:
     });
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('API Error details:', errorText);
+      throw new Error(`API Error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
@@ -163,7 +167,7 @@ Hãy trả về kết quả theo định dạng markdown sau:
         completion_tokens: data.usage?.completion_tokens,
         total_tokens: data.usage?.total_tokens
     });
-          console.log('AI Response Content:', content, data.choices[0]);
+
     if (content) {
       // Try parsing as JSON first
       try {

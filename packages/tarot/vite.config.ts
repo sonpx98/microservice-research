@@ -24,10 +24,20 @@ export default defineConfig({
   server: {
     port: 5003,
     cors: true,
+    proxy: {
+      '/api/groq': {
+        target: 'https://api.groq.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/groq/, ''),
+        headers: {
+          'Origin': 'https://api.groq.com'
+        }
+      }
+    },
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
-      'Content-Security-Policy': "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline';"
+      'Content-Security-Policy': "default-src 'self'; connect-src 'self' https://api.groq.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
     }
   },
   
@@ -36,7 +46,7 @@ export default defineConfig({
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
-      'Content-Security-Policy': "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline';"
+      'Content-Security-Policy': "default-src 'self'; connect-src 'self' https://api.groq.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
     }
   },
   
