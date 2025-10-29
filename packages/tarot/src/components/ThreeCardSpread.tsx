@@ -3,6 +3,7 @@ import type { TarotCard } from '../data/tarotCards';
 import type { ReadingType } from '../data/readingTypes';
 import { TarotCardComponent } from './TarotCard';
 import { ReadingSummary } from './ReadingSummary';
+import { APIKeyModal } from './APIKeyModal';
 import { generateTarotReading, getEmotionalTone } from '../utils/tarotReading';
 import { generateAIReading, type AIReadingResponse } from '../utils/aiReading';
 
@@ -20,6 +21,7 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
   const [aiReading, setAiReading] = useState<AIReadingResponse | null>(null);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [showAISection, setShowAISection] = useState(false);
+  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
   
   // Safety check
   if (!cards || !readingType || cards.length !== 3) {
@@ -35,13 +37,29 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
   const emotionalTone = getEmotionalTone(cards);
 
   const handleAIReading = async () => {
+    // Ưu tiên lấy từ environment variable trước, sau đó từ localStorage
+    const apiKey = import.meta.env.VITE_GROQ_API_KEY || localStorage.getItem('groq_api_key');
+    
+    // Nếu không có API key, hiện modal để nhập
+    if (!apiKey) {
+      setShowAPIKeyModal(true);
+      return;
+    }
+    
     setIsLoadingAI(true);
     setShowAISection(true);
     
-    // Try to get AI reading (you can add API key here)
-    const apiKey = localStorage.getItem('groq_api_key') || process.env.REACT_APP_GROQ_API_KEY;
     const result = await generateAIReading(cards, apiKey, readingType);
+    setAiReading(result);
+    setIsLoadingAI(false);
+  };
+
+  const handleAPIKeySave = async (apiKey: string) => {
+    setShowAPIKeyModal(false);
+    setIsLoadingAI(true);
+    setShowAISection(true);
     
+    const result = await generateAIReading(cards, apiKey, readingType);
     setAiReading(result);
     setIsLoadingAI(false);
   };
@@ -261,30 +279,38 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                 
                 {!isLoadingAI && !aiReading && (
                   <div className="tw:text-center tw:py-6">
-                    <p className="tw:text-pink-700 tw:mb-4">
-                      💡 Để sử dụng tính năng AI, bạn cần API key miễn phí từ:
-                    </p>
-                    <div className="tw:space-y-2 tw:text-sm">
-                      <div className="tw:bg-white tw:rounded tw:p-3">
-                        <strong>🚀 Groq (Khuyên dùng):</strong> 
-                        <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" 
-                           className="tw:text-blue-600 tw:hover:underline tw:ml-2">
-                          console.groq.com/keys
-                        </a>
-                        <div className="tw:text-gray-600 tw:text-xs tw:mt-1">Free tier: 6,000 token/phút</div>
-                      </div>
-                      <div className="tw:bg-white tw:rounded tw:p-3">
-                        <strong>🧠 Google Gemini:</strong> 
-                        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
-                           className="tw:text-blue-600 tw:hover:underline tw:ml-2">
-                          aistudio.google.com/app/apikey
-                        </a>
-                        <div className="tw:text-gray-600 tw:text-xs tw:mt-1">Free tier: 15 requests/phút</div>
-                      </div>
-                    </div>
-                    <p className="tw:text-xs tw:text-gray-500 tw:mt-3">
-                      Lưu API key vào localStorage với tên 'groq_api_key'
-                    </p>
+                    {import.meta.env.VITE_GROQ_API_KEY ? (
+                      <p className="tw:text-pink-700 tw:mb-4">
+                        ✅ API key đã được cấu hình từ environment variable. Tính năng AI sẵn sàng sử dụng!
+                      </p>
+                    ) : (
+                      <>
+                        <p className="tw:text-pink-700 tw:mb-4">
+                          💡 Để sử dụng tính năng AI, bạn cần API key miễn phí từ:
+                        </p>
+                        <div className="tw:space-y-2 tw:text-sm">
+                          <div className="tw:bg-white tw:rounded tw:p-3">
+                            <strong>🚀 Groq (Khuyên dùng):</strong> 
+                            <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" 
+                               className="tw:text-blue-600 tw:hover:underline tw:ml-2">
+                              console.groq.com/keys
+                            </a>
+                            <div className="tw:text-gray-600 tw:text-xs tw:mt-1">Free tier: 6,000 token/phút</div>
+                          </div>
+                          <div className="tw:bg-white tw:rounded tw:p-3">
+                            <strong>🧠 Google Gemini:</strong> 
+                            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
+                               className="tw:text-blue-600 tw:hover:underline tw:ml-2">
+                              aistudio.google.com/app/apikey
+                            </a>
+                            <div className="tw:text-gray-600 tw:text-xs tw:mt-1">Free tier: 15 requests/phút</div>
+                          </div>
+                        </div>
+                        <p className="tw:text-xs tw:text-gray-500 tw:mt-3">
+                          Nhấn "Giải Thích Bằng AI" để nhập API key
+                        </p>
+                      </>
+                    )}
                   </div>
                 )}
                 
@@ -333,6 +359,13 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
           onChangeType={onChangeType || onReset}
         />
       )}
+
+      {/* API Key Modal */}
+      <APIKeyModal
+        isOpen={showAPIKeyModal}
+        onClose={() => setShowAPIKeyModal(false)}
+        onSave={handleAPIKeySave}
+      />
     </div>
   );
 }
