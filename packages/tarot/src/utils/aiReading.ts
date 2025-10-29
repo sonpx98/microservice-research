@@ -105,7 +105,10 @@ export async function generateAIReading(
   apiKey?: string,
   readingType?: ReadingType
 ): Promise<AIReadingResponse | null> {
-  if (!apiKey) {
+  // Ưu tiên sử dụng API key truyền vào, nếu không có thì lấy từ environment
+  const finalApiKey = apiKey || import.meta.env.VITE_GROQ_API_KEY;
+  
+  if (!finalApiKey) {
     return null; // Fallback to local generation if no API key
   }
 
@@ -132,7 +135,7 @@ Hãy trả về kết quả theo định dạng markdown sau:
     const response = await fetch(GROQ_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${finalApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
