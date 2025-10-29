@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import Editor from '@monaco-editor/react';
+import {Editor} from '@monaco-editor/react';
 
 interface CodeEditorProps {
   value: string;

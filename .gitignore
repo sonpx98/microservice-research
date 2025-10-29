@@ -2,9 +2,7 @@
 **/node_modules/
 
 # Lock files
-**/pnpm-lock.yaml
 **/yarn.lock
-**/package-lock.json
 
 # Other common files to ignore
 .DS_Store

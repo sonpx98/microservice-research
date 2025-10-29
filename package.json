@@ -2,13 +2,10 @@
   "name": "module-federation",
   "private": true,
   "packageManager": "pnpm@9.15.0",
-  "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=9.0.0"
-  },
   "scripts": {
     "start": "pnpm lerna run --parallel start",
     "build": "pnpm lerna run build",
+    "build:portfolio": "cd packages/portfolio-home && npm install && npm run build",
     "preview": "pnpm lerna run --parallel preview",
     "start:dev": "pnpm lerna run start --scope=portfolio-home --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
     "start:remotes": "pnpm build:remotes && pnpm preview:remotes",

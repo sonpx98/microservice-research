@@ -1,6 +1,6 @@
 {
   "buildCommand": "echo \"Current dir: $(pwd)\" && pnpm build",
-  "installCommand": "cd ../.. && npm install -g pnpm@9.14.2 && pnpm install --filter portfolio-home --frozen-lockfile",
+  "installCommand": "cd ../.. && echo \"Current dir: $(pwd)\" && npm install -g pnpm@9.14.2 && pnpm install --filter snake-game --frozen-lockfile",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [
@@ -8,7 +8,7 @@
       "source": "/assets/remoteEntry.js",
       "headers": [
         {
-          "key": "Access-Control-Allow-Origin", 
+          "key": "Access-Control-Allow-Origin",
           "value": "*"
         },
         {
