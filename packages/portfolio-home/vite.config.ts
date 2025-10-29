@@ -7,7 +7,7 @@ import { generateCSP, DEV_REMOTE_HOSTS, PROD_REMOTE_HOSTS } from '../shared/csp-
 const isDev = process.env.NODE_ENV !== 'production';
 
 // Remote URLs cho development và production
-const getRemoteUrl = (app: string, port: number, prodDomain?: string) => {
+const getRemoteUrl = (_app: string, port: number, prodDomain?: string) => {
   if (isDev) {
     return `http://localhost:${port}/assets/remoteEntry.js`;
   }

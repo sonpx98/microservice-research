@@ -1,7 +1,6 @@
 {
-  "buildCommand": "npm install -g pnpm@9.15.0 && cd ../.. && pnpm install --shamefully-hoist --no-frozen-lockfile",
-  "devCommand": "pnpm dev", 
-  "installCommand": "cd ../.. && pnpm install --no-frozen-lockfile",
+  "buildCommand": "echo \"Current dir: $(pwd)\" && pnpm build",
+  "installCommand": "cd ../.. && npm install -g pnpm@9.14.2 && pnpm install --filter portfolio-home --frozen-lockfile",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [

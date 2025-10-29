@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import AnimatedTimeline from './components/MilestoneTimeline';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ThemeToggle from './components/ThemeToggle';
+import IncomingProject from './components/IncomingProject';
 
 type ProjectType = 'tarot' | 'snake-game' | 'video-editor' | 'interface-generator' | null;
 
@@ -44,9 +45,19 @@ const SnakeGame = createLazyComponent(
   () => import('snake-game/app'),
   'Snake Game'
 );
-const VideoEditor = createLazyComponent(
-  () => import('video-editor/app'),
-  'Video Editor'
+
+// Video Editor is not ready yet - show incoming component instead
+const VideoEditorIncoming = () => (
+  <div className="p-6 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-indigo-900/20 min-h-[500px] flex items-center justify-center">
+    <div className="w-full max-w-2xl">
+      <IncomingProject
+        title="Advanced Video Editor"
+        description="A professional web-based video editing platform with cutting-edge features including timeline editing, filters, transitions, and real-time preview. Built with modern web technologies for seamless performance."
+        priority="high"
+        className="bg-white/95 backdrop-blur-sm shadow-2xl"
+      />
+    </div>
+  </div>
 );
 
 const InterfaceGenerator = createLazyComponent(
@@ -74,7 +85,7 @@ function App() {
       id: 'video-editor' as ProjectType,
       title: 'Video Editor',
       description: 'Web-based video editing with cutting tools',
-      component: VideoEditor
+      component: VideoEditorIncoming
     },
     {
       id: 'interface-generator' as ProjectType,
