@@ -82,7 +82,12 @@ export const getSecureCardImage = (cardName: string): string | undefined => {
   
   if (isModuleFederation) {
     // Use remote URL with validation
-    const remoteImageUrl = `http://localhost:5003/images/${encodeURIComponent(imageFileName)}`;
+    // In production, use VITE_TAROT_URL, in dev use localhost:5003
+    const tarotBaseUrl = import.meta.env.VITE_TAROT_URL 
+      ? `https://${import.meta.env.VITE_TAROT_URL}` 
+      : 'http://localhost:5003';
+    
+    const remoteImageUrl = `${tarotBaseUrl}/images/${encodeURIComponent(imageFileName)}`;
     console.log('🌐 Using secure remote URL:', remoteImageUrl);
     return remoteImageUrl;
   } else {
