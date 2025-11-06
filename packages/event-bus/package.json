@@ -24,7 +24,7 @@
   ],
   "author": "",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   }
