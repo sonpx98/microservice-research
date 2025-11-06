@@ -14,18 +14,18 @@ export function ShuffleAnimation({ onShuffleComplete, isShuffling, readingType, 
         {readingType && (
           <div className="tw:mb-4">
             <div className="tw:text-4xl tw:mb-2">{readingType.icon}</div>
-            <h3 className="tw:text-lg tw:font-semibold tw:text-purple-600 tw:mb-1">
+            <h3 className="tw:text-lg tw:font-semibold tw:text-purple-600 tw:dark:text-purple-400 tw:mb-1">
               Chủ đề: {readingType.title}
             </h3>
-            <p className="tw:text-sm tw:text-gray-600">
+            <p className="tw:text-sm tw:text-gray-600 tw:dark:text-gray-300">
               {readingType.description}
             </p>
           </div>
         )}
-        <h2 className="tw:text-2xl tw:font-bold tw:text-purple-800 tw:mb-2">
+        <h2 className="tw:text-2xl tw:font-bold tw:text-purple-800 tw:dark:text-purple-300 tw:mb-2">
           Xào bài Tarot
         </h2>
-        <p className="tw:text-gray-600">
+        <p className="tw:text-gray-600 tw:dark:text-gray-300">
           Tập trung vào câu hỏi của bạn và nhấn nút để xào bài
         </p>
       </div>
@@ -37,7 +37,8 @@ export function ShuffleAnimation({ onShuffleComplete, isShuffling, readingType, 
             key={index}
             className={`
               tw:absolute tw:w-24 tw:h-36 tw:bg-gradient-to-b tw:from-indigo-800 tw:to-purple-900 
-              tw:rounded-lg tw:border-2 tw:border-purple-300 tw:shadow-lg tw:transition-all tw:duration-500
+              tw:dark:from-indigo-950 tw:dark:to-purple-950
+              tw:rounded-lg tw:border-2 tw:border-purple-300 tw:dark:border-purple-600 tw:shadow-lg tw:transition-all tw:duration-500
               ${isShuffling ? 'tw:animate-pulse' : ''}
             `}
             style={{
@@ -59,7 +60,7 @@ export function ShuffleAnimation({ onShuffleComplete, isShuffling, readingType, 
         {onBack && !isShuffling && (
           <button
             onClick={onBack}
-            className="tw:px-6 tw:py-2 tw:rounded-lg tw:font-medium tw:text-purple-600 tw:border tw:border-purple-300 tw:bg-white tw:hover:bg-purple-50 tw:transition-all tw:duration-300"
+            className="tw:px-6 tw:py-2 tw:rounded-lg tw:font-medium tw:text-purple-600 tw:dark:text-purple-400 tw:border tw:border-purple-300 tw:dark:border-purple-600 tw:bg-white tw:dark:bg-gray-800 tw:hover:bg-purple-50 tw:dark:hover:bg-purple-900/20 tw:transition-all tw:duration-300"
           >
             ← Thay đổi chủ đề
           </button>
@@ -71,8 +72,8 @@ export function ShuffleAnimation({ onShuffleComplete, isShuffling, readingType, 
           className={`
             tw:px-8 tw:py-4 tw:rounded-xl tw:font-semibold tw:text-white tw:transition-all tw:duration-300 tw:text-lg
             ${isShuffling 
-              ? 'tw:bg-gray-400 tw:cursor-not-allowed tw:opacity-70' 
-              : 'tw:bg-gradient-to-r tw:from-purple-600 tw:to-indigo-600 tw:hover:from-purple-700 tw:hover:to-indigo-700 tw:hover:scale-105 tw:shadow-lg tw:hover:shadow-xl tw:transform'
+              ? 'tw:bg-gray-400 tw:dark:bg-gray-600 tw:cursor-not-allowed tw:opacity-70' 
+              : 'tw:bg-gradient-to-r tw:from-purple-600 tw:to-indigo-600 tw:dark:from-purple-700 tw:dark:to-indigo-700 tw:hover:from-purple-700 tw:hover:to-indigo-700 tw:dark:hover:from-purple-800 tw:dark:hover:to-indigo-800 tw:hover:scale-105 tw:shadow-lg tw:hover:shadow-xl tw:transform'
             }
           `}
         >
@@ -88,7 +89,7 @@ export function ShuffleAnimation({ onShuffleComplete, isShuffling, readingType, 
       </div>
       
       {isShuffling && (
-        <div className="tw:text-center tw:text-purple-600 tw:animate-pulse tw:pt-2">
+        <div className="tw:text-center tw:text-purple-600 tw:dark:text-purple-400 tw:animate-pulse tw:pt-2">
           <p className="tw:font-medium">Các lá bài đang được xào trộn...</p>
           <p className="tw:text-sm tw:opacity-80">Hãy tập trung vào câu hỏi của bạn</p>
         </div>

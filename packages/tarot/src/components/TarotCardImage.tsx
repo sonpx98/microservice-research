@@ -42,7 +42,7 @@ export function TarotCardImage({ card, className = '' }: TarotCardImageProps) {
       />
       
       {/* Overlay với tên card */}
-      <div className="tw:absolute tw:bottom-0 tw:left-0 tw:right-0 tw:bg-gradient-to-t tw:from-black/70 tw:to-transparent tw:p-2">
+      <div className="tw:absolute tw:bottom-0 tw:left-0 tw:right-0 tw:bg-gradient-to-t tw:from-black/70 tw:dark:from-black/80 tw:to-transparent tw:p-2">
         <div className="tw:text-white tw:text-sm tw:font-medium tw:text-center">
           {card.name}
         </div>

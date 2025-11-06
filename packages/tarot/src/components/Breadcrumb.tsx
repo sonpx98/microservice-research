@@ -33,10 +33,10 @@ export function Breadcrumb({ currentStep, readingType }: BreadcrumbProps) {
               <div className={`
                 tw:flex tw:items-center tw:justify-center tw:w-10 tw:h-10 tw:rounded-full tw:text-sm tw:font-semibold tw:transition-all tw:duration-300
                 ${isActive 
-                  ? 'tw:bg-purple-600 tw:text-white tw:shadow-lg tw:scale-110' 
+                  ? 'tw:bg-purple-600 tw:dark:bg-purple-700 tw:text-white tw:shadow-lg tw:scale-110' 
                   : isCompleted 
-                    ? 'tw:bg-green-500 tw:text-white' 
-                    : 'tw:bg-gray-200 tw:text-gray-500'
+                    ? 'tw:bg-green-500 tw:dark:bg-green-600 tw:text-white' 
+                    : 'tw:bg-gray-200 tw:dark:bg-gray-700 tw:text-gray-500 tw:dark:text-gray-400'
                 }
               `}>
                 <span className="tw:text-lg">
@@ -46,12 +46,12 @@ export function Breadcrumb({ currentStep, readingType }: BreadcrumbProps) {
               
               <div className="tw:ml-2 tw:text-center">
                 <div className={`tw:text-sm tw:font-medium ${
-                  isActive ? 'tw:text-purple-600' : isCompleted ? 'tw:text-green-600' : 'tw:text-gray-500'
+                  isActive ? 'tw:text-purple-600 tw:dark:text-purple-400' : isCompleted ? 'tw:text-green-600 tw:dark:text-green-400' : 'tw:text-gray-500 tw:dark:text-gray-400'
                 }`}>
                   {step.label}
                 </div>
                 {step.key === 'select-type' && readingType && (
-                  <div className="tw:text-xs tw:text-gray-600 tw:mt-1">
+                  <div className="tw:text-xs tw:text-gray-600 tw:dark:text-gray-400 tw:mt-1">
                     {readingType.icon} {readingType.title}
                   </div>
                 )}
@@ -59,7 +59,7 @@ export function Breadcrumb({ currentStep, readingType }: BreadcrumbProps) {
               
               {index < steps.length - 1 && (
                 <div className={`tw:w-8 tw:h-0.5 tw:mx-4 tw:transition-all tw:duration-300 ${
-                  isCompleted ? 'tw:bg-green-300' : 'tw:bg-gray-300'
+                  isCompleted ? 'tw:bg-green-300 tw:dark:bg-green-700' : 'tw:bg-gray-300 tw:dark:bg-gray-600'
                 }`} />
               )}
             </div>

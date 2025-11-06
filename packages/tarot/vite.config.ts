@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import federation from '@originjs/vite-plugin-federation'
-import tailwindcss from '@tailwindcss/vite'
-import path from "path"
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import federation from '@originjs/vite-plugin-federation';
+import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
 
 // Re-enable TailwindCSS với scoped config
 export default defineConfig({
@@ -11,16 +11,16 @@ export default defineConfig({
     // Re-enable TailwindCSS với custom config
     tailwindcss(),
     federation({
-        name: 'tarot',
-        filename: 'remoteEntry.js',
-        exposes: {
-          './app': './src/TarotApp.tsx',
-          './assets': './src/utils/cardImages.ts',
-        },
-        shared: ['react', 'react-dom', 'react-router-dom']
-    })
+      name: 'tarot',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './app': './src/App.tsx',
+        './assets': './src/utils/cardImages.ts',
+      },
+      shared: ['react', 'react-dom', 'react-router-dom', '@microservice-research/event-bus'],
+    }),
   ],
-  
+
   server: {
     port: 5003,
     cors: true,
@@ -28,51 +28,57 @@ export default defineConfig({
       '/api/groq': {
         target: 'https://api.groq.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/groq/, ''),
+        rewrite: path => path.replace(/^\/api\/groq/, ''),
         headers: {
-          'Origin': 'https://api.groq.com'
-        }
-      }
+          Origin: 'https://api.groq.com',
+        },
+      },
     },
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
-      'Content-Security-Policy': "default-src 'self'; connect-src 'self' https://api.groq.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
-    }
+      'Content-Security-Policy':
+        "default-src 'self'; connect-src 'self' https://api.groq.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';",
+    },
   },
-  
+
   preview: {
     port: 5003,
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
-      'Content-Security-Policy': "default-src 'self'; connect-src 'self' https://api.groq.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
-    }
+      'Content-Security-Policy':
+        "default-src 'self'; connect-src 'self' https://api.groq.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';",
+    },
   },
-  
+
   build: {
     rollupOptions: {
       external: [],
       output: {
         assetFileNames: 'assets/[name].[hash][extname]',
         entryFileNames: 'assets/[name].[hash].js',
-        chunkFileNames: 'assets/[name].[hash].js'
-      }
+        chunkFileNames: 'assets/[name].[hash].js',
+      },
     },
     copyPublicDir: true,
-    assetsDir: 'assets'
+    assetsDir: 'assets',
   },
-  
+
   css: {
     modules: {
       localsConvention: 'camelCase',
-      generateScopedName: 'tarot_[name]__[local]___[hash:base64:5]'
-    }
-  },
-  
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+      generateScopedName: 'tarot_[name]__[local]___[hash:base64:5]',
     },
   },
-})
+
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@microservice-research/design-tokens': path.resolve(
+        __dirname,
+        '../design-tokens/src'
+      ),
+    },
+  },
+});
