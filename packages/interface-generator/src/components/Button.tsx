@@ -9,15 +9,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "interfacegen:bg-blue-600 interfacegen:text-white hover:interfacegen:bg-blue-700",
+        default: "interfacegen:bg-blue-600 interfacegen:text-white hover:interfacegen:bg-blue-700 interfacegen:dark:bg-blue-700 interfacegen:dark:hover:bg-blue-800",
         destructive:
-          "interfacegen:bg-red-600 interfacegen:text-white hover:interfacegen:bg-red-700",
+          "interfacegen:bg-red-600 interfacegen:text-white hover:interfacegen:bg-red-700 interfacegen:dark:bg-red-700 interfacegen:dark:hover:bg-red-800",
         outline:
-          "interfacegen:border interfacegen:border-gray-300 interfacegen:bg-white hover:interfacegen:bg-gray-50 hover:interfacegen:text-gray-900",
+          "interfacegen:border interfacegen:border-gray-300 interfacegen:dark:border-gray-600 interfacegen:bg-white interfacegen:dark:bg-gray-800 hover:interfacegen:bg-gray-50 interfacegen:dark:hover:bg-gray-700 hover:interfacegen:text-gray-900 interfacegen:dark:text-gray-100 interfacegen:dark:hover:text-gray-100",
         secondary:
-          "interfacegen:bg-gray-100 interfacegen:text-gray-900 hover:interfacegen:bg-gray-200",
-        ghost: "hover:interfacegen:bg-gray-100 hover:interfacegen:text-gray-900",
-        link: "interfacegen:text-blue-600 interfacegen:underline-offset-4 hover:interfacegen:underline",
+          "interfacegen:bg-gray-100 interfacegen:dark:bg-gray-700 interfacegen:text-gray-900 interfacegen:dark:text-gray-100 hover:interfacegen:bg-gray-200 interfacegen:dark:hover:bg-gray-600",
+        ghost: "hover:interfacegen:bg-gray-100 interfacegen:dark:hover:bg-gray-700 hover:interfacegen:text-gray-900 interfacegen:dark:hover:text-gray-100",
+        link: "interfacegen:text-blue-600 interfacegen:dark:text-blue-400 interfacegen:underline-offset-4 hover:interfacegen:underline",
       },
       size: {
         default: "interfacegen:h-10 interfacegen:px-4 interfacegen:py-2",
