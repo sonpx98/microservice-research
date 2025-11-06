@@ -54,10 +54,9 @@ Hãy trả về kết quả theo định dạng markdown sau:
 function parseMarkdownResponse(content: string): AIReadingResponse | null {
   try {
     // Extract sections based on markdown headers - more flexible regex
-    const interpretationMatch = content.match(/\*\*Giải thích tổng quan\*\*\s*([\s\S]*?)(?=\*\*[^*]+\*\*|$)/i);
-    const adviceMatch = content.match(/\*\*Lời khuyên thực tế\*\*\s*([\s\S]*?)(?=\*\*[^*]+\*\*|$)/i);
-    const meditationMatch = content.match(/\*\*Suy ngẫm sâu sắc\*\*\s*([\s\S]*?)(?=\*\*[^*]+\*\*|$)/i);
-
+    const interpretationMatch = content.match(/interpretation\s*([\s\S]*?)(?=\*\*[^*]+\*\*|$)/i);
+    const adviceMatch = content.match(/advice\s*([\s\S]*?)(?=\*\*[^*]+\*\*|$)/i);
+    const meditationMatch = content.match(/meditation\s*([\s\S]*?)(?=\*\*[^*]+\*\*|$)/i);
     if (interpretationMatch && adviceMatch && meditationMatch) {
       return {
         interpretation: interpretationMatch[1].trim().replace(/^\n+|\n+$/g, ''),
@@ -79,11 +78,11 @@ function parseMarkdownResponse(content: string): AIReadingResponse | null {
         const header = headers[i].toLowerCase();
         const section = sections[i + 1]?.trim() || '';
         
-        if (header.includes('giải thích') || header.includes('tổng quan')) {
+        if (header.includes('giải thích') || header.includes('tổng quan') || header.includes('interpretation')) {
           interpretation = section;
-        } else if (header.includes('lời khuyên') || header.includes('khuyên')) {
+        } else if (header.includes('lời khuyên') || header.includes('khuyên') || header.includes('advice')) {
           advice = section;
-        } else if (header.includes('suy ngẫm') || header.includes('ngẫm')) {
+        } else if (header.includes('suy ngẫm') || header.includes('ngẫm') || header.includes('meditation')) {
           meditation = section;
         }
       }
@@ -123,13 +122,13 @@ export async function generateAIReading(
 
 Hãy trả về kết quả theo định dạng markdown sau:
 
-**interpretation**
+interpretation
 [Giải thích chi tiết hành trình qua 3 thời kỳ, kết nối các lá bài thành một câu chuyện mạch lạc, 150-200 từ]
 
-**advice**
+advice
 [Lời khuyên cụ thể và thực tế để áp dụng vào cuộc sống, 100-150 từ]
 
-**meditation**
+meditation
 [Những suy ngẫm sâu sắc về bài học cuộc sống và ý nghĩa tinh thần, 100-120 từ]`;
 
     const response = await fetch(GROQ_API_URL, {
