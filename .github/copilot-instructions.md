@@ -85,9 +85,10 @@ declare module 'cv-generator/*' {
   - **Zero coupling**: No runtime dependencies between micro-frontends
 - **Package Structure**: Each package follows identical structure with `src/App.tsx` as the main export
 - **Styling**: TailwindCSS v4 with `@tailwindcss/vite` plugin across all packages
-  - **CSS Prefix Required**: Each micro-frontend must use a unique Tailwind prefix to avoid CSS conflicts
-  - **Prefix Convention**: Use project name as prefix in CSS file: `@import "tailwindcss" prefix(projectname);`
-  - **Prefix Rules**: Must be lowercase ASCII letters (a-z) only, no hyphens or special characters
+  - **No Config File**: Tailwind v4 doesn't use `tailwind.config.js` - all configuration is in CSS
+  - **CSS Import**: Use `@import "tailwindcss" prefix(yourprefix);` in `src/index.css`
+  - **CSS Loading**: Always import `index.css` in `App.tsx` to ensure TailwindCSS is bundled when exposed via Module Federation
+  - **Dark Mode**: Add `@custom-variant dark (&:is(.dark *));` in `src/index.css` for dark mode support
 - **Path Aliases**: `@/` resolves to `./src` in each package
 - **Component Libraries**: Uses Radix UI primitives with shadcn/ui patterns
 
@@ -102,27 +103,92 @@ declare module 'cv-generator/*' {
 
 1. Create new package in `packages/` following existing structure
 2. Configure unique port in `vite.config.ts` (increment from 5005)
-3. **Configure Tailwind prefix**: Add prefix in `src/index.css` using TailwindCSS v4 syntax
+3. **Setup TailwindCSS v4 with Prefix** (for CSS isolation):
+   - Configure Babel plugin in `vite.config.ts` with prefix
+   - Setup `src/index.css` with prefix and dark mode variant
+   - Import `index.css` in `App.tsx` to ensure CSS is bundled with Module Federation
+   - Install Babel dependencies: `pnpm add -D @babel/core @babel/helper-plugin-utils @babel/types @babel/traverse`
 4. Add remote entry to portfolio-home's `vite.config.ts` remotes config
 5. Declare module types in `packages/portfolio-home/types/remote.d.ts`
 6. Import and integrate in portfolio-home's `App.tsx` with lazy loading
 
-### Tailwind CSS Setup for New Projects
+### Tailwind CSS v4 Setup for New Projects
 
-Each micro-frontend requires a unique CSS prefix to prevent styling conflicts:
+**Note**: Tailwind CSS v4 no longer uses `tailwind.config.js`. All configuration is done in CSS.
+
+```typescript
+/* vite.config.ts - WITH Prefix Plugin for CSS Isolation */
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import prefixTailwind from "../shared/babel-plugins/prefix-tailwind";
+
+export default defineConfig({
+  plugins: [
+    react({
+      babel: {
+        plugins: [[prefixTailwind, { prefix: 'yourprefix' }]] // Choose unique prefix!
+      }
+    }),
+    tailwindcss(), // Tailwind CSS v4 Vite plugin
+  ],
+});
+```
 
 ```css
-/* src/index.css */
-@import "tailwindcss" prefix(videoeditor);
-```
+/* src/index.css - Tailwind v4 with prefix and dark mode */
+@import "tailwindcss" prefix(yourprefix);
 
-**Important**: TailwindCSS v4 prefix must be lowercase ASCII letters (a-z) only, no hyphens or special characters.
+@custom-variant dark (&:is(.dark *));
+
+/* Optional: Add custom theme values if needed */
+@theme {
+  --color-primary: #3b82f6;
+  --radius: 0.5rem;
+}
+```
 
 ```tsx
-// Usage in components
-<div className="videoeditor:bg-gray-900 videoeditor:text-white">
-  <button className="videoeditor:bg-blue-600 hover:videoeditor:bg-blue-700">
-    Click me
-  </button>
-</div>
+/* src/App.tsx */
+import './index.css' // Required for Module Federation to bundle TailwindCSS
+import './App.css'
+
+function App() {
+  // Write clean Tailwind - Babel auto-adds prefix at build time
+  return <div className="bg-gray-900 text-white">...</div>
+}
 ```
+
+### Dark Mode Guidelines
+
+**IMPORTANT**: Dark mode utilities MUST follow the format `prefix:dark:utility` (NOT `dark:prefix:utility`)
+
+**Correct Format**:
+```tsx
+// ✅ CORRECT - Prefix comes first
+<div className="interfacegen:bg-white interfacegen:dark:bg-gray-900">
+<button className="interfacegen:dark:hover:bg-gray-700">
+```
+
+**Incorrect Format**:
+```tsx
+// ❌ WRONG - Don't put dark before prefix
+<div className="dark:interfacegen:bg-gray-900">
+<button className="dark:hover:interfacegen:bg-gray-700">
+```
+
+**How it works**:
+- Shell controls dark mode by adding/removing `dark` class on `document.documentElement`
+- Each micro-frontend responds to dark mode using its own prefixed utilities
+- The `@custom-variant dark (&:is(.dark *));` in `index.css` enables this behavior
+
+**Prefix Recommendations**:
+- video-editor: `ve`
+- tarot: `tarot`
+- cv-generator: `cv`
+- interface-generator: `interfacegen`
+- portfolio-home: `pf`
+
+**Why Prefix?**: Prevents CSS conflicts when multiple micro-frontends load together in Module Federation. Developers write clean code like `className="flex"`, Babel transforms to `className="ve:flex"` at build time.
+
+**Documentation**: See `packages/shared/babel-plugins/README.md` for full guide.
