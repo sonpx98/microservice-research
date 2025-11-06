@@ -2,38 +2,32 @@
   "name": "@microservice-research/design-tokens",
   "version": "0.0.1",
   "description": "Shared design tokens for micro-frontend portfolio",
-  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
-    "./colors": {
-      "import": "./dist/colors.js",
-      "types": "./dist/colors.d.ts"
-    },
-    "./spacing": {
-      "import": "./dist/spacing.js",
-      "types": "./dist/spacing.d.ts"
-    },
-    "./typography": {
-      "import": "./dist/typography.js",
-      "types": "./dist/typography.d.ts"
-    },
-    "./css": {
-      "import": "./dist/css-variables.js",
-      "types": "./dist/css-variables.d.ts"
-    }
+    "./css": "./dist/full.css",
+    "./tokens": "./dist/tokens-only.css"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist"
+    "build": "npm run build:css && npm run build:tokens-js && npm run build:ts",
+    "build:css": "postcss src/full.css -o dist/full.css && postcss src/tokens-only.css -o dist/tokens-only.css",
+    "build:ts": "tsc"
+  },
+  "dependencies": {
+    "postcss": "^8.4.38",
+    "postcss-cli": "^11.0.0",
+    "tailwindcss": "^4.0.0",
+    "tw-animate-css": "^1.3.4",
+    "autoprefixer": "^10.4.19" 
   },
   "devDependencies": {
-    "typescript": "~5.6.2"
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.3.0"
   },
   "files": [
     "dist"
