@@ -53,7 +53,7 @@ export function CodeEditor({
   };
 
   return (
-    <div className="interfacegen:border interfacegen:rounded-md interfacegen:overflow-hidden">
+    <div className="interfacegen:border interfacegen:border-gray-300 interfacegen:dark:border-gray-600 interfacegen:rounded-md interfacegen:overflow-hidden">
       <Editor
         height={height}
         language={language}
@@ -98,7 +98,7 @@ export function CodeEditor({
           autoSurround: 'languageDefined',
         }}
         loading={
-          <div className="interfacegen:flex interfacegen:items-center interfacegen:justify-center interfacegen:h-full interfacegen:bg-gray-900 interfacegen:text-white">
+          <div className="interfacegen:flex interfacegen:items-center interfacegen:justify-center interfacegen:h-full interfacegen:bg-gray-100 interfacegen:dark:bg-gray-900 interfacegen:text-gray-900 interfacegen:dark:text-white">
             <div className="interfacegen:text-sm">Loading Monaco Editor...</div>
           </div>
         }
