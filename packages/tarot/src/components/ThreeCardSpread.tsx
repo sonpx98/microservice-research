@@ -50,6 +50,7 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
     setShowAISection(true);
     
     const result = await generateAIReading(cards, apiKey, readingType);
+    console.log('result', result)
     setAiReading(result);
     setIsLoadingAI(false);
   };
@@ -85,10 +86,10 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
       <div className="tw:text-center tw:max-w-2xl tw:px-4">
         <div className="tw:mb-4">
           <div className="tw:text-4xl tw:mb-2">{readingType.icon}</div>
-          <h2 className="tw:text-2xl sm:tw:text-3xl tw:font-bold tw:text-purple-800 tw:mb-2">
+          <h2 className="tw:text-2xl sm:tw:text-3xl tw:font-bold tw:text-purple-800 tw:dark:text-purple-300 tw:mb-2">
             Trải Bài Ba Thời Kỳ - {readingType.title}
           </h2>
-          <p className="tw:text-sm sm:tw:text-base tw:text-gray-600 tw:mb-4">
+          <p className="tw:text-sm sm:tw:text-base tw:text-gray-600 tw:dark:text-gray-300 tw:mb-4">
             {readingType.description}
           </p>
         </div>
@@ -140,17 +141,17 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
       {/* Reading interpretation với better spacing */}
       {allRevealed && (
         <div className="tw:w-full tw:max-w-5xl tw:mt-8">
-          <div className="tw:bg-purple-50 tw:border tw:border-purple-200 tw:rounded-xl tw:p-4 sm:p-6 tw:shadow-lg">
-            <h3 className="tw:text-lg tw:sm:text-xl tw:font-bold tw:text-purple-800 tw:mb-4 tw:sm:mb-6 tw:text-center">
+          <div className="tw:bg-purple-50 tw:dark:bg-purple-900 tw:border tw:border-purple-200 tw:rounded-xl tw:p-4 sm:p-6 tw:shadow-lg">
+            <h3 className="tw:text-lg tw:sm:text-xl tw:font-bold tw:text-purple-800 tw:dark:text-purple-300 tw:mb-4 tw:sm:mb-6 tw:text-center">
               🔮 Giải Mã Trải Bài
             </h3>
             
             <div className="space-y-6">
               {/* Cards meanings với custom classes */}
               <div className="tw:grid tw:grid-cols-1 tw:md:grid-cols-3 tw:gap-4 tw:sm:gap-6">
-                <div className="tw:text-center tw:p-4 tw:bg-white tw:rounded-lg tw:border tw:border-purple-100">
-                  <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-3 tw:text-sm tw:sm:text-base">📜 Quá Khứ</h4>
-                  <p className="tw:text-xs tw:sm:text-sm tw:text-gray-700 tw:leading-relaxed tw:mb-3">
+                <div className="tw:text-center tw:p-4 tw:bg-white tw:dark:bg-gray-800 tw:rounded-lg tw:border tw:border-purple-100">
+                  <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-3 tw:text-sm tw:sm:text-base ">📜 Quá Khứ</h4>
+                  <p className="tw:text-xs tw:sm:text-sm tw:text-gray-700 tw:leading-relaxed tw:mb-3 tw:dark:text-gray-300">
                     {cards[0].meaning.upright}
                   </p>
                   <div className="tw:text-xs tw:text-purple-600 tw:bg-purple-50 tw:rounded-md tw:p-2">
@@ -158,9 +159,9 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                   </div>
                 </div>
                 
-                <div className="tw:text-center tw:p-4 tw:bg-white tw:rounded-lg tw:border tw:border-purple-100">
+                <div className="tw:text-center tw:p-4 tw:bg-white tw:dark:bg-gray-800 tw:rounded-lg tw:border tw:border-purple-100">
                   <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-3 tw:text-sm tw:sm:text-base">⭐ Hiện Tại</h4>
-                  <p className="tw:text-xs tw:sm:text-sm tw:text-gray-700 tw:leading-relaxed tw:mb-3">
+                  <p className="tw:text-xs tw:sm:text-sm tw:text-gray-700 tw:leading-relaxed tw:mb-3 tw:dark:text-gray-300">
                     {cards[1].meaning.upright}
                   </p>
                   <div className="tw:text-xs tw:text-purple-600 tw:bg-purple-50 tw:rounded-md tw:p-2">
@@ -168,9 +169,9 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                   </div>
                 </div>
                 
-                <div className="tw:text-center tw:p-4 tw:bg-white tw:rounded-lg tw:border tw:border-purple-100">
+                <div className="tw:text-center tw:p-4 tw:bg-white tw:dark:bg-gray-800 tw:rounded-lg tw:border tw:border-purple-100">
                   <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-3 tw:text-sm tw:sm:text-base">🌟 Tương Lai</h4>
-                  <p className="tw:text-xs tw:sm:text-sm tw:text-gray-700 tw:leading-relaxed tw:mb-3">
+                  <p className="tw:text-xs tw:sm:text-sm tw:text-gray-700 tw:leading-relaxed tw:mb-3 tw:dark:text-gray-300">
                     {cards[2].meaning.upright}
                   </p>
                   <div className="tw:text-xs tw:text-purple-600 tw:bg-purple-50 tw:rounded-md tw:p-2">
@@ -180,23 +181,23 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
               </div>
               
               {/* Separator line */}
-              <div className="tw:border-t tw:border-purple-200 tw:pt-4 tw:sm:pt-6 tw:space-y-4 tw:sm:space-y-6">
+              <div className="tw:pt-4 tw:sm:pt-6 tw:space-y-4 tw:sm:space-y-6">
                 {/* Emotional tone */}
-                <div className="tw:text-center tw:bg-gradient-to-r tw:from-purple-100 tw:to-blue-100 tw:rounded-lg tw:p-3 tw:sm:p-4">
+                <div className="tw:text-center tw:bg-gradient-to-r tw:dark:bg-gray-800 tw:from-purple-100 tw:dark:from-gray-800 tw:to-blue-100 tw:dark:to-gray-800 tw:rounded-lg tw:p-3 tw:sm:p-4 tw:dark:border-purple-100">
                   <p className="tw:text-sm tw:sm:text-base tw:font-medium tw:text-purple-700 tw:mb-1">
                     💫 Tâm Trạng Tổng Thể
                   </p>
-                  <p className="tw:text-xs tw:sm:text-sm tw:text-purple-600">
+                  <p className="tw:text-xs tw:sm:text-sm tw:text-purple-600 tw:dark:text-gray-300">
                     {emotionalTone}
                   </p>
                 </div>
                 
                 {/* Theme */}
-                <div className="tw:bg-white tw:rounded-lg tw:p-4 tw:sm:p-6 tw:border tw:border-purple-100">
+                <div className="tw:bg-white tw:dark:bg-gray-800 tw:rounded-lg tw:p-4 tw:sm:p-6 tw:border tw:border-purple-100">
                   <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-3 tw:text-center tw:text-sm tw:sm:text-base">
                     🌟 Chủ Đề Chính
                   </h4>
-                  <p className="tw:text-xs tw:sm:text-sm tw:text-gray-700 tw:text-center tw:leading-relaxed">
+                  <p className="tw:text-xs tw:sm:text-sm tw:text-gray-700 tw:text-center tw:leading-relaxed tw:dark:text-gray-300">
                     {reading.theme}
                   </p>
                 </div>
@@ -204,7 +205,7 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                 {/* Journey */}
                 <div>
                   <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-2 tw:text-center">🛤️ Hành Trình Của Bạn</h4>
-                  <p className="tw:text-sm tw:text-gray-700 tw:text-center tw:leading-relaxed">
+                  <p className="tw:text-sm tw:text-gray-700 tw:text-center tw:leading-relaxed tw:dark:text-gray-300">
                     {reading.journey}
                   </p>
                 </div>
@@ -212,15 +213,15 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                 {/* Advice */}
                 <div>
                   <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-2 tw:text-center">💡 Lời Khuyên</h4>
-                  <p className="tw:text-sm tw:text-gray-700 tw:text-center tw:leading-relaxed">
+                  <p className="tw:text-sm tw:text-gray-700 tw:text-center tw:leading-relaxed tw:dark:text-gray-300">
                     {reading.advice}
                   </p>
                 </div>
                 
                 {/* Energy */}
-                <div className="tw:bg-gradient-to-r tw:from-purple-50 tw:to-blue-50 tw:rounded-lg tw:p-3">
+                <div className="tw:bg-gradient-to-r tw:from-purple-50 tw:dark:from-gray-800 tw:to-blue-50 tw:dark:to-gray-800 tw:rounded-lg tw:p-3">
                   <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-2 tw:text-center">⚡ Năng Lượng Tổng Thể</h4>
-                  <p className="tw:text-sm tw:text-gray-700 tw:text-center tw:leading-relaxed">
+                  <p className="tw:text-sm tw:text-gray-700 tw:text-center tw:leading-relaxed tw:dark:text-gray-300">
                     {reading.energy}
                   </p>
                 </div>
@@ -258,7 +259,7 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
           {/* AI Reading Section */}
           {showAISection && (
             <div className="tw:max-w-4xl tw:w-full tw:mt-6">
-              <div className="tw:bg-gradient-to-r tw:from-pink-50 tw:to-purple-50 tw:border tw:border-pink-200 tw:rounded-lg tw:p-6">
+              <div className="tw:bg-gradient-to-r tw:dark:bg-purple-900 tw:from-pink-50 tw:dark:from-purple-900 tw:to-purple-50 tw:dark:to-purple-900 tw:border tw:border-pink-200 tw:rounded-lg tw:p-6">
                 <h3 className="tw:text-xl tw:font-bold tw:text-pink-800 tw:mb-4 tw:text-center tw:flex tw:items-center tw:justify-center tw:gap-2">
                   🤖 Giải Thích Bằng AI
                   {isLoadingAI && <span className="tw:animate-spin">⚡</span>}
@@ -289,21 +290,21 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                           💡 Để sử dụng tính năng AI, bạn cần API key miễn phí từ:
                         </p>
                         <div className="tw:space-y-2 tw:text-sm">
-                          <div className="tw:bg-white tw:rounded tw:p-3">
+                          <div className="tw:bg-white tw:dark:bg-gray-800 tw:rounded tw:p-3">
                             <strong>🚀 Groq (Khuyên dùng):</strong> 
                             <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" 
                                className="tw:text-blue-600 tw:hover:underline tw:ml-2">
                               console.groq.com/keys
                             </a>
-                            <div className="tw:text-gray-600 tw:text-xs tw:mt-1">Free tier: 6,000 token/phút</div>
+                            <div className="tw:text-gray-600 tw:dark:text-gray-300 tw:text-xs tw:mt-1">Free tier: 6,000 token/phút</div>
                           </div>
-                          <div className="tw:bg-white tw:rounded tw:p-3">
+                          <div className="tw:bg-white tw:dark:bg-gray-800 tw:rounded tw:p-3">
                             <strong>🧠 Google Gemini:</strong> 
                             <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
                                className="tw:text-blue-600 tw:hover:underline tw:ml-2">
                               aistudio.google.com/app/apikey
                             </a>
-                            <div className="tw:text-gray-600 tw:text-xs tw:mt-1">Free tier: 15 requests/phút</div>
+                            <div className="tw:text-gray-600 tw:dark:text-gray-300 tw:text-xs tw:mt-1">Free tier: 15 requests/phút</div>
                           </div>
                         </div>
                         <p className="tw:text-xs tw:text-gray-500 tw:mt-3">
@@ -320,7 +321,7 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                       <h4 className="tw:font-semibold tw:text-pink-700 tw:mb-3 tw:flex tw:items-center tw:gap-2">
                         🔮 Giải Thích Sâu Sắc
                       </h4>
-                      <p className="tw:text-gray-700 tw:leading-relaxed">
+                      <p className="tw:text-gray-700 tw:leading-relaxed tw:dark:text-gray-300">
                         {aiReading.interpretation}
                       </p>
                     </div>
@@ -329,7 +330,7 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                       <h4 className="tw:font-semibold tw:text-pink-700 tw:mb-3 tw:flex tw:items-center tw:gap-2">
                         💫 Lời Khuyên Từ AI
                       </h4>
-                      <p className="tw:text-gray-700 tw:leading-relaxed">
+                      <p className="tw:text-gray-700 tw:leading-relaxed tw:dark:text-gray-300">
                         {aiReading.advice}
                       </p>
                     </div>
@@ -338,7 +339,7 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                       <h4 className="tw:font-semibold tw:text-pink-700 tw:mb-3 tw:flex tw:items-center tw:gap-2">
                         🧘‍♀️ Suy Ngẫm Sâu Sắc
                       </h4>
-                      <p className="tw:text-gray-700 tw:leading-relaxed">
+                      <p className="tw:text-gray-700 tw:leading-relaxed tw:dark:text-gray-300">
                         {aiReading.meditation}
                       </p>
                     </div>

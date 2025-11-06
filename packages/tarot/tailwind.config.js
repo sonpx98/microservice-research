@@ -9,6 +9,9 @@ module.exports = {
   // TailwindCSS v4 prefix với colon
   prefix: 'tw:',
   
+  // Enable class-based dark mode (controlled by shell)
+  darkMode: 'class',
+  
   // Important selector for scoping
   important: '.tarot-app-wrapper',
   

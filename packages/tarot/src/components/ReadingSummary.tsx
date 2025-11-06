@@ -29,23 +29,23 @@ export function ReadingSummary({ cards, readingType, onNewReading, onChangeType 
   const elements = getElementalEnergy();
 
   return (
-    <div className="tw:bg-gradient-to-br tw:from-purple-50 tw:to-indigo-50 tw:p-6 tw:rounded-2xl tw:border tw:border-purple-200 tw:mt-8">
+    <div className="tw:bg-gradient-to-br tw:from-purple-50 tw:to-indigo-50 tw:dark:from-purple-900/20 tw:dark:to-indigo-900/20 tw:p-6 tw:rounded-2xl tw:border tw:border-purple-200 tw:dark:border-purple-700 tw:mt-8">
       <div className="tw:text-center tw:mb-6">
-        <h3 className="tw:text-2xl tw:font-bold tw:text-purple-800 tw:mb-2">
+        <h3 className="tw:text-2xl tw:font-bold tw:text-purple-800 tw:dark:text-purple-300 tw:mb-2">
           ✨ Tóm tắt Reading ✨
         </h3>
-        <p className="tw:text-gray-600">
+        <p className="tw:text-gray-600 tw:dark:text-gray-300">
           Nhìn lại hành trình của bạn qua {readingType.title.toLowerCase()}
         </p>
       </div>
 
       <div className="tw:grid tw:grid-cols-1 md:tw:grid-cols-3 tw:gap-4 tw:mb-6">
         {/* Thống kê Major Arcana */}
-        <div className="tw:bg-white tw:p-4 tw:rounded-xl tw:text-center tw:shadow-sm">
+        <div className="tw:bg-white tw:dark:bg-gray-800 tw:p-4 tw:rounded-xl tw:text-center tw:shadow-sm">
           <div className="tw:text-2xl tw:mb-2">🎭</div>
-          <div className="tw:font-semibold tw:text-purple-700">Major Arcana</div>
-          <div className="tw:text-lg tw:font-bold tw:text-purple-600">{majorArcana}/3</div>
-          <div className="tw:text-xs tw:text-gray-600 tw:mt-1">
+          <div className="tw:font-semibold tw:text-purple-700 tw:dark:text-purple-400">Major Arcana</div>
+          <div className="tw:text-lg tw:font-bold tw:text-purple-600 tw:dark:text-purple-400">{majorArcana}/3</div>
+          <div className="tw:text-xs tw:text-gray-600 tw:dark:text-gray-400 tw:mt-1">
             {majorArcana === 3 ? 'Hành trình tâm linh mạnh mẽ' :
              majorArcana === 2 ? 'Năng lượng biến đổi lớn' :
              majorArcana === 1 ? 'Ảnh hưởng tâm linh nhẹ' :
@@ -54,11 +54,11 @@ export function ReadingSummary({ cards, readingType, onNewReading, onChangeType 
         </div>
 
         {/* Thống kê nguyên tố */}
-        <div className="tw:bg-white tw:p-4 tw:rounded-xl tw:text-center tw:shadow-sm">
+        <div className="tw:bg-white tw:dark:bg-gray-800 tw:p-4 tw:rounded-xl tw:text-center tw:shadow-sm">
           <div className="tw:text-2xl tw:mb-2">🌟</div>
-          <div className="tw:font-semibold tw:text-purple-700">Nguyên tố</div>
-          <div className="tw:text-lg tw:font-bold tw:text-purple-600">{elements.length}</div>
-          <div className="tw:text-xs tw:text-gray-600 tw:mt-1">
+          <div className="tw:font-semibold tw:text-purple-700 tw:dark:text-purple-400">Nguyên tố</div>
+          <div className="tw:text-lg tw:font-bold tw:text-purple-600 tw:dark:text-purple-400">{elements.length}</div>
+          <div className="tw:text-xs tw:text-gray-600 tw:dark:text-gray-400 tw:mt-1">
             {elements.length === 1 ? 'Năng lượng tập trung' :
              elements.length === 2 ? 'Cân bằng năng lượng' :
              elements.length >= 3 ? 'Đa dạng năng lượng' :
@@ -67,11 +67,11 @@ export function ReadingSummary({ cards, readingType, onNewReading, onChangeType 
         </div>
 
         {/* Thống kê bộ bài */}
-        <div className="tw:bg-white tw:p-4 tw:rounded-xl tw:text-center tw:shadow-sm">
+        <div className="tw:bg-white tw:dark:bg-gray-800 tw:p-4 tw:rounded-xl tw:text-center tw:shadow-sm">
           <div className="tw:text-2xl tw:mb-2">🃏</div>
-          <div className="tw:font-semibold tw:text-purple-700">Bộ bài khác nhau</div>
-          <div className="tw:text-lg tw:font-bold tw:text-purple-600">{uniqueSuits}</div>
-          <div className="tw:text-xs tw:text-gray-600 tw:mt-1">
+          <div className="tw:font-semibold tw:text-purple-700 tw:dark:text-purple-400">Bộ bài khác nhau</div>
+          <div className="tw:text-lg tw:font-bold tw:text-purple-600 tw:dark:text-purple-400">{uniqueSuits}</div>
+          <div className="tw:text-xs tw:text-gray-600 tw:dark:text-gray-400 tw:mt-1">
             {uniqueSuits === 1 ? 'Chủ đề tập trung' :
              uniqueSuits === 2 ? 'Hai khía cạnh chính' :
              uniqueSuits >= 3 ? 'Đa chiều phức tạp' :
@@ -82,13 +82,13 @@ export function ReadingSummary({ cards, readingType, onNewReading, onChangeType 
 
       {/* Danh sách nguyên tố hiện diện */}
       {elements.length > 0 && (
-        <div className="tw:bg-white tw:p-4 tw:rounded-xl tw:mb-4">
-          <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-2">🔥 Năng lượng nguyên tố:</h4>
+        <div className="tw:bg-white tw:dark:bg-gray-800 tw:p-4 tw:rounded-xl tw:mb-4">
+          <h4 className="tw:font-semibold tw:text-purple-700 tw:dark:text-purple-400 tw:mb-2">🔥 Năng lượng nguyên tố:</h4>
           <div className="tw:flex tw:flex-wrap tw:gap-2">
             {elements.map((element, index) => (
               <span 
                 key={index}
-                className="tw:px-3 tw:py-1 tw:bg-purple-100 tw:text-purple-700 tw:rounded-full tw:text-sm tw:font-medium"
+                className="tw:px-3 tw:py-1 tw:bg-purple-100 tw:dark:bg-purple-900/30 tw:text-purple-700 tw:dark:text-purple-300 tw:rounded-full tw:text-sm tw:font-medium"
               >
                 {element}
               </span>
@@ -98,22 +98,22 @@ export function ReadingSummary({ cards, readingType, onNewReading, onChangeType 
       )}
 
       {/* Các lá bài trong reading */}
-      <div className="tw:bg-white tw:p-4 tw:rounded-xl tw:mb-6">
-        <h4 className="tw:font-semibold tw:text-purple-700 tw:mb-3">🎴 Các lá bài trong reading:</h4>
+      <div className="tw:bg-white tw:dark:bg-gray-800 tw:p-4 tw:rounded-xl tw:mb-6">
+        <h4 className="tw:font-semibold tw:text-purple-700 tw:dark:text-purple-400 tw:mb-3">🎴 Các lá bài trong reading:</h4>
         <div className="tw:space-y-2">
           {cards.map((card, index) => {
             const positions = ['Quá khứ', 'Hiện tại', 'Tương lai'];
             return (
-              <div key={index} className="tw:flex tw:items-center tw:justify-between tw:py-2 tw:border-b tw:border-gray-100 last:tw:border-b-0">
+              <div key={index} className="tw:flex tw:items-center tw:justify-between tw:py-2 tw:border-b tw:border-gray-100 tw:dark:border-gray-700 last:tw:border-b-0">
                 <div className="tw:flex tw:items-center tw:gap-3">
-                  <span className="tw:w-16 tw:text-sm tw:font-medium tw:text-gray-600">
+                  <span className="tw:w-16 tw:text-sm tw:font-medium tw:text-gray-600 tw:dark:text-gray-400">
                     {positions[index]}:
                   </span>
-                  <span className="tw:font-medium tw:text-purple-800">
+                  <span className="tw:font-medium tw:text-purple-800 tw:dark:text-purple-300">
                     {card.name}
                   </span>
                 </div>
-                <span className="tw:text-xs tw:px-2 tw:py-1 tw:bg-gray-100 tw:rounded tw:text-gray-600">
+                <span className="tw:text-xs tw:px-2 tw:py-1 tw:bg-gray-100 tw:dark:bg-gray-700 tw:rounded tw:text-gray-600 tw:dark:text-gray-400">
                   {card.suit}
                 </span>
               </div>
@@ -126,13 +126,13 @@ export function ReadingSummary({ cards, readingType, onNewReading, onChangeType 
       <div className="tw:flex tw:gap-3 tw:justify-center">
         <button
           onClick={onNewReading}
-          className="tw:px-6 tw:py-3 tw:bg-gradient-to-r tw:from-purple-600 tw:to-indigo-600 tw:text-white tw:font-semibold tw:rounded-xl tw:hover:from-purple-700 tw:hover:to-indigo-700 tw:transition-all tw:duration-300 tw:transform tw:hover:scale-105 tw:shadow-lg"
+          className="tw:px-6 tw:py-3 tw:bg-gradient-to-r tw:from-purple-600 tw:to-indigo-600 tw:dark:from-purple-700 tw:dark:to-indigo-700 tw:text-white tw:font-semibold tw:rounded-xl tw:hover:from-purple-700 tw:hover:to-indigo-700 tw:dark:hover:from-purple-800 tw:dark:hover:to-indigo-800 tw:transition-all tw:duration-300 tw:transform tw:hover:scale-105 tw:shadow-lg"
         >
           🔄 Reading mới cùng chủ đề
         </button>
         <button
           onClick={onChangeType}
-          className="tw:px-6 tw:py-3 tw:bg-white tw:text-purple-600 tw:font-semibold tw:rounded-xl tw:border tw:border-purple-300 tw:hover:bg-purple-50 tw:transition-all tw:duration-300"
+          className="tw:px-6 tw:py-3 tw:bg-white tw:dark:bg-gray-800 tw:text-purple-600 tw:dark:text-purple-400 tw:font-semibold tw:rounded-xl tw:border tw:border-purple-300 tw:dark:border-purple-600 tw:hover:bg-purple-50 tw:dark:hover:bg-purple-900/20 tw:transition-all tw:duration-300"
         >
           🎯 Thay đổi chủ đề
         </button>

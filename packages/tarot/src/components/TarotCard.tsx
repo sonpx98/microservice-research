@@ -22,16 +22,16 @@ export function TarotCardComponent({ card, position, isRevealed, onClick, custom
 
   return (
     <div className="tw:flex tw:flex-col tw:items-center tw:space-y-2 tw:sm:space-y-3 tw:w-full">
-      <h3 className="tw:text-xs tw:sm:text-sm tw:lg:text-base tw:font-semibold tw:text-purple-800 tw:text-center tw:min-h-[2.5rem] tw:sm:min-h-[3rem] tw:flex tw:justify-center tw:leading-tight tw:px-1">
+      <h3 className="tw:text-xs tw:sm:text-sm tw:lg:text-base tw:font-semibold tw:text-purple-800 tw:dark:text-purple-300 tw:text-center tw:min-h-[2.5rem] tw:sm:min-h-[3rem] tw:flex tw:justify-center tw:leading-tight tw:px-1">
         {positionTitles[position]}
       </h3>
       
       <div 
         className={`
           tw:relative tw:w-full tw:aspect-[2/3] tw:max-w-full
-          tw:rounded-lg tw:border-2 tw:border-purple-300
+          tw:rounded-lg tw:border-2 tw:border-purple-300 tw:dark:border-purple-600
           tw:cursor-pointer tw:transition-all tw:duration-500 tw:transform-gpu
-          ${isRevealed ? 'tw:bg-gradient-to-b tw:from-purple-100 tw:to-purple-200' : 'tw:bg-gradient-to-b tw:from-indigo-800 tw:to-purple-900'}
+          ${isRevealed ? 'tw:bg-gradient-to-b tw:from-purple-100 tw:to-purple-200 tw:dark:from-purple-900/30 tw:dark:to-purple-800/30' : 'tw:bg-gradient-to-b tw:from-indigo-800 tw:to-purple-900 tw:dark:from-indigo-950 tw:dark:to-purple-950'}
           ${!isRevealed ? 'tw:hover:scale-105' : ''}
           tw:shadow-lg tw:hover:shadow-xl
         `}
@@ -65,7 +65,7 @@ export function TarotCardComponent({ card, position, isRevealed, onClick, custom
       {/* Card description - responsive display */}
       {isRevealed && card && (
         <div className="tw:text-center tw:max-w-full tw:mt-1 tw:sm:mt-2 tw:px-1">
-          <div className="tw:text-[8px] tw:sm:text-[10px] tw:lg:text-xs tw:text-purple-700 tw:leading-tight tw:line-clamp-3">
+          <div className="tw:text-[8px] tw:sm:text-[10px] tw:lg:text-xs tw:text-purple-700 tw:dark:text-purple-400 tw:leading-tight tw:line-clamp-3">
             {card.description}
           </div>
         </div>
