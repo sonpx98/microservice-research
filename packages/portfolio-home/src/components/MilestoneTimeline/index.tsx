@@ -109,8 +109,8 @@ const careerMilestones: Milestone[] = [
   }
 ];
 
-// Generate sine wave path
-const generateSineWavePath = (numMilestones: number, containerHeight: number, amplitude = 150) => {
+// Generate sine wave path (or straight line for mobile)
+const generateSineWavePath = (numMilestones: number, containerHeight: number, amplitude = 150, isMobile = false) => {
   const segments = 100;
   let pathData = 'M 0 0';
   
@@ -118,7 +118,8 @@ const generateSineWavePath = (numMilestones: number, containerHeight: number, am
     const t = i / segments;
     const y = t * containerHeight;
     const periods = numMilestones;
-    const x = amplitude * Math.sin(t * periods * Math.PI);
+    // On mobile, amplitude is 0 so it's a straight line
+    const x = isMobile ? 0 : amplitude * Math.sin(t * periods * Math.PI);
 
     pathData += ` L ${x} ${y}`;
   }
@@ -130,11 +131,13 @@ const generateSineWavePath = (numMilestones: number, containerHeight: number, am
 const Spaceship = ({ 
   pathRef, 
   progress,
-  containerHeight 
+  containerHeight,
+  isMobile = false
 }: { 
   pathRef: React.RefObject<SVGPathElement | null>;
   progress: MotionValue<number>;
   containerHeight: number;
+  isMobile?: boolean;
 }) => {
   const [position, setPosition] = React.useState({ x: 0, y: 0, angle: 0 });
   
@@ -165,7 +168,7 @@ const Spaceship = ({
     <motion.div
       className="absolute z-20 pointer-events-none"
       style={{ 
-        left: '50%',
+        left: isMobile ? '24px' : '50%',
         top: 0,
         x: position.x,
         y: position.y,
@@ -180,13 +183,13 @@ const Spaceship = ({
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="text-4xl filter drop-shadow-2xl -translate-x-1/2 -translate-y-1/2"
+        className="text-2xl sm:text-3xl md:text-4xl filter drop-shadow-2xl -translate-x-1/2 -translate-y-1/2"
       >
         🛸
       </motion.div>
       {/* UFO glow effect */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-cyan-400 opacity-20 rounded-full blur-md"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-cyan-400 opacity-20 rounded-full blur-md"
         animate={{
           scale: [1, 1.5, 1],
           opacity: [0.2, 0.1, 0.2],
@@ -264,7 +267,7 @@ const PlanetMilestone = ({
     >
       {/* Planet */}
       <motion.div 
-        className="absolute left-8 md:left-1/2 -translate-x-1/2 z-10"
+        className="absolute left-6 sm:left-8 md:left-1/2 -translate-x-1/2 z-10"
         initial={{ scale: 0, rotate: -180 }}
         animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
         transition={{ 
@@ -278,7 +281,7 @@ const PlanetMilestone = ({
         <div className="relative">
           {/* Planet body */}
           <motion.div
-            className="w-20 h-20 flex items-center justify-center"
+            className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center"
             animate={{
               rotate: 360,
             }}
@@ -289,7 +292,7 @@ const PlanetMilestone = ({
             }}
           >
             {React.createElement(PlanetComponents[milestone.planetType], {
-              size: 80,
+              size: typeof window !== 'undefined' && window.innerWidth < 640 ? 48 : window.innerWidth < 768 ? 64 : 80,
               className: 'drop-shadow-2xl'
             })}
           </motion.div>
@@ -309,7 +312,7 @@ const PlanetMilestone = ({
           
           {/* Orbit ring */}
           <motion.div
-            className="absolute inset-0 -m-6 rounded-full border-2 border-dashed border-white/20"
+            className="absolute inset-0 -m-3 sm:-m-4 md:-m-6 rounded-full border border-dashed sm:border-2 border-white/20"
             animate={{
               rotate: -360,
             }}
@@ -321,7 +324,7 @@ const PlanetMilestone = ({
           >
             {/* Small orbiting satellite */}
             <motion.div
-              className="absolute top-0 left-1/2 w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"
+              className="absolute top-0 left-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"
               style={{ originX: 0.5, originY: 12 }}
             />
           </motion.div>
@@ -331,7 +334,7 @@ const PlanetMilestone = ({
       {/* Content card */}
       <motion.div
         className={`
-          w-full md:w-5/12 ml-28 md:ml-0
+          w-full md:w-5/12 ml-20 sm:ml-24 md:ml-0
           ${isLeft ? 'md:pr-20' : 'md:pl-20'}
         `}
         initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
@@ -339,7 +342,7 @@ const PlanetMilestone = ({
         transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
       >
         <motion.article
-          className="p-6 rounded-2xl backdrop-blur-xl shadow-2xl transition-all duration-300 bg-white/10 border border-white/15 hover:border-white/25 hover:bg-white/15 dark:bg-gradient-to-br dark:from-indigo-950/90 dark:to-purple-950/90 dark:border-purple-500/20 dark:hover:border-purple-400/40"
+          className="p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl backdrop-blur-xl shadow-2xl transition-all duration-300 bg-white/10 border border-white/15 hover:border-white/25 hover:bg-white/15 dark:bg-gradient-to-br dark:from-indigo-950/90 dark:to-purple-950/90 dark:border-purple-500/20 dark:hover:border-purple-400/40"
           style={{
             backdropFilter: 'blur(20px)',
             boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
@@ -348,9 +351,9 @@ const PlanetMilestone = ({
           transition={{ duration: 0.2 }}
         >
           {/* Header */}
-          <div className="mb-4">
+          <div className="mb-3 sm:mb-4">
             <motion.time 
-              className="text-sm font-semibold text-white dark:text-cyan-400"
+              className="text-xs sm:text-sm font-semibold text-white dark:text-cyan-400"
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ delay: index * 0.2 + 0.5 }}
@@ -360,36 +363,36 @@ const PlanetMilestone = ({
                 month: 'long' 
               }).format(milestone.date)}
             </motion.time>
-            <h3 className="text-2xl font-bold mt-1 text-white dark:text-white">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold mt-1 text-white dark:text-white">
               {milestone.role}
             </h3>
-            <p className="font-medium text-lg text-gray-200 dark:text-purple-300">
+            <p className="font-medium text-base sm:text-lg text-gray-200 dark:text-purple-300">
               {milestone.company}
             </p>
           </div>
 
           {/* Description */}
-          <p className="mb-4 leading-relaxed text-gray-100 dark:text-gray-300">
+          <p className="mb-3 sm:mb-4 leading-relaxed text-sm sm:text-base text-gray-100 dark:text-gray-300">
             {milestone.description}
           </p>
 
           {/* Achievements */}
           {milestone.achievements && milestone.achievements.length > 0 && (
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold mb-2 flex items-center text-gray-200 dark:text-purple-300">
-                <span className="mr-2">⭐</span>
+            <div className="mb-3 sm:mb-4">
+              <h4 className="text-xs sm:text-sm font-semibold mb-2 flex items-center text-gray-200 dark:text-purple-300">
+                <span className="mr-1.5 sm:mr-2">⭐</span>
                 Key Achievements
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-1.5 sm:space-y-2">
                 {milestone.achievements.map((achievement, i) => (
                   <motion.li
                     key={i}
-                    className="text-sm flex items-start text-gray-100 dark:text-gray-300"
+                    className="text-xs sm:text-sm flex items-start text-gray-100 dark:text-gray-300"
                     initial={{ opacity: 0, x: -10 }}
                     animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
                     transition={{ delay: index * 0.2 + 0.6 + i * 0.1 }}
                   >
-                    <span className="text-green-400 mr-2 flex-shrink-0">✓</span>
+                    <span className="text-green-400 mr-1.5 sm:mr-2 flex-shrink-0">✓</span>
                     <span>{achievement}</span>
                   </motion.li>
                 ))}
@@ -399,11 +402,11 @@ const PlanetMilestone = ({
 
           {/* Technologies */}
           {milestone.technologies && milestone.technologies.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {milestone.technologies.map((tech, i) => (
                 <motion.span
                   key={tech}
-                  className="px-3 py-1 text-xs font-medium rounded-full backdrop-blur-md transition-all bg-white/15 text-white dark:bg-purple-500/20 dark:text-purple-200 border border-white/20 hover:bg-white/25 hover:border-white/30 dark:border-purple-400/30 dark:hover:bg-purple-500/30"
+                  className="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full backdrop-blur-md transition-all bg-white/15 text-white dark:bg-purple-500/20 dark:text-purple-200 border border-white/20 hover:bg-white/25 hover:border-white/30 dark:border-purple-400/30 dark:hover:bg-purple-500/30"
                   style={{
                     backdropFilter: 'blur(10px)',
                     boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.1)',
@@ -432,19 +435,21 @@ export default function SpaceTimeline() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end']
   });
 
-  // Measure actual timeline height
+  // Measure actual timeline height and check if mobile
   useLayoutEffect(() => {
     if (!timelineRef.current) return;
     
     const updateHeight = () => {
       const height = timelineRef.current?.offsetHeight || 0;
       setContainerHeight(height);
+      setIsMobile(window.innerWidth < 768);
     };
     
     updateHeight();
@@ -453,15 +458,15 @@ export default function SpaceTimeline() {
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
 
-  // Generate path based on measured height
+  // Generate path based on measured height and screen size
   const pathData = useMemo(() => {
     if (containerHeight === 0) return 'M 0 0';
-    return generateSineWavePath(careerMilestones.length, containerHeight, 150);
-  }, [containerHeight]);
+    return generateSineWavePath(careerMilestones.length, containerHeight, 150, isMobile);
+  }, [containerHeight, isMobile]);
 
   return (
     <div 
-      className="min-h-screen py-20 px-4 relative overflow-hidden rounded-xl backdrop-blur-2xl border border-gray-300/20 dark:border-white/10 transition-all duration-300"
+      className="min-h-screen py-8 sm:py-12 md:py-16 lg:py-20 px-2 sm:px-4 relative overflow-hidden rounded-lg sm:rounded-xl backdrop-blur-2xl border border-gray-300/20 dark:border-white/10 transition-all duration-300"
       style={{
         background: theme === 'dark' 
           ? 'linear-gradient(135deg, rgba(67, 56, 202, 0.3) 0%, rgba(147, 51, 234, 0.25) 35%, rgba(15, 23, 42, 0.4) 100%)'
@@ -483,12 +488,12 @@ export default function SpaceTimeline() {
           {/* Hidden SVG path - only used for spaceship calculation */}
           {containerHeight > 0 && (
             <svg 
-              className="absolute left-8 md:left-1/2 top-0 pointer-events-none opacity-0"
+              className="absolute left-6 sm:left-8 md:left-1/2 top-0 pointer-events-none opacity-0"
               style={{ 
                 zIndex: 5,
                 width: '300px',
                 height: `${containerHeight}px`,
-                transform: 'translateX(-150px)'
+                transform: isMobile ? 'translateX(0)' : 'translateX(-150px)'
               }}
             >
               <path
@@ -498,7 +503,7 @@ export default function SpaceTimeline() {
                 stroke="transparent"
                 strokeWidth="3"
                 style={{ 
-                  'transform': 'translateX(-150px)',
+                  'transform': isMobile ? 'translateX(0)' : 'translateX(-150px)',
                 }}
               />
             </svg>
@@ -510,11 +515,12 @@ export default function SpaceTimeline() {
               pathRef={pathRef} 
               progress={scrollYProgress}
               containerHeight={containerHeight}
+              isMobile={isMobile}
             />
           )}
 
           {/* Milestones */}
-          <div className="space-y-32">
+          <div className="space-y-16 sm:space-y-24 md:space-y-32">
             {careerMilestones.map((milestone, index) => (
               <PlanetMilestone
                 key={milestone.id}

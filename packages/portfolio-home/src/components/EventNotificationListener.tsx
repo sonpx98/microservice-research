@@ -46,7 +46,7 @@ console.log('notifications', notifications);
   });
 
   const getNotificationStyles = (type: Notification['type']) => {
-    const baseStyles = 'px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 mb-2 animate-slide-in';
+    const baseStyles = 'px-3 sm:px-4 py-2 sm:py-3 rounded-lg shadow-lg flex items-center gap-2 mb-2 animate-slide-in';
     
     switch (type) {
       case 'success':
@@ -75,17 +75,17 @@ console.log('notifications', notifications);
   if (notifications.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 max-w-md">
+    <div className="fixed top-16 sm:top-4 right-2 sm:right-4 z-50 w-[calc(100vw-1rem)] sm:max-w-md">
       {notifications.map(notification => (
         <div
           key={notification.id}
           className={getNotificationStyles(notification.type)}
         >
-          <span className="text-xl">{getNotificationIcon(notification.type)}</span>
-          <span className="font-medium">{notification.message}</span>
+          <span className="text-base sm:text-xl flex-shrink-0">{getNotificationIcon(notification.type)}</span>
+          <span className="font-medium text-xs sm:text-sm md:text-base flex-1 min-w-0 break-words">{notification.message}</span>
           <button
             onClick={() => setNotifications(prev => prev.filter(n => n.id !== notification.id))}
-            className="ml-auto text-white hover:opacity-80"
+            className="ml-2 text-white hover:opacity-80 text-lg sm:text-xl flex-shrink-0"
           >
             ✕
           </button>
