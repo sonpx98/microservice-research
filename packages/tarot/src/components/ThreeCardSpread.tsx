@@ -22,7 +22,6 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [showAISection, setShowAISection] = useState(false);
   const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
-  
   // Safety check
   if (!cards || !readingType || cards.length !== 3) {
     return (
@@ -46,13 +45,18 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
       return;
     }
     
-    setIsLoadingAI(true);
+    // If API key exists, proceed with AI reading immediately
     setShowAISection(true);
+    setIsLoadingAI(true);
     
-    const result = await generateAIReading(cards, apiKey, readingType);
-    console.log('result', result)
-    setAiReading(result);
-    setIsLoadingAI(false);
+    try {
+      const result = await generateAIReading(cards, apiKey, readingType);
+      setAiReading(result);
+    } catch (error) {
+      console.error('AI Reading error:', error);
+    } finally {
+      setIsLoadingAI(false);
+    }
   };
 
   const handleAPIKeySave = async (apiKey: string) => {
@@ -280,38 +284,32 @@ export function ThreeCardSpread({ cards, readingType, onReset, onNewReading, onC
                 
                 {!isLoadingAI && !aiReading && (
                   <div className="tw:text-center tw:py-6">
-                    {import.meta.env.VITE_GROQ_API_KEY ? (
-                      <p className="tw:text-pink-700 tw:mb-4">
-                        ✅ API key đã được cấu hình từ environment variable. Tính năng AI sẵn sàng sử dụng!
-                      </p>
-                    ) : (
-                      <>
-                        <p className="tw:text-pink-700 tw:mb-4">
-                          💡 Để sử dụng tính năng AI, bạn cần API key miễn phí từ:
-                        </p>
-                        <div className="tw:space-y-2 tw:text-sm">
-                          <div className="tw:bg-white tw:dark:bg-gray-800 tw:rounded tw:p-3">
-                            <strong>🚀 Groq (Khuyên dùng):</strong> 
-                            <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" 
-                               className="tw:text-blue-600 tw:hover:underline tw:ml-2">
-                              console.groq.com/keys
-                            </a>
-                            <div className="tw:text-gray-600 tw:dark:text-gray-300 tw:text-xs tw:mt-1">Free tier: 6,000 token/phút</div>
-                          </div>
-                          <div className="tw:bg-white tw:dark:bg-gray-800 tw:rounded tw:p-3">
-                            <strong>🧠 Google Gemini:</strong> 
-                            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
-                               className="tw:text-blue-600 tw:hover:underline tw:ml-2">
-                              aistudio.google.com/app/apikey
-                            </a>
-                            <div className="tw:text-gray-600 tw:dark:text-gray-300 tw:text-xs tw:mt-1">Free tier: 15 requests/phút</div>
-                          </div>
-                        </div>
-                        <p className="tw:text-xs tw:text-gray-500 tw:mt-3">
-                          Nhấn "Giải Thích Bằng AI" để nhập API key
-                        </p>
-                      </>
-                    )}
+                    <p className="tw:text-pink-700 tw:mb-4">
+                      💡 Để sử dụng tính năng AI, bạn cần API key miễn phí từ:
+                    </p>
+                    <div className="tw:space-y-2 tw:text-sm">
+                      <div className="tw:bg-white tw:dark:bg-gray-800 tw:rounded tw:p-3">
+                        <strong>🚀 Groq (Khuyên dùng):</strong> 
+                        <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" 
+                           className="tw:text-blue-600 tw:hover:underline tw:ml-2">
+                          console.groq.com/keys
+                        </a>
+                        <div className="tw:text-gray-600 tw:dark:text-gray-300 tw:text-xs tw:mt-1">Free tier: 6,000 token/phút</div>
+                      </div>
+                      <div className="tw:bg-white tw:dark:bg-gray-800 tw:rounded tw:p-3">
+                        <strong>🧠 Google Gemini:</strong> 
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
+                           className="tw:text-blue-600 tw:hover:underline tw:ml-2">
+                          aistudio.google.com/app/apikey
+                        </a>
+                        <div className="tw:text-gray-600 tw:dark:text-gray-300 tw:text-xs tw:mt-1">Free tier: 15 requests/phút</div>
+                      </div>
+                    </div>
+                    <p className="tw:text-xs tw:text-gray-500 tw:mt-3">
+                      {import.meta.env.VITE_GROQ_API_KEY 
+                        ? 'API key đã được cấu hình. Nhấn "Giải Thích Bằng AI" để bắt đầu.'
+                        : 'Nhấn "Giải Thích Bằng AI" để nhập API key'}
+                    </p>
                   </div>
                 )}
                 
