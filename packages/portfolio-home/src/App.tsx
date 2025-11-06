@@ -140,12 +140,12 @@ function App() {
           </div>
         </div>
         {/* Theme Toggle */}
-        <div className="fixed top-6 right-6 z-50">
+        <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-50">
           <ThemeToggle />
         </div>
 
         {/* Hero Section */}
-        <div className="relative z-10 container mx-auto px-6 py-20">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-20">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div 
               className="mb-8"
@@ -155,7 +155,7 @@ function App() {
             >
               {/* Cosmic Avatar */}
               <motion.div 
-                className="w-32 h-32 mx-auto mb-6 relative"
+                className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 mx-auto mb-4 sm:mb-6 relative"
                 animate={{
                   rotate: 360,
                 }}
@@ -165,8 +165,8 @@ function App() {
                   ease: "linear"
                 }}
               >
-                <div className="w-full h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl border-4 border-white/30">
-                  <User className="w-16 h-16 text-white" />
+                <div className="w-full h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl border-2 sm:border-4 border-white/30">
+                  <User className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 text-white" />
                 </div>
                 {/* Avatar glow */}
                 <motion.div
@@ -182,10 +182,10 @@ function App() {
                 />
               </motion.div>
               
-              <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-2xl">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4 drop-shadow-2xl">
                 Welcome to My Portfolio
               </h1>
-              <p className="text-xl text-gray-200 dark:text-gray-300 max-w-2xl mx-auto drop-shadow-lg">
+              <p className="text-base sm:text-lg md:text-xl text-gray-200 dark:text-gray-300 max-w-2xl mx-auto drop-shadow-lg px-4">
                 I'm a passionate developer creating innovative solutions with modern technologies. 
                 Explore my projects and experience through interactive micro-frontends.
               </p>
@@ -197,51 +197,51 @@ function App() {
 
           {/* Skills Section */}
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12 md:mb-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <motion.div 
-              className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-6 shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 border border-white/20 dark:border-gray-700/50"
+              className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 border border-white/20 dark:border-gray-700/50"
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <Code2 className="w-12 h-12 text-cyan-400 mx-auto mb-4 drop-shadow-lg" />
-              <h3 className="text-xl font-semibold mb-2 text-white">Frontend Development</h3>
-              <p className="text-gray-200 dark:text-gray-300">React, TypeScript, Vite, TailwindCSS</p>
+              <Code2 className="w-10 h-10 sm:w-12 sm:h-12 text-cyan-400 mx-auto mb-3 sm:mb-4 drop-shadow-lg" />
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white">Frontend Development</h3>
+              <p className="text-sm sm:text-base text-gray-200 dark:text-gray-300">React, TypeScript, Vite, TailwindCSS</p>
             </motion.div>
             
             <motion.div 
-              className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-6 shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 border border-white/20 dark:border-gray-700/50"
+              className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 border border-white/20 dark:border-gray-700/50"
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <Briefcase className="w-12 h-12 text-purple-400 mx-auto mb-4 drop-shadow-lg" />
-              <h3 className="text-xl font-semibold mb-2 text-white">Micro-Frontends</h3>
-              <p className="text-gray-200 dark:text-gray-300">Module Federation, Independent Deployments</p>
+              <Briefcase className="w-10 h-10 sm:w-12 sm:h-12 text-purple-400 mx-auto mb-3 sm:mb-4 drop-shadow-lg" />
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white">Micro-Frontends</h3>
+              <p className="text-sm sm:text-base text-gray-200 dark:text-gray-300">Module Federation, Independent Deployments</p>
             </motion.div>
             
             <motion.div 
-              className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-6 shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 border border-white/20 dark:border-gray-700/50"
+              className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-4 sm:p-6 shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 border border-white/20 dark:border-gray-700/50"
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <User className="w-12 h-12 text-pink-400 mx-auto mb-4 drop-shadow-lg" />
-              <h3 className="text-xl font-semibold mb-2 text-white">User Experience</h3>
-              <p className="text-gray-200 dark:text-gray-300">Responsive Design, Accessibility</p>
+              <User className="w-10 h-10 sm:w-12 sm:h-12 text-pink-400 mx-auto mb-3 sm:mb-4 drop-shadow-lg" />
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white">User Experience</h3>
+              <p className="text-sm sm:text-base text-gray-200 dark:text-gray-300">Responsive Design, Accessibility</p>
             </motion.div>
           </motion.div>
 
           {/* Projects Preview */}
           <motion.div 
-            className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-8 shadow-2xl mb-16 border border-white/20 dark:border-gray-700/50 transition-colors duration-300"
+            className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl mb-8 sm:mb-12 md:mb-16 border border-white/20 dark:border-gray-700/50 transition-colors duration-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className="text-3xl font-bold text-white mb-6 drop-shadow-lg">Featured Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6 drop-shadow-lg">Featured Projects</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
               {projects.map((project) => (
                 <motion.div 
                   key={project.id}
@@ -255,11 +255,11 @@ function App() {
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <h3 className="font-semibold text-lg mb-2 text-white">{project.title}</h3>
-                  <p className="text-gray-200 dark:text-gray-300 text-sm">{project.description}</p>
+                  <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 text-white">{project.title}</h3>
+                  <p className="text-gray-200 dark:text-gray-300 text-xs sm:text-sm">{project.description}</p>
                   {selectedProject === project.id && (
                     <motion.div 
-                      className="mt-2 text-cyan-300 dark:text-cyan-400 text-sm font-medium"
+                      className="mt-2 text-cyan-300 dark:text-cyan-400 text-xs sm:text-sm font-medium"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
@@ -275,20 +275,20 @@ function App() {
           {/* Project Preview Section */}
           {selectedProject && selectedProjectData && (
             <motion.div 
-              className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl shadow-2xl mb-16 overflow-hidden border border-white/20 dark:border-gray-700/50 transition-colors duration-300"
+              className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl shadow-2xl mb-8 sm:mb-12 md:mb-16 overflow-hidden border border-white/20 dark:border-gray-700/50 transition-colors duration-300"
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="bg-white/5 dark:bg-gray-700/30 px-6 py-4 border-b border-white/10 dark:border-gray-600/30 transition-colors duration-300">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-semibold text-white">
+              <div className="bg-white/5 dark:bg-gray-700/30 px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 dark:border-gray-600/30 transition-colors duration-300">
+                <div className="flex justify-between items-center gap-2">
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white truncate">
                     Preview: {selectedProjectData.title}
                   </h3>
                   <motion.button
                     onClick={() => setSelectedProject(null)}
-                    className="text-gray-300 dark:text-gray-400 hover:text-white dark:hover:text-gray-200 text-sm font-medium transition-colors"
+                    className="text-gray-300 dark:text-gray-400 hover:text-white dark:hover:text-gray-200 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -312,41 +312,41 @@ function App() {
 
           {/* Contact Section */}
           <motion.div 
-            className="bg-gradient-to-r from-purple-900/40 via-pink-900/40 to-indigo-900/40 backdrop-blur-lg text-white rounded-xl p-8 border border-white/20 shadow-2xl transition-colors duration-300"
+            className="bg-gradient-to-r from-purple-900/40 via-pink-900/40 to-indigo-900/40 backdrop-blur-lg text-white rounded-xl p-4 sm:p-6 md:p-8 border border-white/20 shadow-2xl transition-colors duration-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <h2 className="text-3xl font-bold mb-6 drop-shadow-lg">Let's Connect</h2>
-            <p className="text-gray-200 dark:text-gray-300 mb-6 drop-shadow">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 drop-shadow-lg">Let's Connect</h2>
+            <p className="text-sm sm:text-base text-gray-200 dark:text-gray-300 mb-4 sm:mb-6 drop-shadow">
               Interested in working together? Let's discuss your next project.
             </p>
-            <div className="flex justify-center space-x-6">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6">
               <motion.a 
                 href="#" 
-                className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg transition-colors border border-white/20"
+                className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg transition-colors border border-white/20 text-sm sm:text-base"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Mail className="w-5 h-5" />
+                <Mail className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                 <span>Email</span>
               </motion.a>
               <motion.a 
                 href="#" 
-                className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg transition-colors border border-white/20"
+                className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg transition-colors border border-white/20 text-sm sm:text-base"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Github className="w-5 h-5" />
+                <Github className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                 <span>GitHub</span>
               </motion.a>
               <motion.a 
                 href="#" 
-                className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg transition-colors border border-white/20"
+                className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg transition-colors border border-white/20 text-sm sm:text-base"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Linkedin className="w-5 h-5" />
+                <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                 <span>LinkedIn</span>
               </motion.a>
             </div>
