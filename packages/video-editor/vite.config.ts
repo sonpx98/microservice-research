@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import federation from "@originjs/vite-plugin-federation";
-import { resolve } from "path";
+import path, { resolve } from "path";
 
 export default defineConfig({
   plugins: [
@@ -14,12 +14,16 @@ export default defineConfig({
       exposes: {
         "./app": "./src/App.tsx",
       },
-      shared: ["react", "react-dom", "tailwindcss"],
+      shared: ["react", "react-dom", "tailwindcss", "@microservice-research/event-bus"],
     }),
   ],
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
+      "@microservice-research/design-tokens": path.resolve(
+        __dirname,
+        "../design-tokens/src"
+      ),
     },
   },
   build: {
@@ -41,7 +45,7 @@ export default defineConfig({
     port: 5005,
     cors: true,
     headers: {
-      "Cross-Origin-Embedder-Policy": "require-corp", 
+      "Cross-Origin-Embedder-Policy": "require-corp",
       "Cross-Origin-Opener-Policy": "same-origin",
       "Cross-Origin-Resource-Policy": "cross-origin",
     },
