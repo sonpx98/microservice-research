@@ -57,11 +57,12 @@ export default mergeConfig(baseConfig, {
           'video-editor': getRemoteUrl('video-editor', 5005, process.env.VITE_VIDEO_EDITOR_URL),
           'interface-generator': getRemoteUrl('interface-generator', 5007, process.env.VITE_INTERFACE_GENERATOR_URL),
         },
-        shared: ['react', 'react-dom', 'react-router-dom']
+        shared: ['react', 'react-dom', 'react-router-dom', '@microservice-research/event-bus']
     })],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        "@microservice-research/design-tokens": path.resolve(__dirname, "../design-tokens/src"),
       },
     },
 })

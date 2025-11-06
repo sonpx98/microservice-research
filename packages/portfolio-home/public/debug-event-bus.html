@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Bus Debug</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .error { color: #ff5555; }
+        .success { color: #50fa7b; }
+        .info { color: #8be9fd; }
+        pre {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Event Bus Debug Tool</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Check if Event Bus is Loaded</h2>
+        <button onclick="test1()">Run Test 1</button>
+        <pre id="test1-output">Click button to test...</pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Emit Test Notification</h2>
+        <button onclick="test2()">Emit Notification</button>
+        <pre id="test2-output">Click button to test...</pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Check Active Listeners</h2>
+        <button onclick="test3()">Check Listeners</button>
+        <pre id="test3-output">Click button to test...</pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Manual Event Subscribe/Emit</h2>
+        <button onclick="test4()">Run Test 4</button>
+        <pre id="test4-output">Click button to test...</pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Check Module Federation Shared</h2>
+        <button onclick="test5()">Check Shared Modules</button>
+        <pre id="test5-output">Click button to test...</pre>
+    </div>
+
+    <script type="module">
+        window.test1 = async function() {
+            const output = document.getElementById('test1-output');
+            output.innerHTML = 'Testing...\n';
+            
+            try {
+                // Try to import event bus
+                const eventBusModule = await import('@microservice-research/event-bus');
+                output.innerHTML += '<span class="success">✅ Event bus module loaded successfully</span>\n';
+                output.innerHTML += `Event bus object: ${JSON.stringify(Object.keys(eventBusModule), null, 2)}\n`;
+                
+                window.testEventBus = eventBusModule.eventBus;
+                output.innerHTML += '<span class="success">✅ Event bus saved to window.testEventBus</span>\n';
+            } catch (error) {
+                output.innerHTML += `<span class="error">❌ Error loading event bus: ${error.message}</span>\n`;
+                output.innerHTML += `Stack: ${error.stack}\n`;
+            }
+        };
+
+        window.test2 = function() {
+            const output = document.getElementById('test2-output');
+            output.innerHTML = 'Emitting notification...\n';
+            
+            if (!window.testEventBus) {
+                output.innerHTML += '<span class="error">❌ Event bus not loaded. Run Test 1 first.</span>\n';
+                return;
+            }
+            
+            try {
+                window.testEventBus.emit('notification:show', {
+                    message: '🧪 Test notification from debug tool',
+                    type: 'success',
+                    duration: 5000
+                });
+                output.innerHTML += '<span class="success">✅ Notification emitted successfully</span>\n';
+                output.innerHTML += '<span class="info">Check top-right corner for notification</span>\n';
+            } catch (error) {
+                output.innerHTML += `<span class="error">❌ Error emitting: ${error.message}</span>\n`;
+            }
+        };
+
+        window.test3 = function() {
+            const output = document.getElementById('test3-output');
+            output.innerHTML = 'Checking listeners...\n';
+            
+            if (!window.testEventBus) {
+                output.innerHTML += '<span class="error">❌ Event bus not loaded. Run Test 1 first.</span>\n';
+                return;
+            }
+            
+            try {
+                const listeners = window.testEventBus.getActiveListeners();
+                output.innerHTML += '<span class="success">✅ Active listeners:</span>\n';
+                output.innerHTML += JSON.stringify(listeners, null, 2) + '\n';
+                
+                const total = Object.values(listeners).reduce((sum, count) => sum + count, 0);
+                output.innerHTML += `\n<span class="info">Total listeners: ${total}</span>\n`;
+                
+                if (listeners['notification:show'] > 0) {
+                    output.innerHTML += '<span class="success">✅ notification:show has listeners</span>\n';
+                } else {
+                    output.innerHTML += '<span class="error">⚠️  No listeners for notification:show</span>\n';
+                }
+            } catch (error) {
+                output.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        };
+
+        window.test4 = function() {
+            const output = document.getElementById('test4-output');
+            output.innerHTML = 'Testing subscribe and emit...\n';
+            
+            if (!window.testEventBus) {
+                output.innerHTML += '<span class="error">❌ Event bus not loaded. Run Test 1 first.</span>\n';
+                return;
+            }
+            
+            try {
+                let received = false;
+                
+                // Subscribe
+                const unsubscribe = window.testEventBus.on('notification:show', (payload) => {
+                    received = true;
+                    output.innerHTML += '<span class="success">✅ Event received in test subscriber!</span>\n';
+                    output.innerHTML += `Payload: ${JSON.stringify(payload, null, 2)}\n`;
+                });
+                
+                output.innerHTML += '<span class="info">Subscribed to notification:show</span>\n';
+                
+                // Emit after a short delay
+                setTimeout(() => {
+                    window.testEventBus.emit('notification:show', {
+                        message: 'Test from manual subscriber',
+                        type: 'info',
+                        duration: 3000
+                    });
+                    
+                    output.innerHTML += '<span class="info">Event emitted</span>\n';
+                    
+                    setTimeout(() => {
+                        if (received) {
+                            output.innerHTML += '<span class="success">✅ Test PASSED - Event system working!</span>\n';
+                        } else {
+                            output.innerHTML += '<span class="error">❌ Test FAILED - Event not received</span>\n';
+                        }
+                        unsubscribe();
+                    }, 100);
+                }, 100);
+                
+            } catch (error) {
+                output.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        };
+
+        window.test5 = function() {
+            const output = document.getElementById('test5-output');
+            output.innerHTML = 'Checking Module Federation...\n';
+            
+            try {
+                if (typeof __FEDERATION__ !== 'undefined') {
+                    output.innerHTML += '<span class="success">✅ Module Federation detected</span>\n';
+                    output.innerHTML += `Federation object keys: ${Object.keys(__FEDERATION__)}\n`;
+                    
+                    if (__FEDERATION__.__SHARED__) {
+                        output.innerHTML += '\n<span class="info">Shared modules:</span>\n';
+                        const shared = __FEDERATION__.__SHARED__;
+                        for (const key in shared) {
+                            output.innerHTML += `  - ${key}\n`;
+                        }
+                        
+                        const eventBusShared = Object.keys(shared).find(k => 
+                            k.includes('event-bus') || k.includes('@microservice-research')
+                        );
+                        
+                        if (eventBusShared) {
+                            output.innerHTML += `\n<span class="success">✅ Event bus found in shared: ${eventBusShared}</span>\n`;
+                        } else {
+                            output.innerHTML += '\n<span class="error">⚠️  Event bus NOT in shared modules</span>\n';
+                        }
+                    }
+                } else {
+                    output.innerHTML += '<span class="error">⚠️  Module Federation not detected</span>\n';
+                }
+            } catch (error) {
+                output.innerHTML += `<span class="error">❌ Error: ${error.message}</span>\n`;
+            }
+        };
+
+        // Auto-run test 1 on load
+        setTimeout(() => {
+            console.log('🔍 Event Bus Debug Tool loaded');
+            console.log('Run tests by clicking buttons above');
+        }, 100);
+    </script>
+</body>
+</html>

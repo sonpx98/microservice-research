@@ -1,10 +1,12 @@
 import { User, Briefcase, Code2, Mail, Github, Linkedin } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import AnimatedTimeline from './components/MilestoneTimeline';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ThemeToggle from './components/ThemeToggle';
 import IncomingProject from './components/IncomingProject';
+import { EventNotificationListener } from './components/EventNotificationListener';
+import { eventBus } from '@microservice-research/event-bus';
 
 type ProjectType = 'tarot' | 'snake-game' | 'video-editor' | 'interface-generator' | null;
 
@@ -68,6 +70,12 @@ const InterfaceGenerator = createLazyComponent(
 function App() {
   const [selectedProject, setSelectedProject] = useState<ProjectType>(null);
 
+  // Enable debug mode for event bus
+  useEffect(() => {
+    eventBus.setDebugMode(true);
+    console.log('[Portfolio] Event bus debug mode enabled');
+  }, []);
+
   const projects = [
     {
       id: 'tarot' as ProjectType,
@@ -103,6 +111,9 @@ function App() {
 
   return (
     <ThemeProvider>
+      {/* Event Notification Listener - listens to all remote events */}
+      <EventNotificationListener />
+      
       {/* Cosmic Background Container */}
       <div className="min-h-screen relative overflow-hidden">
         {/* Cosmic Background */}
