@@ -1,6 +1,6 @@
 {
   "buildCommand": "echo \"Current dir: $(pwd)\" && pnpm build",
-  "installCommand": "cd ../.. && echo \"Current dir: $(pwd)\" && npm install -g pnpm@9.14.2 && pnpm install --filter tarot --frozen-lockfile",
+  "installCommand": "cd ../.. && npm install -g pnpm@9.14.2 && pnpm install --filter @microservice-research/event-bus && pnpm --filter @microservice-research/event-bus build && pnpm install --filter tarot --frozen-lockfile",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [
