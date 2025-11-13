@@ -10,7 +10,10 @@
     "start:dev": "pnpm lerna run start --scope=portfolio-home --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
     "start:remotes": "pnpm build:remotes && pnpm preview:remotes",
     "start:portfolio": "cd packages/portfolio-home && pnpm start",
+    "start:blog": "cd packages/blog-shell && pnpm dev",
+    "start:blog:multi-zone": "./scripts/start-multi-zone.sh",
     "build:remotes": "pnpm lerna run build --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
+    "build:blog": "cd packages/blog-shell && pnpm build",
     "preview:remotes": "pnpm lerna run preview --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
     "stop": "kill-port"
   },
