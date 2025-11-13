@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #64748b;
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #0f172a;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #3b82f6;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-50;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Shiki syntax highlighting - Light theme */
+  html:not(.dark) [data-rehype-pretty-code-figure] pre {
+    background-color: var(--shiki-light-bg) !important;
+  }
+
+  html:not(.dark) [data-rehype-pretty-code-figure] code span {
+    color: var(--shiki-light) !important;
+  }
+
+  /* Shiki syntax highlighting - Dark theme */
+  html.dark [data-rehype-pretty-code-figure] pre {
+    background-color: var(--shiki-dark-bg) !important;
+  }
+
+  html.dark [data-rehype-pretty-code-figure] code span {
+    color: var(--shiki-dark) !important;
+  }
+
+  /* Code block styling */
+  [data-rehype-pretty-code-figure] {
+    @apply my-6;
+  }
+
+  [data-rehype-pretty-code-figure] pre {
+    @apply rounded-lg p-4 overflow-x-auto text-sm;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  html.dark [data-rehype-pretty-code-figure] pre {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  [data-rehype-pretty-code-figure] pre > code {
+    display: grid;
+    counter-reset: line;
+  }
+
+  [data-rehype-pretty-code-figure] code [data-line] {
+    padding: 0 1rem;
+    border-left: 2px solid transparent;
+  }
+
+  [data-rehype-pretty-code-figure] code [data-highlighted-line] {
+    background: rgba(200, 200, 255, 0.1);
+    border-left-color: rgb(59, 130, 246);
+  }
+
+  /* Inline code (not in pre) */
+  :not(pre) > code {
+    @apply bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+}
+
+@layer utilities {
+  /* Custom utilities if needed */
+}

@@ -1,0 +1,21 @@
+{
+  "common": {
+    "readMore": "Read more",
+    "backToBlog": "Back to blog",
+    "publishedOn": "Published on",
+    "readingTime": "min read",
+    "tags": "Tags",
+    "allPosts": "All Posts",
+    "filterByTag": "Filter by tag",
+    "noPostsFound": "No posts found",
+    "searchPlaceholder": "Search posts...",
+    "comments": "Comments",
+    "loadingComments": "Loading comments..."
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Thoughts, tutorials, and updates",
+    "latestPosts": "Latest Posts",
+    "allTags": "All Tags"
+  }
+}

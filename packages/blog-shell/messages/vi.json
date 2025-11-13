@@ -1,0 +1,21 @@
+{
+  "common": {
+    "readMore": "Đọc thêm",
+    "backToBlog": "Quay lại blog",
+    "publishedOn": "Xuất bản vào",
+    "readingTime": "phút đọc",
+    "tags": "Thẻ",
+    "allPosts": "Tất cả bài viết",
+    "filterByTag": "Lọc theo thẻ",
+    "noPostsFound": "Không tìm thấy bài viết",
+    "searchPlaceholder": "Tìm kiếm bài viết...",
+    "comments": "Bình luận",
+    "loadingComments": "Đang tải bình luận..."
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Suy nghĩ, hướng dẫn và cập nhật",
+    "latestPosts": "Bài viết mới nhất",
+    "allTags": "Tất cả thẻ"
+  }
+}
