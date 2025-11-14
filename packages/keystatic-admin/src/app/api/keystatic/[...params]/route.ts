@@ -1,3 +1,6 @@
-import KeystaticApp from './keystatic';
+import { makeRouteHandler } from '@keystatic/next/route-handler';
+import keystaticConfig from '../../../../../keystatic.config';
 
-export default KeystaticApp;
+export const { GET, POST } = makeRouteHandler({
+  config: keystaticConfig,
+});
