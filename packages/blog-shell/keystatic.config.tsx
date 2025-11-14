@@ -1,5 +1,9 @@
 import { config, fields, collection } from '@keystatic/core';
 
+// ⚠️ NOTE: This config is used by Contentlayer for schema only
+// To edit posts, use: http://localhost:5007/keystatic (keystatic-admin zone)
+// This zone (blog-shell) only reads content, never edits
+
 export default config({
   storage: 
     process.env.NODE_ENV === 'production'
@@ -11,6 +15,7 @@ export default config({
           }
         }
       : { kind: 'local' },
+  
   collections: {
     postsEn: collection({
       label: 'Blog Posts (English)',

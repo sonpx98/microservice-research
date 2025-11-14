@@ -8,19 +8,9 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@microservice-research/design-tokens'],
   
-  // Multi-Zone: Rewrite /keystatic to keystatic-admin zone
-  async rewrites() {
-    return [
-      {
-        source: '/keystatic',
-        destination: `${process.env.KEYSTATIC_ADMIN_URL || 'http://localhost:5007'}/keystatic`,
-      },
-      {
-        source: '/keystatic/:path*',
-        destination: `${process.env.KEYSTATIC_ADMIN_URL || 'http://localhost:5007'}/keystatic/:path*`,
-      },
-    ];
-  },
+  // Multi-Zone: Keystatic admin is separate (port 5007)
+  // Edit posts at: http://localhost:5007/keystatic
+  // This zone (blog-shell) only displays blog posts
 };
 
 export default withNextIntl(withContentlayer(nextConfig));
