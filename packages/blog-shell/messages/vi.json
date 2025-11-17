@@ -10,7 +10,10 @@
     "noPostsFound": "Không tìm thấy bài viết",
     "searchPlaceholder": "Tìm kiếm bài viết...",
     "comments": "Bình luận",
-    "loadingComments": "Đang tải bình luận..."
+    "loadingComments": "Đang tải bình luận...",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "showingPosts": "Hiển thị {start}-{end} của {total} bài viết"
   },
   "blog": {
     "title": "Blog",

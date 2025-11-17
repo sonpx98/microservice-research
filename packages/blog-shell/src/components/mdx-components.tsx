@@ -1,6 +1,9 @@
-import { MDXComponents } from 'mdx/types';
 import Image from 'next/image';
 import Link from 'next/link';
+
+type MDXComponents = {
+  [key: string]: React.ComponentType<any>;
+};
 
 export const mdxComponents: MDXComponents = {
   h1: ({ children, ...props }) => (

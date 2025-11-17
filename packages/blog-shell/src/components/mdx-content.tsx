@@ -7,7 +7,7 @@ interface MarkdownContentProps {
 export function MarkdownContent({ html }: MarkdownContentProps) {
   return (
     <div 
-      className="prose prose-lg max-w-none dark:prose-invert"
+      className="prose prose-lg dark:prose-invert max-w-none prose-headings:scroll-mt-20 prose-pre:bg-transparent prose-pre:p-0"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

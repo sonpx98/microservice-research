@@ -8,14 +8,19 @@ import { ArrowLeft, Clock } from 'lucide-react';
 import { CommentSection } from '@/components/blog/comment-section';
 import { MarkdownContent } from '@/components/mdx-content';
 
-export async function generateStaticParams({ 
-  params 
-}: { 
-  params: Promise<{ locale: string }> 
-}) {
-  const { locale } = await params;
-  const posts = getAllPosts(locale);
-  return posts.map(post => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  // Get all locales and generate params for all posts
+  const locales = ['en', 'vi'];
+  const allParams: { locale: string; slug: string }[] = [];
+  
+  for (const locale of locales) {
+    const posts = getAllPosts(locale);
+    posts.forEach(post => {
+      allParams.push({ locale, slug: post.slug });
+    });
+  }
+  
+  return allParams;
 }
 
 export default async function PostPage({ 

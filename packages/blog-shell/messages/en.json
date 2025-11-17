@@ -10,7 +10,10 @@
     "noPostsFound": "No posts found",
     "searchPlaceholder": "Search posts...",
     "comments": "Comments",
-    "loadingComments": "Loading comments..."
+    "loadingComments": "Loading comments...",
+    "previous": "Previous",
+    "next": "Next",
+    "showingPosts": "Showing {start}-{end} of {total} posts"
   },
   "blog": {
     "title": "Blog",
