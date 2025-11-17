@@ -1,5 +1,6 @@
 import { config, fields, collection } from '@keystatic/core';
 
+// keystatic.config.tsx
 export default config({
   storage: 
     process.env.NODE_ENV === 'production'
@@ -15,15 +16,19 @@ export default config({
   collections: {
     postsEn: collection({
       label: 'Blog Posts (English)',
-      slugField: 'title',
-      path: '../../blog-shell/content/posts/en/*',
-      format: { contentField: 'content' },
+      slugField: 'slug',
+      path: './content/posts/en/*',
+      format: { 
+        contentField: 'content'  // This is KEY
+      },
+      entryLayout: 'content',  // Shows content editor prominently
       schema: {
-        title: fields.slug({ 
-          name: { 
-            label: 'Title',
-            validation: { isRequired: true }
-          } 
+        slug: fields.slug({ 
+          name: { label: 'Slug' }
+        }),
+        title: fields.text({ 
+          label: 'Title',
+          validation: { isRequired: true }
         }),
         date: fields.date({ 
           label: 'Published Date',
@@ -47,25 +52,37 @@ export default config({
         }),
         locale: fields.text({
           label: 'Locale',
-          defaultValue: 'en'
+          defaultValue: 'en',
+          validation: { isRequired: true }
         }),
-        content: fields.markdoc({
+        content: fields.markdoc({  // Must match contentField name
           label: 'Content',
-          extension: 'md'
+          extension: 'md',  // Use .md extension
+          options: {
+            image: {
+              directory: 'packages/blog-shell/public/images/posts',
+              publicPath: '/images/posts/'
+            }
+          }
         })
       }
     }),
+    
     postsVi: collection({
       label: 'Blog Posts (Tiếng Việt)',
-      slugField: 'title',
-      path: '../../blog-shell/content/posts/vi/*',
-      format: { contentField: 'content' },
+      slugField: 'slug',
+      path: './content/posts/vi/*',
+      format: { 
+        contentField: 'content'
+      },
+      entryLayout: 'content',
       schema: {
-        title: fields.slug({ 
-          name: { 
-            label: 'Title',
-            validation: { isRequired: true }
-          } 
+        slug: fields.slug({ 
+          name: { label: 'Slug' }
+        }),
+        title: fields.text({ 
+          label: 'Title',
+          validation: { isRequired: true }
         }),
         date: fields.date({ 
           label: 'Published Date',
@@ -89,11 +106,18 @@ export default config({
         }),
         locale: fields.text({
           label: 'Locale',
-          defaultValue: 'vi'
+          defaultValue: 'vi',
+          validation: { isRequired: true }
         }),
         content: fields.markdoc({
           label: 'Content',
-          extension: 'md'
+          extension: 'md',
+          options: {
+            image: {
+              directory: 'packages/blog-shell/public/images/posts',
+              publicPath: '/images/posts/'
+            }
+          }
         })
       }
     })
