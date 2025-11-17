@@ -15,7 +15,9 @@
     "build:remotes": "pnpm lerna run build --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
     "build:blog": "cd packages/blog-shell && pnpm build",
     "preview:remotes": "pnpm lerna run preview --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
-    "stop": "kill-port"
+    "stop": "kill-port",
+    "dev:cms": "pnpm --filter keystatic-admin dev",
+    "build:cms": "pnpm --filter keystatic-admin build"
   },
   "devDependencies": {
     "@originjs/vite-plugin-federation": "^1.4.1",
