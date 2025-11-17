@@ -2,6 +2,52 @@
 
 A modern, zero-cost personal blog built with Next.js 15, MDX, and Git-based CMS.
 
+---
+
+## 📚 Documentation Index
+
+### **🚀 Getting Started:**
+- **[QUICKSTART.md](./QUICKSTART.md)** - Quick start guide (if exists)
+- **[HOW_CONTENT_LOADING_WORKS.md](./HOW_CONTENT_LOADING_WORKS.md)** - How Contentlayer loads content at build time
+
+### **📈 Scalability Guides:**
+- **[CONTENT_STRATEGY_SUMMARY.md](./CONTENT_STRATEGY_SUMMARY.md)** - 📋 **START HERE!** Quick summary & recommendations
+- **[MARKDOWN_SCALABILITY_ANALYSIS.md](./MARKDOWN_SCALABILITY_ANALYSIS.md)** - Limitations when scaling > 1000 posts
+- **[CMS_COMPARISON.md](./CMS_COMPARISON.md)** - Compare 6 CMS solutions (Sanity, Contentful, etc.)
+- **[SCALABILITY_VISUAL_GUIDE.md](./SCALABILITY_VISUAL_GUIDE.md)** - Visual graphs & comparisons
+
+### **🎨 Features:**
+- **[PAGINATION_GUIDE.md](./PAGINATION_GUIDE.md)** - Client-side pagination implementation
+- **[KEYSTATIC-GUIDE.md](./KEYSTATIC-GUIDE.md)** - Keystatic CMS usage guide
+
+### **🚢 Deployment:**
+- **[MULTI_ZONE_SETUP.md](./MULTI_ZONE_SETUP.md)** - Multi-zone with keystatic-admin
+- **[PRODUCTION_CONTENT_WORKFLOW.md](./PRODUCTION_CONTENT_WORKFLOW.md)** - Production workflow
+
+---
+
+## ⚡ Current State
+
+### **✅ Optimal for < 500 posts**
+Your current Markdown + Contentlayer setup is **PERFECT** for:
+- Small to medium blogs (< 500 posts)
+- Infrequent updates (< 5 posts/week)
+- 1-2 authors
+- Zero budget
+- Git-based workflow
+
+### **⚠️ When to Consider Migration:**
+
+| Posts | Build Time | Bundle Size | Status | Action |
+|-------|------------|-------------|--------|--------|
+| < 200 | < 20s | < 500KB | 🟢 Optimal | Keep Markdown |
+| 200-500 | 20-60s | 500KB-1MB | 🟡 Warning | Plan migration |
+| > 500 | > 60s | > 1MB | 🔴 Critical | Migrate to CMS |
+
+**Read:** [CONTENT_STRATEGY_SUMMARY.md](./CONTENT_STRATEGY_SUMMARY.md) for migration roadmap.
+
+---
+
 ## Features
 
 - ✅ **Next.js 15** with App Router
