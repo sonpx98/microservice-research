@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd ../.. && pnpm build --filter=@microservice-research/keystatic-admin",
+  "buildCommand": "pnpm build",
+  "installCommand": "cd ../.. && echo \"Current dir: $(pwd)\" && pnpm install --filter keystatic-admin --frozen-lockfile",
   "devCommand": "pnpm dev",
-  "installCommand": "pnpm install",
   "framework": "nextjs",
   "outputDirectory": ".next"
 }
