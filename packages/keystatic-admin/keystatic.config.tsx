@@ -3,25 +3,24 @@ import { config, fields, collection } from '@keystatic/core';
 // keystatic.config.tsx
 export default config({
   storage: 
-    process.env.NODE_ENV === 'production'
-      ? {
+ {
           kind: 'github',
           repo: {
             owner: 'sonpx98',
             name: 'microservice-research'
           }
-        }
-      : { kind: 'local' },
+        },
+
   
   collections: {
     postsEn: collection({
       label: 'Blog Posts (English)',
       slugField: 'slug',
-      path: './content/posts/en/*',
+      path: 'packages/keystatic-admin/content/posts/en/*',
       format: { 
-        contentField: 'content'  // This is KEY
+        contentField: 'content'
       },
-      entryLayout: 'content',  // Shows content editor prominently
+      entryLayout: 'content',
       schema: {
         slug: fields.slug({ 
           name: { label: 'Slug' }
@@ -71,7 +70,7 @@ export default config({
     postsVi: collection({
       label: 'Blog Posts (Tiếng Việt)',
       slugField: 'slug',
-      path: './content/posts/vi/*',
+      path: 'packages/keystatic-admin/content/posts/vi/*',
       format: { 
         contentField: 'content'
       },

@@ -2,11 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   
-  // Base path only for production (when deployed as /keystatic route)
-  // In development, each zone has its own port, so basePath not needed
-  ...(process.env.NODE_ENV === 'production' && {
-    basePath: '/keystatic',
-  }),
+  // No basePath needed - Keystatic Admin has its own domain
+  // Root: https://keystatic-admin.vercel.app/
+  // Keystatic UI: https://keystatic-admin.vercel.app/keystatic
 };
 
 export default nextConfig;
