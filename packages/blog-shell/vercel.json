@@ -8,6 +8,10 @@
   
   "rewrites": [
     {
+      "source": "/api/keystatic/:path*",
+      "destination": "https://microservice-research-keystatic-adm.vercel.app/api/keystatic/:path*"
+    },
+    {
       "source": "/keystatic",
       "destination": "https://microservice-research-keystatic-adm.vercel.app/keystatic"
     },
