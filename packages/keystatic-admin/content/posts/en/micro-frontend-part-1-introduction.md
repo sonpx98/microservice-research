@@ -1,9 +1,11 @@
 ---
 slug: micro-frontend-part-1-introduction
-title: "Micro-Frontends Series: Part 1 - Introduction to Micro-Frontend Architecture"
+title: 'Micro-Frontends Series: Part 1 - Introduction to Micro-Frontend Architecture'
 date: 2025-11-17
 excerpt: >-
-  Discover what micro-frontends are, why they matter, and how they can transform your frontend architecture. Learn about the benefits, challenges, and real-world use cases with clear diagrams.
+  Discover what micro-frontends are, why they matter, and how they can transform
+  your frontend architecture. Learn about the benefits, challenges, and
+  real-world use cases with clear diagrams.
 tags:
   - micro-frontend
   - architecture
@@ -12,8 +14,7 @@ tags:
 published: true
 locale: en
 ---
-
-Welcome to this comprehensive series on building a production-ready micro-frontend architecture! In this first part, we'll explore what micro-frontends are, why they exist, and when you should (or shouldn't) use them.
+Welcome to this comprehensive series on building a production-ready micro-frontend architecture! In this first part, we'll explore what micro-frontends are, why they exist, and when you should (or shouldn't) use them. test test
 
 ## 🎯 What Are Micro-Frontends?
 
@@ -37,6 +38,7 @@ Micro-frontends are an architectural pattern where a frontend application is dec
 ```
 
 **Challenges:**
+
 - Large codebase becomes hard to maintain
 - Tight coupling between features
 - Long build times
@@ -65,6 +67,7 @@ Micro-frontends are an architectural pattern where a frontend application is dec
 ```
 
 **Benefits:**
+
 - ✅ Independent development and deployment
 - ✅ Technology flexibility
 - ✅ Team autonomy
@@ -74,20 +77,25 @@ Micro-frontends are an architectural pattern where a frontend application is dec
 ## 🏗️ Core Concepts
 
 ### 1. **Shell/Host Application**
+
 The container that orchestrates and displays micro-frontends. It handles:
+
 - Routing
 - Common layout (header, footer)
 - Loading remote applications
 - Error boundaries
 
 ### 2. **Remote Applications**
+
 Independent applications that can be:
+
 - Developed separately
 - Deployed independently
 - Versioned independently
 - Consumed by the shell
 
 ### 3. **Shared Dependencies**
+
 Common libraries (React, React DOM, etc.) shared at runtime to avoid duplication:
 
 ```typescript
@@ -118,6 +126,7 @@ Portfolio Home (Shell) - Port 5004
 ```
 
 Each application:
+
 - 🚀 Runs standalone during development
 - 📦 Exposes components via Module Federation
 - 🎨 Has isolated CSS (TailwindCSS with prefixes)
@@ -143,16 +152,13 @@ The shell loads each remote dynamically, showing live previews without full page
 1. **Large Teams**
    - Multiple teams working on different features
    - Need for team autonomy
-   
-2. **Complex Applications**
+1. **Complex Applications**
    - Large codebase (100k+ LOC)
    - Distinct feature domains (admin, shop, blog)
-
-3. **Gradual Migration**
+1. **Gradual Migration**
    - Modernizing legacy apps piece by piece
    - Different technology stacks
-
-4. **Independent Release Cycles**
+1. **Independent Release Cycles**
    - Features need different release schedules
    - A/B testing individual features
 
@@ -161,22 +167,20 @@ The shell loads each remote dynamically, showing live previews without full page
 1. **Small Projects**
    - Simple applications with 1-2 developers
    - Overhead > Benefits
-
-2. **Tight Feature Coupling**
+1. **Tight Feature Coupling**
    - Features constantly depend on each other
    - Shared state everywhere
-
-3. **Limited Resources**
+1. **Limited Resources**
    - Small team without DevOps expertise
    - No CI/CD infrastructure
-
-4. **Simple Requirements**
+1. **Simple Requirements**
    - Static sites or simple SPAs
    - No need for independent deployments
 
 ## 🚀 Key Benefits
 
 ### 1. **Team Autonomy**
+
 ```
 Team A: CV Generator
 ├── Own repo/folder
@@ -192,6 +196,7 @@ Team B: Tarot App
 ```
 
 ### 2. **Technology Freedom**
+
 - CV Generator: React 19 + TypeScript
 - Tarot App: React 19 + Framer Motion
 - Video Editor: React 19 + FFmpeg
@@ -200,7 +205,9 @@ Team B: Tarot App
 Each team chooses the best tools for their needs!
 
 ### 3. **Incremental Upgrades**
+
 Upgrade one micro-frontend at a time:
+
 ```bash
 # Upgrade CV Generator to React 19
 cd packages/cv-generator
@@ -210,6 +217,7 @@ pnpm add react@19 react-dom@19
 ```
 
 ### 4. **Faster Build Times**
+
 ```bash
 # Monolith: Build everything
 pnpm build  # 5-10 minutes
@@ -222,21 +230,25 @@ pnpm build  # 30 seconds
 ## ⚠️ Challenges to Consider
 
 ### 1. **Complexity**
+
 - More infrastructure needed (CI/CD per app)
 - Module Federation configuration
 - Versioning and compatibility
 
 ### 2. **Performance**
+
 - Multiple network requests for remotes
 - Proper code splitting required
 - Shared dependencies management
 
 ### 3. **Testing**
+
 - Integration testing across micro-frontends
 - End-to-end testing setup
 - Version compatibility testing
 
 ### 4. **CSS Isolation**
+
 - Global styles can conflict
 - Need proper namespacing (we'll solve this in Part 5!)
 
@@ -245,12 +257,12 @@ pnpm build  # 30 seconds
 By the end of this series, you'll have:
 
 1. ✅ A working micro-frontend architecture
-2. ✅ Module Federation with Vite
-3. ✅ Independent micro-apps (CV, Tarot, Video Editor)
-4. ✅ CSS isolation solution
-5. ✅ Shared design system
-6. ✅ Production-ready deployment
-7. ✅ Best practices and patterns
+1. ✅ Module Federation with Vite
+1. ✅ Independent micro-apps (CV, Tarot, Video Editor)
+1. ✅ CSS isolation solution
+1. ✅ Shared design system
+1. ✅ Production-ready deployment
+1. ✅ Best practices and patterns
 
 ### Project Structure Preview
 
@@ -273,6 +285,7 @@ microservice-research/
 ## 📚 Coming Up Next
 
 In **Part 2: Module Federation Deep Dive**, we'll explore:
+
 - How Module Federation works under the hood
 - Remote entry points and exposed modules
 - Shared dependencies and version resolution
@@ -282,20 +295,23 @@ In **Part 2: Module Federation Deep Dive**, we'll explore:
 ## 🤔 Questions to Consider
 
 Before moving to the next part, think about:
+
 1. Does your project have distinct feature domains?
-2. Would independent deployments benefit your team?
-3. Do you have the infrastructure for multiple deployments?
-4. Is your team size large enough to justify the overhead?
+1. Would independent deployments benefit your team?
+1. Do you have the infrastructure for multiple deployments?
+1. Is your team size large enough to justify the overhead?
 
 ## 📝 Summary
 
 Micro-frontends are a powerful architectural pattern that enables:
+
 - **Team autonomy** - Independent development
 - **Technology flexibility** - Choose the right tool
 - **Incremental upgrades** - Reduce risk
 - **Scalability** - Better for large teams
 
 But they come with:
+
 - **Added complexity** - More infrastructure
 - **Performance considerations** - Need optimization
 - **Integration challenges** - Requires good practices
