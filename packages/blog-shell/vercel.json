@@ -15,5 +15,17 @@
       "source": "/keystatic/:path*",
       "destination": "https://microservice-research-keystatic-adm.vercel.app/keystatic/:path*"
     }
+  ],
+  
+  "headers": [
+    {
+      "source": "/keystatic/:path*",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ]
+    }
   ]
 }
