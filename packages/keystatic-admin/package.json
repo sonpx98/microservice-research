@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 5007",
     "build": "next build",
+    "postbuild": "node scripts/trigger-blog-deploy.js",
     "start": "next start -p 5007",
     "lint": "next lint"
   },
