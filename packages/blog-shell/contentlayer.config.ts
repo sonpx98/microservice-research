@@ -65,7 +65,7 @@ export const Post = defineDocumentType(() => ({
 }));
 
 export default makeSource({
-  contentDirPath: '../keystatic-admin/content',
+  contentDirPath: './content',
   documentTypes: [Post],
   disableImportAliasWarning: true,
   markdown: {

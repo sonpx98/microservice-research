@@ -1,105 +1,116 @@
-import { config, fields, collection } from '@keystatic/core';
+import { config, fields, collection } from "@keystatic/core";
 
-// ⚠️ NOTE: This config is used by Contentlayer for schema only
-// To edit posts, use: http://localhost:5007/keystatic (keystatic-admin zone)
-// This zone (blog-shell) only reads content, never edits
-
+// keystatic.config.tsx - Integrated into blog-shell
 export default config({
-  storage: 
-    process.env.NODE_ENV === 'production'
-      ? {
-          kind: 'github',
-          repo: {
-            owner: 'sonpx98',                // Your GitHub username
-            name: 'microservice-research'    // Private repo - OK!
-          }
-        }
-      : { kind: 'local' },
-  
+  storage: {
+    kind: "github",
+    repo: {
+      owner: "sonpx98",
+      name: "microservice-research",
+    },
+  },
+
   collections: {
     postsEn: collection({
-      label: 'Blog Posts (English)',
-      slugField: 'title',
-      path: 'content/posts/en/*',
-      format: { contentField: 'content' },
+      label: "Blog Posts (English)",
+      slugField: "slug",
+      path: "packages/blog-shell/content/posts/en/*",
+      format: {
+        contentField: "content",
+      },
+      entryLayout: "content",
       schema: {
-        title: fields.slug({ 
-          name: { 
-            label: 'Title',
-            validation: { isRequired: true }
-          } 
+        slug: fields.slug({
+          name: { label: "Slug" },
         }),
-        date: fields.date({ 
-          label: 'Published Date',
-          defaultValue: { kind: 'today' }
+        title: fields.text({
+          label: "Title",
+          validation: { isRequired: true },
         }),
-        excerpt: fields.text({ 
-          label: 'Excerpt',
+        date: fields.date({
+          label: "Published Date",
+          defaultValue: { kind: "today" },
+        }),
+        excerpt: fields.text({
+          label: "Excerpt",
           multiline: true,
-          validation: { isRequired: true }
+          validation: { isRequired: true },
         }),
-        tags: fields.array(
-          fields.text({ label: 'Tag' }),
-          {
-            label: 'Tags',
-            itemLabel: props => props.value
-          }
-        ),
-        published: fields.checkbox({ 
-          label: 'Published',
-          defaultValue: false
+        tags: fields.array(fields.text({ label: "Tag" }), {
+          label: "Tags",
+          itemLabel: (props) => props.value,
+        }),
+        published: fields.checkbox({
+          label: "Published",
+          defaultValue: false,
         }),
         locale: fields.text({
-          label: 'Locale',
-          defaultValue: 'en'
+          label: "Locale",
+          defaultValue: "en",
+          validation: { isRequired: true },
         }),
         content: fields.markdoc({
-          label: 'Content',
-          extension: 'md'
-        })
-      }
+          label: "Content",
+          extension: "md",
+          options: {
+            image: {
+              directory: "packages/blog-shell/public/images/posts",
+              publicPath: "/images/posts/",
+            },
+          },
+        }),
+      },
     }),
+
     postsVi: collection({
-      label: 'Blog Posts (Tiếng Việt)',
-      slugField: 'title',
-      path: 'content/posts/vi/*',
-      format: { contentField: 'content' },
+      label: "Blog Posts (Tiếng Việt)",
+      slugField: "slug",
+      path: "packages/blog-shell/content/posts/vi/*",
+      format: {
+        contentField: "content",
+      },
+      entryLayout: "content",
       schema: {
-        title: fields.slug({ 
-          name: { 
-            label: 'Title',
-            validation: { isRequired: true }
-          } 
+        slug: fields.slug({
+          name: { label: "Slug" },
         }),
-        date: fields.date({ 
-          label: 'Published Date',
-          defaultValue: { kind: 'today' }
+        title: fields.text({
+          label: "Title",
+          validation: { isRequired: true },
         }),
-        excerpt: fields.text({ 
-          label: 'Excerpt',
+        date: fields.date({
+          label: "Published Date",
+          defaultValue: { kind: "today" },
+        }),
+        excerpt: fields.text({
+          label: "Excerpt",
           multiline: true,
-          validation: { isRequired: true }
+          validation: { isRequired: true },
         }),
-        tags: fields.array(
-          fields.text({ label: 'Tag' }),
-          {
-            label: 'Tags',
-            itemLabel: props => props.value
-          }
-        ),
-        published: fields.checkbox({ 
-          label: 'Published',
-          defaultValue: false
+        tags: fields.array(fields.text({ label: "Tag" }), {
+          label: "Tags",
+          itemLabel: (props) => props.value,
+        }),
+        published: fields.checkbox({
+          label: "Published",
+          defaultValue: false,
         }),
         locale: fields.text({
-          label: 'Locale',
-          defaultValue: 'vi'
+          label: "Locale",
+          defaultValue: "vi",
+          validation: { isRequired: true },
         }),
         content: fields.markdoc({
-          label: 'Content',
-          extension: 'md'
-        })
-      }
-    })
-  }
+          label: "Content",
+          extension: "md",
+          options: {
+            image: {
+              directory: "packages/blog-shell/public/images/posts",
+              publicPath: "/images/posts/",
+            },
+          },
+        }),
+      },
+    }),
+  },
 });
