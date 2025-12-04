@@ -6,10 +6,8 @@ import { useTranslations } from 'next-intl';
 import { MessageSquare, Loader2 } from 'lucide-react';
 
 // Lazy load Giscus component - only when user scrolls to comments
-// MOCK VERSION: For testing lazy loading without GitHub setup
-// To use real Giscus: Change './giscus-widget-mock' to './giscus-widget'
 const GiscusWidget = dynamic(
-  () => import('./giscus-widget-mock').then(mod => ({ default: mod.GiscusWidget })),
+  () => import('./giscus-widget').then(mod => ({ default: mod.GiscusWidget })),
   {
     ssr: false, // Disable SSR for Giscus (it's a client widget anyway)
     loading: () => <CommentLoadingSkeleton />
