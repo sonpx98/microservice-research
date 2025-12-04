@@ -37,12 +37,12 @@ export default async function LocaleLayout({
           <div className="bg-blue-600 text-white py-2 px-4 text-center text-sm">
             📝 <strong>Edit posts at:</strong>{' '}
             <a 
-              href="http://localhost:5007/keystatic" 
+              href="http://localhost:5006/keystatic" 
               target="_blank"
               rel="noopener noreferrer"
               className="underline font-semibold hover:text-blue-200"
             >
-              http://localhost:5007/keystatic
+              http://localhost:5006/keystatic
             </a>
             {' '}(Keystatic Admin)
           </div>
