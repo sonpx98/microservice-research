@@ -4,32 +4,5 @@
   "installCommand": "cd ../.. && echo \"Current dir: $(pwd)\" && pnpm install --filter blog-shell --frozen-lockfile",
   "devCommand": "pnpm dev",
   "framework": "nextjs",
-  "outputDirectory": ".next",
-  
-  "rewrites": [
-    {
-      "source": "/api/keystatic/:path*",
-      "destination": "https://microservice-research-keystatic-adm.vercel.app/api/keystatic/:path*"
-    },
-    {
-      "source": "/keystatic",
-      "destination": "https://microservice-research-keystatic-adm.vercel.app/keystatic"
-    },
-    {
-      "source": "/keystatic/:path*",
-      "destination": "https://microservice-research-keystatic-adm.vercel.app/keystatic/:path*"
-    }
-  ],
-  
-  "headers": [
-    {
-      "source": "/keystatic/:path*",
-      "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        }
-      ]
-    }
-  ]
+  "outputDirectory": ".next"
 }
