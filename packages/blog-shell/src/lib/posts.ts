@@ -10,6 +10,16 @@ export function getPostBySlug(slug: string, locale: string) {
   return allPosts.find(post => post.slug === slug && post.locale === locale);
 }
 
+export function getPostBySlugAnyLocale(slug: string) {
+  return allPosts.find(post => post.slug === slug && post.published);
+}
+
+export function getAvailableLocalesForPost(slug: string) {
+  return allPosts
+    .filter(post => post.slug === slug && post.published)
+    .map(post => post.locale);
+}
+
 export function getAllTags(locale: string) {
   const posts = getAllPosts(locale);
   const tags = new Set<string>();

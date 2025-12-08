@@ -8,17 +8,85 @@
     "allPosts": "All Posts",
     "filterByTag": "Filter by tag",
     "noPostsFound": "No posts found",
+    "search": "Search",
     "searchPlaceholder": "Search posts...",
+    "searchHint": "Type at least 2 characters to search",
+    "noResults": "No results found",
+    "toNavigate": "to navigate",
+    "toSelect": "to select",
     "comments": "Comments",
     "loadingComments": "Loading comments...",
     "previous": "Previous",
     "next": "Next",
-    "showingPosts": "Showing {start}-{end} of {total} posts"
+    "showingPosts": "Showing {start}-{end} of {total} posts",
+    "translationUnavailable": "Translation Not Available",
+    "translationUnavailableDescription": "This post is not yet available in your selected language. Please choose from the available languages below.",
+    "availableIn": "Available in"
   },
   "blog": {
     "title": "Blog",
-    "description": "Thoughts, tutorials, and updates",
+    "description": "Deep dives into web development, architecture patterns, and lessons learned from building real-world applications.",
+    "taglines": [
+      "Deep dives into web development and architecture patterns",
+      "Lessons learned from building real-world applications",
+      "Tutorials, tips, and best practices for modern development",
+      "From micro-frontends to security — everything in between"
+    ],
+    "badge": "Technical Blog",
+    "articlesCount": "articles",
+    "topicsCount": "topics",
     "latestPosts": "Latest Posts",
     "allTags": "All Tags"
+  },
+  "home": {
+    "greeting": "Hi, I'm",
+    "name": "Son Pham",
+    "role": "Full-Stack Developer",
+    "taglines": [
+      "Building modern web experiences with React, TypeScript, and cutting-edge technologies",
+      "Crafting scalable micro-frontend architectures for enterprise applications",
+      "Exploring the intersection of security and user experience",
+      "Turning complex problems into elegant, maintainable solutions",
+      "Passionate about clean code, performance, and developer experience"
+    ],
+    "viewBlog": "Read My Blog",
+    "viewPlayground": "Explore Playground",
+    "blogSection": {
+      "title": "Blog",
+      "description": "Deep dives into web development, architecture patterns, and lessons learned from building real-world applications.",
+      "cta": "Browse Articles"
+    },
+    "playgroundSection": {
+      "title": "Playground",
+      "description": "Interactive experiments and learning labs. Currently featuring security challenges where you can think like a hacker.",
+      "cta": "Start Exploring",
+      "comingSoon": "Coming Soon"
+    },
+    "featuredTopics": {
+      "title": "What I Write About",
+      "topics": {
+        "microfrontend": "Micro-Frontends",
+        "security": "Web Security",
+        "react": "React & TypeScript",
+        "architecture": "System Architecture"
+      }
+    }
+  },
+  "playground": {
+    "title": "Playground",
+    "description": "Interactive labs to learn by doing",
+    "badge": "Interactive Learning Labs",
+    "taglines": [
+      "Interactive labs to learn by doing",
+      "Think like a hacker, defend like a pro",
+      "Hands-on security challenges and experiments",
+      "Break things to learn how to build them better"
+    ],
+    "security": {
+      "title": "Security Lab",
+      "description": "Think like a hacker. Learn to defend by attacking.",
+      "challenges": "challenges",
+      "comingSoon": "Coming Soon"
+    }
   }
 }
