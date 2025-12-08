@@ -8,17 +8,85 @@
     "allPosts": "Tất cả bài viết",
     "filterByTag": "Lọc theo thẻ",
     "noPostsFound": "Không tìm thấy bài viết",
+    "search": "Tìm kiếm",
     "searchPlaceholder": "Tìm kiếm bài viết...",
+    "searchHint": "Nhập ít nhất 2 ký tự để tìm kiếm",
+    "noResults": "Không tìm thấy kết quả",
+    "toNavigate": "để di chuyển",
+    "toSelect": "để chọn",
     "comments": "Bình luận",
     "loadingComments": "Đang tải bình luận...",
     "previous": "Trước",
     "next": "Tiếp",
-    "showingPosts": "Hiển thị {start}-{end} của {total} bài viết"
+    "showingPosts": "Hiển thị {start}-{end} của {total} bài viết",
+    "translationUnavailable": "Bản dịch chưa có sẵn",
+    "translationUnavailableDescription": "Bài viết này chưa có phiên bản bằng ngôn ngữ bạn chọn. Vui lòng chọn từ các ngôn ngữ có sẵn bên dưới.",
+    "availableIn": "Có sẵn bằng"
   },
   "blog": {
     "title": "Blog",
-    "description": "Suy nghĩ, hướng dẫn và cập nhật",
+    "description": "Đi sâu vào phát triển web, các mẫu kiến trúc và bài học từ việc xây dựng ứng dụng thực tế.",
+    "taglines": [
+      "Đi sâu vào phát triển web và các mẫu kiến trúc",
+      "Bài học từ việc xây dựng ứng dụng thực tế",
+      "Hướng dẫn, mẹo và best practices cho phát triển hiện đại",
+      "Từ micro-frontends đến bảo mật — tất cả đều có ở đây"
+    ],
+    "badge": "Blog Kỹ Thuật",
+    "articlesCount": "bài viết",
+    "topicsCount": "chủ đề",
     "latestPosts": "Bài viết mới nhất",
     "allTags": "Tất cả thẻ"
+  },
+  "home": {
+    "greeting": "Xin chào, tôi là",
+    "name": "Son Pham",
+    "role": "Full-Stack Developer",
+    "taglines": [
+      "Xây dựng trải nghiệm web hiện đại với React, TypeScript và các công nghệ tiên tiến",
+      "Kiến trúc micro-frontend có khả năng mở rộng cho ứng dụng doanh nghiệp",
+      "Khám phá giao điểm giữa bảo mật và trải nghiệm người dùng",
+      "Biến các vấn đề phức tạp thành giải pháp thanh lịch, dễ bảo trì",
+      "Đam mê code sạch, hiệu năng và trải nghiệm developer"
+    ],
+    "viewBlog": "Đọc Blog",
+    "viewPlayground": "Khám Phá Playground",
+    "blogSection": {
+      "title": "Blog",
+      "description": "Đi sâu vào phát triển web, các mẫu kiến trúc và bài học từ việc xây dựng ứng dụng thực tế.",
+      "cta": "Xem Bài Viết"
+    },
+    "playgroundSection": {
+      "title": "Playground",
+      "description": "Thí nghiệm tương tác và phòng lab học tập. Hiện đang có thử thách bảo mật nơi bạn có thể suy nghĩ như một hacker.",
+      "cta": "Bắt Đầu Khám Phá",
+      "comingSoon": "Sắp Ra Mắt"
+    },
+    "featuredTopics": {
+      "title": "Chủ Đề Tôi Viết",
+      "topics": {
+        "microfrontend": "Micro-Frontends",
+        "security": "Bảo Mật Web",
+        "react": "React & TypeScript",
+        "architecture": "Kiến Trúc Hệ Thống"
+      }
+    }
+  },
+  "playground": {
+    "title": "Playground",
+    "description": "Phòng lab tương tác để học qua thực hành",
+    "badge": "Phòng Lab Tương Tác",
+    "taglines": [
+      "Phòng lab tương tác để học qua thực hành",
+      "Suy nghĩ như hacker, phòng thủ như chuyên gia",
+      "Thử thách bảo mật và thí nghiệm thực hành",
+      "Phá vỡ mọi thứ để học cách xây dựng tốt hơn"
+    ],
+    "security": {
+      "title": "Phòng Lab Bảo Mật",
+      "description": "Suy nghĩ như một hacker. Học cách phòng thủ bằng cách tấn công.",
+      "challenges": "thử thách",
+      "comingSoon": "Sắp Ra Mắt"
+    }
   }
 }
