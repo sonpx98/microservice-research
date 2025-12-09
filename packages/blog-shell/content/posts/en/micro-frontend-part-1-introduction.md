@@ -14,7 +14,7 @@ tags:
 published: true
 locale: en
 ---
-Welcome to this comprehensive series on building a production-ready micro-frontend architecture! In this first part, we'll explore what micro-frontends are, why they exist, and when you should (or shouldn't) use them.
+Welcome to this comprehensive series on building a production-ready micro-frontend architecture! In this first part, we'll explore what micro-frontends are, why they exist, and when you should (or shouldn't) use them. test
 
 ## 🎯 What Are Micro-Frontends?
 
