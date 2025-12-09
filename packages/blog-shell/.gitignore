@@ -1,6 +1,8 @@
 node_modules
 .next
 .contentlayer
+# But keep the cache file
+!.contentlayer/.file-cache.json
 dist
 *.log
 .env*.local
