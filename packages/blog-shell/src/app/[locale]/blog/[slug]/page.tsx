@@ -25,7 +25,9 @@ export async function generateStaticParams() {
   for (const locale of locales) {
     const posts = getAllPosts(locale);
     posts.forEach(post => {
-      allParams.push({ locale, slug: post.slug });
+      if (post.slug) {
+        allParams.push({ locale, slug: post.slug });
+      }
     });
   }
   

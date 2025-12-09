@@ -17,8 +17,8 @@ function getFileHash(filePath: string): string {
   }
 }
 
-// Save cache từ git
-const CACHE_FILE = '.contentlayer/.file-cache.json';
+// Cache file path - lưu trên git để Vercel có thể dùng
+const CACHE_FILE = path.join(process.cwd(), '.contentlayer-cache.json');
 let fileCache: Record<string, { hash: string }> = {};
 
 try {
@@ -62,6 +62,10 @@ export const Post = defineDocumentType(() => ({
       required: true,
     },
     coverImage: {
+      type: 'string',
+      required: false,
+    },
+    slug: {
       type: 'string',
       required: false,
     },
@@ -155,12 +159,7 @@ export default makeSource({
       };
     });
     
-    // Create directory nếu chưa tồn tại
-    const cacheDir = path.dirname(CACHE_FILE);
-    if (!fs.existsSync(cacheDir)) {
-      fs.mkdirSync(cacheDir, { recursive: true });
-    }
-    
+    // Write cache file to project root (not in .contentlayer which is git-ignored)
     fs.writeFileSync(CACHE_FILE, JSON.stringify(newCache, null, 2));
     
     console.log('📊 Cache Stats:');
