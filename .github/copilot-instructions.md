@@ -192,3 +192,34 @@ function App() {
 **Why Prefix?**: Prevents CSS conflicts when multiple micro-frontends load together in Module Federation. Developers write clean code like `className="flex"`, Babel transforms to `className="ve:flex"` at build time.
 
 **Documentation**: See `packages/shared/babel-plugins/README.md` for full guide.
+
+## Commit Convention
+
+All commits should follow this format:
+
+```
+<action>(<package>): <message>
+```
+
+**Components:**
+- **action**: `fix`, `feat`, `refactor`, `chore`, `docs`, `perf`, `test`, `ci`
+- **package**: One of:
+  - `blog-shell` - Blog application with contentlayer
+  - `portfolio-home` - Main portfolio shell
+  - `design-tokens` - Shared design tokens
+  - `tarot` - Tarot application
+  - `cv-generator` - CV builder
+  - `video-editor` - Video editor
+  - `keystatic-admin` - Keystatic CMS admin
+  - `interface-generator` - Interface generator
+  - `event-bus` - Shared event bus
+  - `shared` - Shared utilities/configs
+  - `root` - Root workspace config
+- **message**: Clear, concise description of changes
+
+**Examples:**
+- `fix(blog-shell): resolve urql React 19 compatibility issue`
+- `feat(tarot): add tarot reading animations`
+- `refactor(blog-shell): remove cache file from git tracking`
+- `chore(root): update dependencies`
+- `docs(design-tokens): add color palette usage guide`
