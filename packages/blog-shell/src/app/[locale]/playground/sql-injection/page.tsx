@@ -685,7 +685,7 @@ export default function SQLInjectionPage() {
                   🎉 SQL Injection Successful!
                 </h3>
                 <p className="text-green-700 dark:text-green-300 text-sm mb-4">
-                  You've successfully exploited the SQL vulnerability in Level {currentLevel}!
+                  You&apos;ve successfully exploited the SQL vulnerability in Level {currentLevel}!
                 </p>
                 
                 {currentLevel < levels.length ? (
@@ -699,7 +699,7 @@ export default function SQLInjectionPage() {
                 ) : (
                   <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30">
                     <p className="text-green-800 dark:text-green-200 font-medium">
-                      🏆 Congratulations! You've completed all SQL Injection challenges!
+                      🏆 Congratulations! You&apos;ve completed all SQL Injection challenges!
                     </p>
                   </div>
                 )}
@@ -777,7 +777,7 @@ export default function SQLInjectionPage() {
                 SQL Query Preview:
               </p>
               <code className="text-sm text-green-400 font-mono break-all">
-                SELECT * FROM users WHERE username='{username || '...'}' AND password='{password || '...'}'
+                SELECT * FROM users WHERE username={`'${username || "..."}'`} AND password={`'${password || "..."}'`}
               </code>
             </div>
           </div>

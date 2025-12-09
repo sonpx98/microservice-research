@@ -719,7 +719,7 @@ export default function XSSChallengePage() {
                   🎉 XSS Attack Successful!
                 </h3>
                 <p className="text-green-700 dark:text-green-300 text-sm mb-4">
-                  You've successfully exploited the XSS vulnerability in Level {currentLevel}!
+                  You&apos;ve successfully exploited the XSS vulnerability in Level {currentLevel}!
                 </p>
                 
                 {currentLevel < levels.length ? (
@@ -733,7 +733,7 @@ export default function XSSChallengePage() {
                 ) : (
                   <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30">
                     <p className="text-green-800 dark:text-green-200 font-medium">
-                      🏆 Congratulations! You've completed all XSS challenges!
+                      🏆 Congratulations! You&apos;ve completed all XSS challenges!
                     </p>
                   </div>
                 )}
@@ -757,7 +757,7 @@ export default function XSSChallengePage() {
           {/* Blog Content */}
           <div className="p-6 border-b border-gray-200 dark:border-gray-800">
             <p className="text-gray-700 dark:text-gray-300">
-              Welcome to my blog about web security! Today we'll discuss how to protect yourself 
+              Welcome to my blog about web security! Today we&apos;ll discuss how to protect yourself 
               from various online threats. Remember to always use strong passwords and enable 
               two-factor authentication on all your accounts...
             </p>
