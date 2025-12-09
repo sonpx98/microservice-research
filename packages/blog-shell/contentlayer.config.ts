@@ -17,9 +17,9 @@ function getFileHash(filePath: string): string {
   }
 }
 
-// Load cache từ git
+// Save cache từ git
 const CACHE_FILE = '.contentlayer/.file-cache.json';
-let fileCache: Record<string, { hash: string; generatedAt: string }> = {};
+let fileCache: Record<string, { hash: string }> = {};
 
 try {
   if (fs.existsSync(CACHE_FILE)) {
@@ -113,7 +113,7 @@ export default makeSource({
   },
   onSuccess: async () => {
     // Save cache file cho lần build tiếp theo
-    const newCache: Record<string, { hash: string; generatedAt: string }> = {};
+    const newCache: Record<string, { hash: string }> = {};
     
     let cachedFiles = 0;
     let parsedFiles = 0;
@@ -152,7 +152,6 @@ export default makeSource({
       
       newCache[relativePath] = {
         hash: currentHash,
-        generatedAt: new Date().toISOString(),
       };
     });
     
