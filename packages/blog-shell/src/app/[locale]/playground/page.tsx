@@ -46,7 +46,7 @@ export default async function PlaygroundPage({
       difficulty: 'Medium',
       difficultyColor: 'bg-yellow-500',
       icon: AlertTriangle,
-      status: 'coming-soon',
+      status: 'active',
     },
     {
       id: 'jwt-tampering',
@@ -55,7 +55,7 @@ export default async function PlaygroundPage({
       difficulty: 'Medium',
       difficultyColor: 'bg-yellow-500',
       icon: Lock,
-      status: 'coming-soon',
+      status: 'active',
     },
   ];
 

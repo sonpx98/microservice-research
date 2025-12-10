@@ -33,7 +33,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>
+      <body className="h-dvh overflow-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -41,8 +41,10 @@ export default async function LocaleLayout({
           disableTransitionOnChange
         >
           <NextIntlClientProvider messages={messages}>
-            <Header locale={locale} />
-            <main>{children}</main>
+            <div className="h-full flex flex-col">
+              <Header locale={locale} />
+              <main className="flex-1 min-h-0 overflow-auto">{children}</main>
+            </div>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
