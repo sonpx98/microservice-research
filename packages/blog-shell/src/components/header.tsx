@@ -49,6 +49,16 @@ export function Header({ locale }: HeaderProps) {
               >
                 Playground
               </Link>
+              <Link 
+                href={`/${locale}/knowledge-graph`}
+                className={`text-sm font-medium transition-colors ${
+                  isActive('/knowledge-graph') 
+                    ? 'text-blue-600 dark:text-blue-400' 
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                Knowledge Graph
+              </Link>
             </nav>
           </div>
 

@@ -94,9 +94,55 @@ export const Post = defineDocumentType(() => ({
   },
 }));
 
+export const KnowledgeGraphNode = defineDocumentType(() => ({
+  name: 'KnowledgeGraphNode',
+  filePathPattern: `knowledge-graph/**/*.md`,
+  contentType: 'markdown',
+  fields: {
+    title: {
+      type: 'string',
+      required: true,
+    },
+    category: {
+      type: 'string',
+      required: true,
+    },
+    tags: {
+      type: 'list',
+      of: { type: 'string' },
+      default: [],
+    },
+    relationships: {
+      type: 'json',
+      default: [],
+    },
+    locale: {
+      type: 'string',
+      required: true,
+    },
+  },
+  computedFields: {
+    id: {
+      type: 'string',
+      resolve: (doc) => {
+        const parts = doc._raw.flattenedPath.split('/');
+        return parts[parts.length - 1];
+      },
+    },
+    url: {
+      type: 'string',
+      resolve: (doc) => {
+        const parts = doc._raw.flattenedPath.split('/');
+        const id = parts[parts.length - 1];
+        return `/knowledge-graph/${id}`;
+      },
+    },
+  },
+}));
+
 export default makeSource({
   contentDirPath: './content',
-  documentTypes: [Post],
+  documentTypes: [Post, KnowledgeGraphNode],
   disableImportAliasWarning: true,
   markdown: {
     remarkPlugins: [remarkGfm],
@@ -116,6 +162,20 @@ export default makeSource({
     ],
   },
   onSuccess: async () => {
+    // Create required directories for contentlayer output
+    const generatedDir = path.join(process.cwd(), '.contentlayer', 'generated');
+    const dirs = [
+      path.join(generatedDir, 'technical'),
+      path.join(generatedDir, 'issue'),
+      path.join(generatedDir, 'slang'),
+    ];
+    
+    dirs.forEach(dir => {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
+
     // Save cache file cho lần build tiếp theo
     const newCache: Record<string, { hash: string }> = {};
     
