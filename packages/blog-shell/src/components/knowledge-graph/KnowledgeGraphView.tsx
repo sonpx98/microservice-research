@@ -107,12 +107,17 @@ export function KnowledgeGraphView({ nodes }: KnowledgeGraphViewProps) {
 
   const handleNodeClick = useCallback(
     (event: React.MouseEvent, node: Node) => {
-      setSelectedNodeId(node.id);
+      // Toggle selection: click same node again to deselect
+      setSelectedNodeId(prev => prev === node.id ? null : node.id);
     },
     []
   );
 
   const selectedNode = selectedNodeId ? nodesMap.get(selectedNodeId) : null;
+
+  const handleCloseDetail = useCallback(() => {
+    setSelectedNodeId(null);
+  }, []);
 
   return (
     <div className="h-full bg-gray-50 dark:bg-gray-900">
@@ -139,7 +144,7 @@ export function KnowledgeGraphView({ nodes }: KnowledgeGraphViewProps) {
           {/* Detail panel */}
           <Panel defaultSize={30} minSize={20} maxSize={60}>
             <div className="h-full bg-white dark:bg-gray-800 shadow-lg">
-              <NodeDetail node={selectedNode} />
+              <NodeDetail node={selectedNode} onClose={handleCloseDetail} />
             </div>
           </Panel>
         </PanelGroup>

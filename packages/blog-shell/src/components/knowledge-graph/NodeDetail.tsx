@@ -1,4 +1,5 @@
 import React from 'react';
+import { X } from 'lucide-react';
 import { KnowledgeGraphNode } from 'contentlayer/generated';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -6,6 +7,7 @@ import type { Relationship } from '@/lib/knowledge-graph';
 
 interface NodeDetailProps {
   node: KnowledgeGraphNode;
+  onClose?: () => void;
 }
 
 const typeColors = {
@@ -14,18 +16,32 @@ const typeColors = {
   slang: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
 };
 
-export function NodeDetail({ node }: NodeDetailProps) {
+export function NodeDetail({ node, onClose }: NodeDetailProps) {
   const nodeType = (node as any).category?.toLowerCase() || 'technical';
   const relationships = ((node as any).relationships as Relationship[] | undefined) || [];
 
   return (
     <div className="flex flex-col h-full">
+      {/* Header with close button */}
+      <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+          {node.title}
+        </h2>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            title="Close panel (Esc or click again)"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
+      </div>
+
+      {/* Content */}
       <div className="flex-1 overflow-y-auto p-6">
         <div className="space-y-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {node.title}
-            </h2>
             <Badge className={typeColors[nodeType as keyof typeof typeColors] || typeColors.technical}>
               {nodeType}
             </Badge>
