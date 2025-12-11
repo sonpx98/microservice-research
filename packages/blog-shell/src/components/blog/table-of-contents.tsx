@@ -96,11 +96,17 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
 
   const scrollToHeading = (id: string) => {
     const element = document.getElementById(id);
+    
     if (element) {
-      const yOffset = -80;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-      setIsOpen(false);
+      element.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',
+      });
+      
+      // Close mobile modal
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 300);
     }
   };
 
@@ -132,6 +138,7 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
           transition-all duration-300 ease-in-out
           ${isOpen ? 'bottom-0 left-0 right-0 max-h-[60vh]' : '-bottom-full'}
         `}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
@@ -153,7 +160,12 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
                 style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
               >
                 <button
-                  onClick={() => scrollToHeading(heading.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('heading id', heading)
+                    scrollToHeading(heading.id);
+                  }}
                   className={`
                     text-left w-full py-1.5 px-2 rounded text-sm transition-colors
                     ${activeId === heading.id
@@ -206,7 +218,11 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
                     style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
                   >
                     <button
-                      onClick={() => scrollToHeading(heading.id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        scrollToHeading(heading.id);
+                      }}
                       className={`
                         text-left w-full py-1.5 px-2 rounded text-sm transition-colors truncate
                         ${activeId === heading.id
