@@ -11,19 +11,9 @@ export function useKnowledgeGraph(nodes: KnowledgeGraphNode[]) {
     // Convert to ReactFlow format
     const rfNodes: Node[] = graph.nodes.map((node) => ({
       id: node.id,
+      type: 'star',
       data: { label: node.label, type: node.type },
       position: { x: 0, y: 0 }, // Layout will be handled by dagre
-      style: {
-        background: getNodeColor(node.type),
-        color: 'white',
-        border: '2px solid #1f2937',
-        borderRadius: '8px',
-        padding: '10px',
-        fontSize: '14px',
-        fontWeight: '500',
-        minWidth: '120px',
-        textAlign: 'center',
-      },
     }));
 
     const rfEdges: Edge[] = graph.edges.map((edge) => ({
@@ -32,6 +22,15 @@ export function useKnowledgeGraph(nodes: KnowledgeGraphNode[]) {
       target: edge.target,
       label: edge.type,
       animated: true,
+      labelStyle: { 
+        opacity: 0,
+        transition: 'opacity 0.2s ease-in-out',
+      },
+      labelBgStyle: { 
+        opacity: 0,
+        transition: 'opacity 0.2s ease-in-out',
+      },
+      className: 'knowledge-graph-edge',
     }));
 
     return {

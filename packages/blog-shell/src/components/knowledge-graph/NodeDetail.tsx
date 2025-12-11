@@ -8,6 +8,7 @@ import type { Relationship } from '@/lib/knowledge-graph';
 interface NodeDetailProps {
   node: KnowledgeGraphNode;
   onClose?: () => void;
+  onRelationshipClick?: (nodeId: string) => void;
 }
 
 const typeColors = {
@@ -16,7 +17,7 @@ const typeColors = {
   slang: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
 };
 
-export function NodeDetail({ node, onClose }: NodeDetailProps) {
+export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailProps) {
   const nodeType = (node as any).category?.toLowerCase() || 'technical';
   const relationships = ((node as any).relationships as Relationship[] | undefined) || [];
 
@@ -73,9 +74,15 @@ export function NodeDetail({ node, onClose }: NodeDetailProps) {
                 {relationships.map((rel) => (
                   <li
                     key={`${rel.id}-${rel.type}`}
-                    className="text-sm text-gray-600 dark:text-gray-400"
+                    className="text-sm"
                   >
-                    <span className="font-medium">{rel.id}</span>
+                    <button
+                      onClick={() => onRelationshipClick?.(rel.id)}
+                      className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline cursor-pointer transition-colors"
+                      title={`Navigate to ${rel.id}`}
+                    >
+                      {rel.id}
+                    </button>
                     <span className="text-gray-400 mx-2">→</span>
                     <span className="italic text-gray-500">{rel.type}</span>
                   </li>
