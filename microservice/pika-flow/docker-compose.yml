@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # 1. Database chính: MongoDB
+  mongo:
+    image: mongo:6.0
+    container_name: pikaflow-mongo
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo_data:/data/db
+
+  # 2. Message Queue: RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management # Bản management có giao diện web để xem
+    container_name: pikaflow-rabbitmq
+    ports:
+      - '5672:5672'   # Port cho code kết nối
+      - '15672:15672' # Port giao diện quản lý (truy cập localhost:15672)
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
+  # 3. Cache: Redis
+  redis:
+    image: redis:alpine
+    container_name: pikaflow-redis
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes # Lưu dữ liệu xuống đĩa để không mất khi restart
+
+volumes:
+  mongo_data:
