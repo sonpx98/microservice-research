@@ -1,8 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { CrawlerService } from './crawler.service';
-import { VnExpressCrawler } from './crawlers/vnexpress.crawler';
+import { TechCrunchCrawler } from './crawlers/techcrunch.crawler';
+
+import { DevToCrawler } from './crawlers/devto.crawler';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+
+import { GenkCrawler } from './crawlers/genk.crawler';
+import { TopDevCrawler } from './crawlers/topdev.crawler';
 
 @Module({
   imports: [
@@ -23,10 +28,25 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   controllers: [AppController],
   providers: [
     CrawlerService,
+    TechCrunchCrawler,
+    DevToCrawler,
+    GenkCrawler,
+    TopDevCrawler,
     {
       provide: 'CRAWLERS',
-      useClass: VnExpressCrawler,
+      useFactory: (
+        tc: TechCrunchCrawler,
+        dev: DevToCrawler,
+        genk: GenkCrawler,
+        topdev: TopDevCrawler,
+      ) => [tc, dev, genk, topdev],
+      inject: [
+        TechCrunchCrawler,
+        DevToCrawler,
+        GenkCrawler,
+        TopDevCrawler,
+      ],
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

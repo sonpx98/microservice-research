@@ -2,6 +2,9 @@
 
 import { BookOpen, Terminal } from 'lucide-react';
 import { TypewriterLoop } from '@/components/ui/typewriter';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 interface BlogHeroProps {
   badge: string;
@@ -21,7 +24,12 @@ export function BlogHero({
   topicsCount,
   articlesLabel,
   topicsLabel,
-}: BlogHeroProps) {
+  isExploreMode = false,
+}: BlogHeroProps & { isExploreMode?: boolean }) {
+  const params = useParams();
+  const locale = params?.locale as string || 'en';
+  const t = useTranslations('explore');
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-white">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:24px_24px]" />
@@ -29,9 +37,27 @@ export function BlogHero({
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-500/30 rounded-full blur-3xl" />
       
       <div className="relative container mx-auto px-4 py-16 md:py-24 max-w-6xl">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-sm font-medium mb-6">
-          <Terminal className="w-4 h-4" />
-          {badge}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-sm font-medium w-fit">
+            <Terminal className="w-4 h-4" />
+            {badge}
+          </div>
+          <Link 
+            href={isExploreMode ? `/${locale}/blog` : `/${locale}/blog/explore`}
+            className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors border border-white/20 font-medium w-fit"
+          >
+            {isExploreMode ? (
+              <>
+                <BookOpen className="w-4 h-4" />
+                {t('backToBlog')}
+              </>
+            ) : (
+              <>
+                <span>🚀</span>
+                {t('exploreData')}
+              </>
+            )}
+          </Link>
         </div>
         
         <h1 className="text-4xl md:text-5xl font-bold mb-4">

@@ -88,5 +88,26 @@
       "challenges": "challenges",
       "comingSoon": "Coming Soon"
     }
+  },
+  "explore": {
+    "badge": "Technology News",
+    "title": "Global Tech Pulse",
+    "taglines": [
+      "Curated from Top Sources",
+      "Real-time Tech Updates",
+      "Aggregated Developer News",
+      "Stay Informed, Stay Ahead"
+    ],
+    "articlesLabel": "Items",
+    "topicsLabel": "Sources",
+    "latestUpdates": "Latest Updates",
+    "readNow": "Read Now",
+    "loadMore": "Load More Articles",
+    "loading": "Loading...",
+    "noNewsFound": "No news found",
+    "backToBlog": "Back to Blog",
+    "exploreData": "Explore Technology News",
+    "backToExplore": "Back to Explore",
+    "readOn": "Read on"
   }
 }
