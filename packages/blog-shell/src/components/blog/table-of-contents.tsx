@@ -17,21 +17,71 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
   const [headings, setHeadings] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true); // Desktop: collapsed by default
+  const [isCollapsed, setIsCollapsed] = useState(true); // Desktop: collapse by default
 
   // Function to extract headings
   const extractHeadings = useCallback(() => {
     const content = document.querySelector(contentSelector);
     if (!content) return;
 
-    const elements = content.querySelectorAll('h2, h3');
-    const items: TocItem[] = Array.from(elements)
-      .filter(el => el.id) // Only include headings with IDs
-      .map((element) => ({
-        id: element.id,
-        text: element.textContent || '',
-        level: parseInt(element.tagName.charAt(1)),
-      }));
+    // GenK and others use <p><b>Heading</b></p> instead of h3
+    const elements = content.querySelectorAll('h2, h3, h4, p > b, p > strong');
+    const items: TocItem[] = [];
+    const seenIds = new Set<string>();
+
+    elements.forEach((element) => {
+        let level = 3;
+        const tagName = element.tagName.toLowerCase();
+
+        // Handle bold tags acting as headings
+        if (tagName === 'b' || tagName === 'strong') {
+             // Only treat as heading if it appears to be the line's main content
+             // (i.e., not just a bold word in the middle of a sentence)
+             const parentText = element.parentElement?.textContent?.trim() || '';
+             const ownText = element.textContent?.trim() || '';
+             
+             // Allow some fuzziness (e.g. punctuation), but mostly should match
+             if (parentText.length > ownText.length + 5) {
+                 return; // content is substantially longer than bold text -> skip
+             }
+             level = 3;
+        } else {
+             level = parseInt(tagName.charAt(1));
+        }
+
+        // Auto-generate ID if missing so it shows in TOC and is clickable
+        let id = element.id;
+        if (!id) {
+            const text = element.textContent || '';
+            const slug = text
+                  .toLowerCase()
+                  .trim()
+                  .replace(/[^\w\s-]/g, '')
+                  .replace(/[\s_-]+/g, '-')
+                  .replace(/^-+|-+$/g, '');
+            id = slug || `heading-${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        // Deduplicate IDs
+        let uniqueId = id;
+        let counter = 1;
+        while (seenIds.has(uniqueId)) {
+            uniqueId = `${id}-${counter}`;
+            counter++;
+        }
+        seenIds.add(uniqueId);
+        
+        // Update element ID if needed
+        if (element.id !== uniqueId) {
+            element.id = uniqueId;
+        }
+
+        items.push({
+            id: uniqueId,
+            text: element.textContent || '',
+            level: level,
+        });
+    });
 
     // Only update if headings changed
     setHeadings(prev => {
@@ -110,18 +160,20 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
     }
   };
 
-  if (headings.length === 0) return null;
+  // if (headings.length === 0) return null; // Removed early return to show empty state
 
   return (
     <>
-      {/* Mobile: Toggle Button - bottom left */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed bottom-6 left-6 z-40 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors"
-        aria-label="Toggle table of contents"
-      >
-        <List className="w-5 h-5" />
-      </button>
+      {/* Mobile: Toggle Button - bottom left - ONLY if headings exist */}
+      {headings.length > 0 && (
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="lg:hidden fixed bottom-6 left-6 z-40 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors"
+          aria-label="Toggle table of contents"
+        >
+          <List className="w-5 h-5" />
+        </button>
+      )}
 
       {/* Mobile: Overlay */}
       {isOpen && (
@@ -211,32 +263,39 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
                   <ChevronLeft className="w-4 h-4 text-gray-500" />
                 </button>
               </div>
-              <ul className="space-y-0.5 max-h-[calc(100vh-200px)] overflow-y-auto pr-2">
-                {headings.map((heading) => (
-                  <li
-                    key={heading.id}
-                    style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
-                  >
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        scrollToHeading(heading.id);
-                      }}
-                      className={`
-                        text-left w-full py-1.5 px-2 rounded text-sm transition-colors truncate
-                        ${activeId === heading.id
-                          ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 font-medium'
-                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-                        }
-                      `}
-                      title={heading.text}
+              
+              {headings.length === 0 ? (
+                <div className="text-sm text-gray-400 italic py-2">
+                  No headings found.
+                </div>
+              ) : (
+                <ul className="space-y-0.5 max-h-[calc(100vh-200px)] overflow-y-auto pr-2">
+                  {headings.map((heading) => (
+                    <li
+                      key={heading.id}
+                      style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
                     >
-                      {heading.text}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          scrollToHeading(heading.id);
+                        }}
+                        className={`
+                          text-left w-full py-1.5 px-2 rounded text-sm transition-colors truncate
+                          ${activeId === heading.id
+                            ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 font-medium'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                          }
+                        `}
+                        title={heading.text}
+                      >
+                        {heading.text}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </nav>
         )}
