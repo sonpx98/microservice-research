@@ -14,21 +14,18 @@ export class AppController {
   async handleNewArticle(@Payload() data: any) {
     console.log('⚡️ [Processor] Nhận tin:', data.title);
 
-    try {
-      const createdNews = new this.newsModel({
-        ...data,
-        tags: [],
-      });
 
-      await createdNews.save();
-      console.log('✅ Đã lưu thành công!');
+    try {
+      await this.newsModel.findOneAndUpdate(
+        { link: data.link },
+        { $set: data }, // Update fields from crawler
+        { upsert: true, new: true }
+      );
+
+      console.log('✅ Đã lưu/cập nhật thành công!');
 
     } catch (error: any) {
-      if (error.code === 11000) {
-        console.log('⚠️ Tin này đã tồn tại (Trùng link), bỏ qua.');
-      } else {
-        console.error('❌ Lỗi lưu DB:', error);
-      }
+      console.error('❌ Lỗi lưu DB:', error);
     }
   }
 }

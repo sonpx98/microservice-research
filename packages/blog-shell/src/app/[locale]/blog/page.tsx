@@ -36,7 +36,7 @@ export default async function BlogPage({
       />
 
       {/* Posts Section */}
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
         <PostList posts={posts} tags={tags} />
       </div>
     </div>

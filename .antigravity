@@ -1,0 +1,72 @@
+# Project Overview
+This repository contains a microservice architecture research project, primarily focusing on `pika-flow` located in `microservice/pika-flow`.
+It is an Nx monorepo using NestJS for backend services.
+
+## Architecture
+- **Monorepo Tool**: Nx
+- **Framework**: NestJS
+- **Communication**, RabbitMQ (via `amqp-connection-manager` / `amqplib`)
+- **Database**: 
+    - MongoDB (via Mongoose)
+    - Redis (via `ioredis` / `redis`)
+
+## Structure (`microservice/pika-flow`)
+### Apps
+- **gateway**: Entry point/API Gateway.
+- **crawler**: Service responsible for crawling data (using `axios`, `cheerio`, `rss-parser`).
+- **processor**: Service responsible for processing data.
+
+### Libs
+- **common**: Shared utilities and code, aliased as `@app/common`.
+
+## Technology Stack
+- **Language**: TypeScript (NodeNext module resolution)
+- **Package Manager**: pnpm
+- **Key Libraries**:
+    - `@nestjs/microservices`: For microservice communication.
+    - `cheerio`: For HTML parsing.
+    - `rss-parser`: For RSS feed parsing.
+    - `rxjs`: For reactive programming.
+
+## Code Style & Conventions
+- **Formatting**:
+    - **Quotes**: Single quotes (`'`).
+    - **Semicolons**: Included (standard TS).
+    - **Indentation**: 2 spaces (standard Prettier default, though .prettierrc only explicitly sets quotes).
+- **Naming**:
+    - **Files**: `kebab-case` (e.g., `app.module.ts`, `header.tsx`).
+    - **Directories**: `kebab-case` (e.g., `blog-shell`, `knowledge-graph`).
+    - **Classes/Components**: `PascalCase` (e.g., `AppModule`, `Header`).
+- **Structure**:
+    - **NestJS**: Modules -> Controllers -> Services.
+    - **Next.js**: App Router (`src/app`), Atomic Design-ish (`src/components/ui` vs features).
+- **Path Aliases**: 
+    - `@app/common/*` -> `libs/common/src/*` (NestJS)
+    - Standard Next.js aliases (likely `@/*` -> `src/*` - inferred from typical setup).
+- **Configuration Files**:
+    - `tsconfig.base.json`: Base TypeScript config.
+    - `nx.json`: Nx task runner config.
+    - `eslint.config.mjs`: Flat config for ESLint (Nx presets).
+    - `docker-compose.yml`: Local infrastructure (RabbitMQ, Redis, Mongo).
+
+## Common Commands
+- **Serve App**: `npx nx serve <app-name>` (e.g., `npx nx serve gateway`)
+- **Build**: `npx nx build <app-name>`
+- **Lint**: `npx nx lint <app-name>`
+- **Test**: `npx nx test <app-name>`
+
+## Structure (packages/blog-shell)
+**Type**: Next.js 15 App (Frontend)
+
+### Technology Stack
+- **Framework**: Next.js 15, React 19
+- **Styling**: TailwindCSS v4
+- **Content**: Contentlayer2, Keystatic (CMS)
+- **UI**: Radix UI, Lucide React
+- **i18n**: next-intl
+
+### Commands
+- **Dev**: `pnpm dev` (Port 5006)
+- **Build**: `pnpm build`
+- **Start**: `pnpm start` (Port 5006)
+- **Type Check**: `pnpm type-check`

@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 import { Post } from 'contentlayer/generated';
 import { PostCard } from './post-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
-import { ChevronLeft, ChevronRight, Search, X, FileText } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, X, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import Fuse from 'fuse.js';
 
@@ -16,11 +17,12 @@ interface PostListProps {
   postsPerPage?: number;
 }
 
-export function PostList({ posts, tags, postsPerPage = 9 }: PostListProps) {
+export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
   const t = useTranslations('common');
+  const tExplore = useTranslations('explore');
   const router = useRouter();
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(postsPerPage);
   
   // Search state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -29,6 +31,21 @@ export function PostList({ posts, tags, postsPerPage = 9 }: PostListProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  
+  // Collapsible Tags State
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showExpandButton, setShowExpandButton] = useState(false);
+  const tagsRef = useRef<HTMLDivElement>(null);
+
+  // Measure tags height
+  useLayoutEffect(() => {
+    if (tagsRef.current) {
+        // 80px covers roughly 2 rows
+        setShowExpandButton(tagsRef.current.scrollHeight > 80);
+    }
+  }, [tags]);
+
+  // ... (Fuse and Search Effects - no changes needed) ...
 
   // Initialize Fuse.js for search
   const fuse = useMemo(
@@ -136,15 +153,17 @@ export function PostList({ posts, tags, postsPerPage = 9 }: PostListProps) {
     : posts;
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-  const startIndex = (currentPage - 1) * postsPerPage;
-  const endIndex = startIndex + postsPerPage;
-  const currentPosts = filteredPosts.slice(startIndex, endIndex);
+  const currentPosts = filteredPosts.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredPosts.length;
 
   // Reset to page 1 when filter changes
   const handleTagChange = (tag: string | null) => {
     setSelectedTag(tag);
-    setCurrentPage(1);
+    setVisibleCount(postsPerPage);
+  };
+
+  const loadMore = () => {
+    setVisibleCount(prev => prev + postsPerPage);
   };
 
   return (
@@ -166,8 +185,26 @@ export function PostList({ posts, tags, postsPerPage = 9 }: PostListProps) {
         {/* Tags Filter */}
         {tags.length > 0 && (
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('filterByTag')}</h3>
-            <div className="flex flex-wrap gap-2">
+             <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('filterByTag')}</h3>
+                {showExpandButton && (
+                  <button 
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1"
+                  >
+                      {isExpanded ? 'Show Less' : 'Show More'}
+                      {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                  </button>
+                )}
+             </div>
+            
+            <div 
+              ref={tagsRef}
+              className={cn(
+                "flex flex-wrap gap-2 overflow-hidden transition-all duration-300 ease-in-out",
+                isExpanded ? "max-h-[2000px]" : "max-h-[76px]"
+              )}
+            >
               <button
                 onClick={() => handleTagChange(null)}
                 className={`px-3 py-1.5 text-sm rounded-full transition-all ${
@@ -342,65 +379,17 @@ export function PostList({ posts, tags, postsPerPage = 9 }: PostListProps) {
             ))}
           </div>
 
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 pt-8">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
+          {/* Load More Button */}
+          {hasMore && (
+            <div className="flex justify-center pt-8">
+              <button
+                onClick={loadMore}
+                className="px-6 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
               >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                {t('previous')}
-              </Button>
-
-              <div className="flex items-center gap-2">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                  // Show first, last, current, and adjacent pages
-                  if (
-                    page === 1 ||
-                    page === totalPages ||
-                    (page >= currentPage - 1 && page <= currentPage + 1)
-                  ) {
-                    return (
-                      <Button
-                        key={page}
-                        variant={currentPage === page ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setCurrentPage(page)}
-                        className="w-10"
-                      >
-                        {page}
-                      </Button>
-                    );
-                  } else if (page === currentPage - 2 || page === currentPage + 2) {
-                    return <span key={page} className="text-gray-400">...</span>;
-                  }
-                  return null;
-                })}
-              </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-              >
-                {t('next')}
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
+                {tExplore('loadMore')}
+              </button>
             </div>
           )}
-
-          {/* Page info */}
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            {t('showingPosts', { 
-              start: startIndex + 1, 
-              end: Math.min(endIndex, filteredPosts.length), 
-              total: filteredPosts.length 
-            })}
-          </p>
         </>
       )}
     </div>

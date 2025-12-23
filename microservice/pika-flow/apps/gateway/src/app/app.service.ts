@@ -5,22 +5,29 @@ import { News, NewsDocument } from '@app/common';
 
 @Injectable()
 export class AppService {
-  constructor(@InjectModel(News.name) private newsModel: Model<NewsDocument>) {}
+  constructor(@InjectModel(News.name) private newsModel: Model<NewsDocument>) { }
 
-  async getNews(page: number, limit: number, search?: string) {
+  async getNews(page: number, limit: number, search?: string, tag?: string) {
     const skip = (page - 1) * limit;
 
-    const query = search 
-      ? { title: { $regex: search, $options: 'i' } }
-      : {};
+    const query: any = {};
 
-    const [data, total] = await Promise.all([
+    if (search) {
+      query.title = { $regex: search, $options: 'i' };
+    }
+
+    if (tag) {
+      query.tags = tag;
+    }
+
+    const [data, total, sources] = await Promise.all([
       this.newsModel.find(query)
-        .sort({ createdAt: -1 })
+        .sort({ pubDate: -1 })
         .skip(skip)
         .limit(limit)
         .exec(),
       this.newsModel.countDocuments(query),
+      this.newsModel.distinct('source', query).exec(),
     ]);
 
     return {
@@ -29,7 +36,16 @@ export class AppService {
         total,
         page,
         last_page: Math.ceil(total / limit),
+        total_sources: sources.length,
       },
     };
+  }
+
+  async getTags() {
+    return this.newsModel.distinct('tags').exec();
+  }
+
+  async getNewsById(id: string) {
+    return this.newsModel.findById(id).exec();
   }
 }

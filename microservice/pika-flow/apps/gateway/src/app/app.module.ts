@@ -12,7 +12,7 @@ import { News, NewsSchema } from '@app/common';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI') || 'mongodb://user:password@localhost:27017/intelflow',
+        uri: configService.get<string>('MONGO_URI') || 'mongodb://user:password@localhost:27017/pikaflow',
       }),
       inject: [ConfigService],
     }),

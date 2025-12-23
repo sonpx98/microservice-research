@@ -88,5 +88,26 @@
       "challenges": "thử thách",
       "comingSoon": "Sắp Ra Mắt"
     }
+  },
+  "explore": {
+    "badge": "Tin Tức Công Nghệ",
+    "title": "Nhịp Đập Công Nghệ Toàn Cầu",
+    "taglines": [
+      "Tuyển chọn từ các nguồn hàng đầu",
+      "Cập nhật công nghệ thời gian thực",
+      "Tổng hợp tin tức cho lập trình viên",
+      "Luôn cập nhật, luôn dẫn đầu"
+    ],
+    "articlesLabel": "Bài viết",
+    "topicsLabel": "Nguồn",
+    "latestUpdates": "Cập nhật mới nhất",
+    "readNow": "Đọc Ngay",
+    "loadMore": "Tải Thêm Bài Viết",
+    "loading": "Đang tải...",
+    "noNewsFound": "Không tìm thấy tin tức",
+    "backToBlog": "Quay lại Blog",
+    "exploreData": "Khám phá thêm nhiều thông tin công nghệ",
+    "backToExplore": "Quay lại Khám phá",
+    "readOn": "Đọc trên"
   }
 }

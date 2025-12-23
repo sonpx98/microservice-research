@@ -11,6 +11,7 @@ import { ReadingProgress } from '@/components/blog/reading-progress';
 import { TableOfContents } from '@/components/blog/table-of-contents';
 import { ReadingBookmark } from '@/components/blog/reading-bookmark';
 import { CodeBlockCopyButton } from '@/components/blog/code-copy-button';
+import { ScrollControls } from '@/components/blog/scroll-controls';
 
 const localeNames: Record<string, string> = {
   en: 'English',
@@ -104,6 +105,7 @@ export default async function PostPage({
   return (
     <>
       <ReadingProgress />
+      <ScrollControls className="bottom-28" />
       <TableOfContents />
       <ReadingBookmark slug={slug} locale={locale} />
       <CodeBlockCopyButton />
