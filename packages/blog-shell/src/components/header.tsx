@@ -21,6 +21,7 @@ export function Header({ locale }: HeaderProps) {
     { href: `/${locale}/blog`, label: 'Blog', active: isActive('/blog') },
     { href: `/${locale}/playground`, label: 'Playground', active: isActive('/playground') },
     { href: `/${locale}/knowledge-graph`, label: 'Knowledge Graph', active: isActive('/knowledge-graph') },
+    { href: `/${locale}/algo-verse`, label: 'Algo Verse', active: isActive('/algo-verse') },
   ];
 
   return (
