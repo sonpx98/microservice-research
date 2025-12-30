@@ -279,7 +279,7 @@ export class ExecutionEngine {
                         const objVar = globalVariables.find(v => v.name === objName);
                         if (objVar && objVar.heapReference) {
                             const heapObj = heap.find(h => h.address === objVar.heapReference);
-                            if (heapObj && heapObj.data[propName]) {
+                            if (heapObj && !Array.isArray(heapObj.data) && typeof heapObj.data === 'object' && heapObj.data[propName]) {
                                 resolvedValue = String(heapObj.data[propName]);
                             }
                         }

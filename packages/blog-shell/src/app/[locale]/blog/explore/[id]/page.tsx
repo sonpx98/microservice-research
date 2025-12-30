@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -23,7 +24,8 @@ async function getArticle(id: string) {
     }
 }
 
-export default async function DetailPage({ params: { id, locale } }: { params: { id: string, locale?: string } }) {
+export default async function DetailPage({ params }: { params: Promise<{ id: string, locale?: string }> }) {
+    const { id, locale } = await params;
     const article = await getArticle(id);
     const t = await getTranslations('explore');
 
@@ -85,10 +87,12 @@ export default async function DetailPage({ params: { id, locale } }: { params: {
                 {/* Featured Image */}
                 {article.thumbnail && (
                     <div className="relative aspect-video w-full overflow-hidden rounded-xl mb-12 shadow-lg">
-                        <img 
+                        <Image 
                             src={article.thumbnail} 
                             alt={article.title}
-                            className="object-cover w-full h-full"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                         />
                     </div>
                 )}

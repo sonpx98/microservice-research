@@ -272,7 +272,7 @@ export function SearchFilter({ tags }: SearchFilterProps) {
                                 )}
                              >
                                 <Search className={cn("w-5 h-5", selectedIndex === results.length ? "text-blue-600 dark:text-blue-400" : "text-gray-400")} />
-                                <span>Search all results for "{query}"</span>
+                                <span>Search all results for &quot;{query}&quot;</span>
                              </button>
                             </li>
                         )}

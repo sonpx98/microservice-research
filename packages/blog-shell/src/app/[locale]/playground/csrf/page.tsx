@@ -281,7 +281,7 @@ export default function CSRFChallengePage() {
         }
       }, 1500);
     }
-  }, [payload, currentLevel, completedLevels]);
+  }, [payload, currentLevel, completedLevels, validatePayload]);
 
   const resetLevel = () => {
     setAttempts([]);

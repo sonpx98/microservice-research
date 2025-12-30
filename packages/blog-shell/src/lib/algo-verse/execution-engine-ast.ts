@@ -235,7 +235,8 @@ export class ASTExecutionEngine {
                 if (typeof value === 'string' && value.startsWith('0x')) {
                     const heapObj = this.heap.find(h => h.address === value);
                     if (heapObj) {
-                        actualType = heapObj.type;
+                        // Convert closure to object for variable type (closures are represented as objects in variables)
+                        actualType = heapObj.type === 'closure' ? 'object' : heapObj.type;
                         heapRef = value;
                     }
                 }
@@ -615,8 +616,11 @@ export class ASTExecutionEngine {
             const objVar = this.globalVariables.find(v => v.name === objName);
             if (objVar && objVar.heapReference) {
                 const heapObj = this.heap.find(h => h.address === objVar.heapReference);
-                if (heapObj && heapObj.data[propName]) {
-                    resolvedValue = String(heapObj.data[propName]);
+                if (heapObj && !Array.isArray(heapObj.data) && typeof heapObj.data === 'object') {
+                    const objData = heapObj.data as Record<string, any>;
+                    if (objData[propName]) {
+                        resolvedValue = String(objData[propName]);
+                    }
                 }
             }
         }
