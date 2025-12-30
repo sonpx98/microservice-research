@@ -10,6 +10,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@babel/parser": "^7.28.5",
+    "@emotion/is-prop-valid": "^1.4.0",
     "@giscus/react": "^3.0.0",
     "@keystatic/core": "^0.5.48",
     "@keystatic/next": "^5.0.4",
@@ -22,6 +24,7 @@
     "clsx": "^2.1.1",
     "contentlayer2": "^0.5.2",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.23.24",
     "fuse.js": "^7.1.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.453.0",
@@ -46,10 +49,11 @@
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/helper-plugin-utils": "^7.25.9",
-    "@babel/traverse": "^7.25.9",
-    "@babel/types": "^7.26.0",
+    "@babel/traverse": "^7.28.5",
+    "@babel/types": "^7.28.5",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.0.0-beta.6",
+    "@types/babel__traverse": "^7.28.0",
     "@types/node": "^22.8.6",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.1",
