@@ -204,7 +204,7 @@ export default function JWTTamperingPage() {
         setCompletedLevels(prev => [...prev, currentLevel]);
       }
     }
-  }, [header, payload, signature, currentLevel, completedLevels]);
+  }, [header, payload, signature, currentLevel, completedLevels, generateJWTPreview, validateToken]);
 
   const resetLevel = () => {
     setAttempts([]);

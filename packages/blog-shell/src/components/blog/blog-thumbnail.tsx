@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Image as ImageIcon, Newspaper } from 'lucide-react';
 
 interface BlogThumbnailProps {
@@ -32,12 +33,13 @@ export function BlogThumbnail({ src, alt, className = '' }: BlogThumbnailProps) 
 
   return (
     <div className={`w-full h-48 relative overflow-hidden bg-gray-100 dark:bg-gray-800 ${className}`}>
-        <img
+        <Image
             src={src}
             alt={alt}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
             loading="lazy"
-            referrerPolicy="no-referrer"
+            sizes="(max-width: 768px) 100vw, 400px"
             onError={() => setError(true)}
         />
     </div>
