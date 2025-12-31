@@ -10,7 +10,8 @@ import { ScrollControls } from '@/components/blog/scroll-controls';
 
 async function getArticle(id: string) {
     try {
-        const res = await fetch(`http://localhost:3000/api/news/${id}`, {
+        const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:3000/api';
+        const res = await fetch(`${GATEWAY_URL}/news/${id}`, {
             cache: 'no-store', // Always fetch fresh
         });
         
