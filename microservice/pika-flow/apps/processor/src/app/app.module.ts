@@ -25,8 +25,12 @@ import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schem
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-
         uri: configService.get<string>('MONGO_URI') || 'mongodb://user:password@localhost:27017/pikaflow',
+        serverApi: {
+          version: '1',
+          strict: true,
+          deprecationErrors: true,
+        },
       }),
       inject: [ConfigService],
     }),
