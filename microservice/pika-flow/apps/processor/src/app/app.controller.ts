@@ -1,19 +1,22 @@
-import { Controller } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { Logger } from '@nestjs/common';
+import { Processor, Process } from '@nestjs/bull';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { News, NewsDocument } from '@app/common';
+import type { Job } from 'bull';
 
-@Controller()
+@Processor('news-processing')
 export class AppController {
+  private readonly logger = new Logger(AppController.name);
+
   constructor(
     @InjectModel(News.name) private newsModel: Model<NewsDocument>
-  ) {}
+  ) { }
 
-  @EventPattern('new_article')
-  async handleNewArticle(@Payload() data: any) {
-    console.log('⚡️ [Processor] Nhận tin:', data.title);
-
+  @Process('process-article')
+  async handleProcessArticle(job: Job) {
+    const data = job.data;
+    this.logger.log(`⚡️ [Processor] Nhận tin: ${data.title}`);
 
     try {
       await this.newsModel.findOneAndUpdate(
@@ -22,10 +25,12 @@ export class AppController {
         { upsert: true, new: true }
       );
 
-      console.log('✅ Đã lưu/cập nhật thành công!');
+      this.logger.log(`✅ Đã lưu/cập nhật thành công!`);
+      return { success: true, title: data.title };
 
     } catch (error: any) {
-      console.error('❌ Lỗi lưu DB:', error);
+      this.logger.error(`❌ Lỗi lưu DB:`, error);
+      throw error; // Bull will retry based on job options
     }
   }
 }

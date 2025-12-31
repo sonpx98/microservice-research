@@ -4,26 +4,23 @@ import { CrawlerService } from './crawler.service';
 import { TechCrunchCrawler } from './crawlers/techcrunch.crawler';
 
 import { DevToCrawler } from './crawlers/devto.crawler';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-
+import { BullModule } from '@nestjs/bull';
 import { GenkCrawler } from './crawlers/genk.crawler';
 import { TopDevCrawler } from './crawlers/topdev.crawler';
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'RABBITMQ_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://user:password@localhost:5672'],
-          queue: 'news_queue',
-          queueOptions: {
-            durable: true,
-          },
-        },
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        password: process.env.REDIS_PASSWORD,
+        tls: process.env.REDIS_TLS === 'true' ? {} : undefined,
       },
-    ]),
+    }),
+    BullModule.registerQueue({
+      name: 'news-processing',
+    }),
   ],
   controllers: [AppController],
   providers: [

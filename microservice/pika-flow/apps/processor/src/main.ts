@@ -1,24 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.RMQ,
-      options: {
-        urls: ['amqp://user:password@localhost:5672'],
-        queue: 'news_queue',
-        queueOptions: {
-          durable: true,
-        },
-      },
-    }
-  );
+  // Change from createMicroservice to create (regular NestJS app)
+  const app = await NestFactory.create(AppModule);
 
-  await app.listen();
-  console.log('🤖 Processor Service đang chạy và lắng nghe RabbitMQ...');
+  await app.listen(3002); // Optional HTTP endpoint for health checks
+  console.log('🤖 Processor Service running and listening to Redis queue...');
 }
 
 bootstrap();

@@ -28,7 +28,6 @@ export class DevToCrawler implements ICrawler {
                 if (!item.link || !item.title) continue;
 
                 const { thumbnail, tags, content } = await this.fetchPageData(item.link);
-                console.log('item', item);
                 results.push({
                     title: item.title,
                     link: item.link,

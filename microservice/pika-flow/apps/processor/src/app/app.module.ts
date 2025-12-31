@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schema';
@@ -8,11 +9,23 @@ import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schem
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    
+
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        password: process.env.REDIS_PASSWORD,
+        tls: process.env.REDIS_TLS === 'true' ? {} : undefined,
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'news-processing',
+    }),
+
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        
+
         uri: configService.get<string>('MONGO_URI') || 'mongodb://user:password@localhost:27017/pikaflow',
       }),
       inject: [ConfigService],
@@ -20,7 +33,7 @@ import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schem
 
     MongooseModule.forFeature([{ name: News.name, schema: NewsSchema }]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [AppService, AppController],
 })
-export class AppModule {}
+export class AppModule { }
