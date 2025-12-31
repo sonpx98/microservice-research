@@ -1,14 +1,15 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import type { ICrawler } from './crawler.interface';
-import { ClientProxy } from '@nestjs/microservices';
+import { InjectQueue } from '@nestjs/bull';
+import type { Queue } from 'bull';
 
 @Injectable()
 export class CrawlerService {
-    private readonly logger = new Logger(CrawlerService.name);
+  private readonly logger = new Logger(CrawlerService.name);
   constructor(
     @Inject('CRAWLERS') private readonly crawlers: ICrawler[],
-    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
-  ) {}
+    @InjectQueue('news-processing') private newsQueue: Queue,
+  ) { }
 
   async startCrawling() {
     const allArticles = [];
@@ -26,11 +27,18 @@ export class CrawlerService {
 
     this.logger.log(`📦 Tổng cộng lấy được ${allArticles.length} bài. Đang đẩy vào Queue...`);
 
-    for(const article of allArticles) {
-      this.rabbitClient.emit('new_article', article);
+    // Add jobs to Bull queue with retry logic
+    for (const article of allArticles) {
+      await this.newsQueue.add('process-article', article, {
+        attempts: 3, // Retry 3 times on failure
+        backoff: {
+          type: 'exponential',
+          delay: 2000, // Start with 2s delay
+        },
+      });
     }
 
-    this.logger.log(`🚀 Đã bắn ${allArticles.length} message sang RabbitMQ!`);
+    this.logger.log(`🚀 Đã thêm ${allArticles.length} jobs vào Redis queue!`);
     return { status: 'Sent to Queue', count: allArticles.length };
   }
 }
