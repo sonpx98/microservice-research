@@ -7,6 +7,9 @@ import { Separator } from '@/components/ui/separator';
 import { getTranslations } from 'next-intl/server';
 import { TableOfContents } from '@/components/blog/table-of-contents';
 import { ScrollControls } from '@/components/blog/scroll-controls';
+import { StreamingContent } from '@/components/blog/streaming-content';
+import { ReadingProgress } from '@/components/blog/reading-progress';
+import { CodeBlockCopyButton } from '@/components/blog/code-copy-button';
 
 async function getArticle(id: string) {
     try {
@@ -36,8 +39,10 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
 
     return (
         <>
-            <ScrollControls />
+            <ReadingProgress />
+            <ScrollControls className="bottom-28" />
             <TableOfContents />
+            <CodeBlockCopyButton />
             <article className="container max-w-4xl py-12 px-4 md:px-6 mx-auto">
                 {/* Back Navigation */}
                 <div className="mb-8">
@@ -98,11 +103,12 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                     </div>
                 )}
 
-                {/* Content */}
-                <div className="prose prose-lg dark:prose-invert max-w-none">
-                    {/* Dangerously render HTML content from crawler */}
-                    <div dangerouslySetInnerHTML={{ __html: article.content }} />
-                </div>
+                {/* Content with Streaming Effect */}
+                <StreamingContent 
+                    html={article.content} 
+                    charsPerTick={30}
+                    tickInterval={15}
+                />
 
                 <Separator className="my-12" />
                 

@@ -145,8 +145,8 @@ export default async function PostPage({
 
           <StreamingContent 
             html={post.body.html} 
-            charsPerTick={15}
-            tickInterval={20}
+            charsPerTick={30}
+            tickInterval={15}
           />
         </article>
 
