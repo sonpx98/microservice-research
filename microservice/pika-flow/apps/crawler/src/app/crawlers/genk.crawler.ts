@@ -3,6 +3,7 @@ import Parser from 'rss-parser';
 import * as cheerio from 'cheerio';
 import { ICrawler, ArticleData } from '../crawler.interface';
 import axios from 'axios';
+import { ARTICLES_PER_CRAWLER } from '../crawler.config';
 
 const RSS_URL = 'https://genk.vn/rss/home.rss';
 
@@ -22,8 +23,8 @@ export class GenkCrawler implements ICrawler {
 
         try {
             const feed = await this.parser.parseURL(RSS_URL);
-            // Limit to 5 items
-            const items = feed.items.slice(0, 5);
+            // Limit to configured number of items
+            const items = feed.items.slice(0, ARTICLES_PER_CRAWLER);
             const results: ArticleData[] = [];
 
             for (const item of items) {

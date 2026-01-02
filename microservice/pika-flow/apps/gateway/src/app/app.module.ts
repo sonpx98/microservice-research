@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { HealthController } from './health.controller';
 import { News, NewsSchema } from '@app/common';
 
 @Module({
@@ -19,7 +20,7 @@ import { News, NewsSchema } from '@app/common';
 
     MongooseModule.forFeature([{ name: News.name, schema: NewsSchema }]),
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

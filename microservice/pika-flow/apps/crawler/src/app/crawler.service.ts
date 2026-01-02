@@ -2,6 +2,7 @@ import { Injectable, Inject, Logger } from '@nestjs/common';
 import type { ICrawler } from './crawler.interface';
 import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
+import { BATCH_SIZE, BATCH_DELAY_MS } from './crawler.config';
 
 @Injectable()
 export class CrawlerService {
@@ -25,20 +26,39 @@ export class CrawlerService {
       }
     }
 
-    this.logger.log(`📦 Tổng cộng lấy được ${allArticles.length} bài. Đang đẩy vào Queue...`);
+    this.logger.log(`📦 Tổng cộng lấy được ${allArticles.length} bài. Đang đẩy vào Queue theo batch...`);
 
-    // Add jobs to Bull queue with retry logic
-    for (const article of allArticles) {
-      await this.newsQueue.add('process-article', article, {
-        attempts: 3, // Retry 3 times on failure
-        backoff: {
-          type: 'exponential',
-          delay: 2000, // Start with 2s delay
-        },
-      });
+    // Add jobs to Bull queue in batches to avoid overwhelming Redis
+    const totalBatches = Math.ceil(allArticles.length / BATCH_SIZE);
+    let jobsAdded = 0;
+
+    for (let i = 0; i < allArticles.length; i += BATCH_SIZE) {
+      const batch = allArticles.slice(i, i + BATCH_SIZE);
+      const currentBatch = Math.floor(i / BATCH_SIZE) + 1;
+
+      this.logger.log(`📤 Batch ${currentBatch}/${totalBatches}: Đang thêm ${batch.length} jobs...`);
+
+      // Add all jobs in current batch
+      for (const article of batch) {
+        await this.newsQueue.add('process-article', article, {
+          attempts: 3, // Retry 3 times on failure
+          backoff: {
+            type: 'exponential',
+            delay: 2000, // Start with 2s delay
+          },
+        });
+        jobsAdded++;
+      }
+
+      this.logger.log(`✅ Batch ${currentBatch}/${totalBatches}: Đã thêm ${batch.length} jobs (Tổng: ${jobsAdded}/${allArticles.length})`);
+
+      // Add delay between batches (except for the last batch)
+      if (i + BATCH_SIZE < allArticles.length) {
+        await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS));
+      }
     }
 
-    this.logger.log(`🚀 Đã thêm ${allArticles.length} jobs vào Redis queue!`);
-    return { status: 'Sent to Queue', count: allArticles.length };
+    this.logger.log(`🚀 Hoàn tất! Đã thêm ${jobsAdded} jobs vào Redis queue!`);
+    return { status: 'Sent to Queue', count: jobsAdded, batches: totalBatches };
   }
 }
