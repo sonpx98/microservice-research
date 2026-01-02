@@ -162,7 +162,10 @@ export function NewsList({ news: initialNews, initialTotal = 0 }: { news: NewsIt
             tag: tag
         });
 
-        const res = await fetch(`http://localhost:3000/api/news?${params.toString()}`);
+        const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:3000/api';
+        const res = await fetch(`${GATEWAY_URL}/news?${params.toString()}`, {
+            signal: AbortSignal.timeout(60000), // 60s timeout for Render cold start
+        });
         
         if (!res.ok) throw new Error('Failed to fetch');
         
@@ -194,7 +197,7 @@ export function NewsList({ news: initialNews, initialTotal = 0 }: { news: NewsIt
         </div>
         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('noNewsFound')}</h3>
         <p className="text-base text-gray-500 dark:text-gray-400 mt-2 max-w-md mx-auto">
-          Make sure your Pika Flow Gateway is running at http://localhost:3000/api
+          {t('noNewsDescription')}
         </p>
       </div>
     );

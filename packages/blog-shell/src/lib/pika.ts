@@ -15,12 +15,13 @@ export async function getCrawledNews(page = 1, limit = 10, search = '', tag = ''
     // Gateway URL - should be in env var in production
     const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:3000/api';
 
-    // Server-side fetch to local gateway
+    // Server-side fetch to local gateway with 60s timeout for cold starts
     const res = await fetch(`${GATEWAY_URL}/news?page=${page}&limit=${limit}&q=${encodeURIComponent(search)}&tag=${encodeURIComponent(tag)}`, {
       next: { revalidate: 60 },
       headers: {
         'Content-Type': 'application/json',
       },
+      signal: AbortSignal.timeout(60000), // 60s timeout for Render cold start
     });
 
     if (!res.ok) {
@@ -51,6 +52,7 @@ export async function getAvailableTags(): Promise<string[]> {
     const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:3000/api';
     const res = await fetch(`${GATEWAY_URL}/news/tags`, {
       next: { revalidate: 3600 }, // Cache tags for 1 hour
+      signal: AbortSignal.timeout(60000), // 60s timeout for Render cold start
     });
 
     if (!res.ok) return [];

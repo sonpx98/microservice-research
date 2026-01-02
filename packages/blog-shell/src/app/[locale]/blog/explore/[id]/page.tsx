@@ -16,6 +16,7 @@ async function getArticle(id: string) {
         const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:3000/api';
         const res = await fetch(`${GATEWAY_URL}/news/${id}`, {
             cache: 'no-store', // Always fetch fresh
+            signal: AbortSignal.timeout(60000)
         });
         
         if (!res.ok) {
