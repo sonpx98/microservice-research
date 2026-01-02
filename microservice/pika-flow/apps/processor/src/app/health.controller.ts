@@ -1,6 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { ApiKeyGuard } from './guards/api-key.guard';
 
 @Controller()
+@UseGuards(ApiKeyGuard)
 export class HealthController {
   @Get('health')
   getHealth() {

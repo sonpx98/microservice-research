@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { CrawlerService } from './crawler.service';
+import { ApiKeyGuard } from './guards/api-key.guard';
 
 @Controller()
 export class AppController {
@@ -16,9 +17,10 @@ export class AppController {
   }
 
   @Get('start')
+  @UseGuards(ApiKeyGuard)
   async startCrawl() {
     const result = await this.crawlerService.startCrawling();
-    
+
     return {
       message: 'Crawl success',
       data: result
