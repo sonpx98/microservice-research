@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { HealthController } from './health.controller';
 import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schema';
 
 @Module({
@@ -21,7 +22,6 @@ import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schem
     BullModule.registerQueue({
       name: 'news-processing',
     }),
-
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -37,7 +37,7 @@ import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schem
 
     MongooseModule.forFeature([{ name: News.name, schema: NewsSchema }]),
   ],
-  controllers: [],
+  controllers: [HealthController],
   providers: [AppService, AppController],
 })
 export class AppModule { }

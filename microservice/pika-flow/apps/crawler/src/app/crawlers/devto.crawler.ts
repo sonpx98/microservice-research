@@ -4,6 +4,7 @@ import { ICrawler, ArticleData } from '../crawler.interface';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import Parser from 'rss-parser';
+import { ARTICLES_PER_CRAWLER } from '../crawler.config';
 
 @Injectable()
 export class DevToCrawler implements ICrawler {
@@ -21,7 +22,7 @@ export class DevToCrawler implements ICrawler {
 
         try {
             const feed = await this.parser.parseURL(RSS_URL);
-            const items = feed.items.slice(0, 5);
+            const items = feed.items.slice(0, ARTICLES_PER_CRAWLER);
             const results: ArticleData[] = [];
 
             for (const item of items) {

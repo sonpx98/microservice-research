@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "start:crawler": "nx serve crawler",
+    "start:gateway": "nx serve gateway",
+    "start:processor": "nx serve processor",
+    "dev:crawler": "nx serve crawler --watch",
+    "dev:gateway": "nx serve gateway --watch",
+    "dev:processor": "nx serve processor --watch",
     "migration:create": "migrate-mongo create",
     "migration:up": "migrate-mongo up",
     "migration:down": "migrate-mongo down",

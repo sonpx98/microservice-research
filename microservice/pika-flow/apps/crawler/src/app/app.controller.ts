@@ -3,7 +3,17 @@ import { CrawlerService } from './crawler.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly crawlerService: CrawlerService) {}
+  constructor(private readonly crawlerService: CrawlerService) { }
+
+  @Get('health')
+  getHealth() {
+    return {
+      status: 'ok',
+      service: 'crawler',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    };
+  }
 
   @Get('start')
   async startCrawl() {
