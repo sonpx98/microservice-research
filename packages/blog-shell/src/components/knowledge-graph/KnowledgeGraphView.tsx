@@ -231,7 +231,7 @@ function KnowledgeGraphViewInner({ nodes }: KnowledgeGraphViewProps) {
   }, []);
 
   return (
-    <div className="h-full bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
+    <div className="h-full bg-gray-50 dark:bg-gray-900 relative overflow-hidden mx-auto max-w-7xl">
       {/* Galaxy Background */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Nebula clouds */}

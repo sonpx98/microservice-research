@@ -40,7 +40,7 @@ export default async function LocaleHomePage({
 
       {/* Main Sections: Blog & Playground */}
       <section className="py-20">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="grid md:grid-cols-2 gap-8">
             {/* Blog Card */}
             <Link 

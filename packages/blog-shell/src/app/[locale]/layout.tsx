@@ -43,7 +43,7 @@ export default async function LocaleLayout({
           <NextIntlClientProvider messages={messages}>
             <div className="h-full flex flex-col">
               <Header locale={locale} />
-              <main className="flex-1 min-h-0 overflow-auto">{children}</main>
+              <main className="grid flex-1 min-h-0 overflow-y-auto">{children}</main>
             </div>
           </NextIntlClientProvider>
         </ThemeProvider>

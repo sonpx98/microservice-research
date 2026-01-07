@@ -66,7 +66,7 @@ export default async function ExplorePage({
       />
 
       {/* News Grid Section - with Suspense for loading state */}
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
         <Suspense fallback={<NewsListSkeleton count={6} />}>
           <NewsContent locale={locale} q={q} tag={tag} />
         </Suspense>
