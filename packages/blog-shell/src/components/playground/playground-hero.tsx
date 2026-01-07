@@ -20,7 +20,7 @@ export function PlaygroundHero({
       <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl" />
       
-      <div className="relative container mx-auto px-4 py-20 max-w-6xl">
+      <div className="relative container mx-auto px-4 py-20 max-w-7xl">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-sm font-medium mb-6">
             <Terminal className="w-4 h-4" />

@@ -59,7 +59,7 @@ export default async function PostPage({
     const availableLocales = getAvailableLocalesForPost(slug);
     
     return (
-      <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <div className="container mx-auto px-4 py-12 max-w-7.5xl">
         <Link 
           href={`/${locale}/blog`}
           className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50 mb-8"
@@ -109,7 +109,7 @@ export default async function PostPage({
       <TableOfContents />
       <ReadingBookmark slug={slug} locale={locale} />
       <CodeBlockCopyButton />
-      <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
         <Link
           href={`/${locale}/blog`}
           className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50 mb-8"

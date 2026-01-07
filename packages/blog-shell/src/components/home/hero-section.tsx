@@ -31,7 +31,7 @@ export function HeroSection({
       {/* Animated grid pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
       
-      <div className="relative container mx-auto px-4 py-24 md:py-32 max-w-6xl">
+      <div className="relative container mx-auto px-4 py-24 md:py-32 max-w-7xl">
         <div className="text-center max-w-3xl mx-auto">
           {/* Greeting */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium mb-6">

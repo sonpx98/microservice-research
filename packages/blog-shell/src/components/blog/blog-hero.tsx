@@ -36,7 +36,7 @@ export function BlogHero({
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-500/30 rounded-full blur-3xl" />
       
-      <div className="relative container mx-auto px-4 py-16 md:py-24 max-w-6xl">
+      <div className="relative container mx-auto px-4 py-16 md:py-24 max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-sm font-medium w-fit">
             <Terminal className="w-4 h-4" />

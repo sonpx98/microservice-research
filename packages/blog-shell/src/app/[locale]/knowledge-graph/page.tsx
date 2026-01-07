@@ -9,7 +9,7 @@ export default function KnowledgeGraphPage() {
   return (
     <div className="flex flex-col h-full">
       {/* Page header */}
-      <div className="flex-shrink-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
+      <div className="container flex-shrink-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 mx-auto max-w-7xl">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Knowledge Graph
         </h1>
