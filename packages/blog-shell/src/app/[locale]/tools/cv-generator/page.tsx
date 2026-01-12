@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { DndContext, DragEndEvent, DragOverEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -26,6 +26,9 @@ export default function CVGeneratorPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const isParsingMarkdown = useRef(false);
+  
+  // Generate stable ID for DndContext to prevent hydration mismatch
+  const dndId = useId();
   
   // PDF Preview Modal state
   const [showPDFPreview, setShowPDFPreview] = useState(false);
@@ -237,7 +240,7 @@ export default function CVGeneratorPage() {
 
       {/* Main Content - 3 Panel Layout with Internal Scrolling */}
       <div className="flex-1 flex gap-0 overflow-hidden container mx-auto max-w-7xl">
-        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        <DndContext id={dndId} sensors={sensors} onDragEnd={handleDragEnd}>
           {/* Left Panel - Component Palette */}
           <div className="w-64 flex-shrink-0 overflow-y-auto border-r border-gray-200 dark:border-gray-800">
             <ComponentPalette onAddComponent={handleAddComponent} />
@@ -271,7 +274,7 @@ export default function CVGeneratorPage() {
 
           {/* Right Panel - Preview */}
           <div className="w-96 flex-shrink-0 overflow-y-auto border-l border-gray-200 dark:border-gray-800">
-            <PreviewPanel cv={cv} markdown={markdown} />
+            <PreviewPanel cv={cv} />
           </div>
         </DndContext>
       </div>

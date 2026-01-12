@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeScript } from '@/components/theme-script';
 import { Header } from '@/components/header';
 
 export const metadata: Metadata = {
@@ -33,11 +34,15 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className="h-dvh overflow-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
+          storageKey="theme"
           disableTransitionOnChange
         >
           <NextIntlClientProvider messages={messages}>

@@ -3,12 +3,24 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Sparkles } from 'lucide-react';
 import { streamingEvents, STREAMING_EVENTS } from '@/lib/streaming-events';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 interface StreamingContentProps {
   html: string;
   enabled?: boolean;
   charsPerTick?: number;
   tickInterval?: number;
+}
+
+// Navigator API type extensions
+interface NetworkInformation {
+  saveData?: boolean;
+  effectiveType?: 'slow-2g' | '2g' | '3g' | '4g';
+}
+
+interface NavigatorExtended extends Navigator {
+  connection?: NetworkInformation;
+  deviceMemory?: number;
 }
 
 // Check if device is low-powered or prefers reduced motion
@@ -20,11 +32,12 @@ function shouldDisableAnimation(): boolean {
     return true;
   }
   
+  const nav = navigator as NavigatorExtended;
+  
   // Check for low-end device indicators
-  const connection = (navigator as any).connection;
-  if (connection) {
+  if (nav.connection) {
     // Slow connection = likely mobile/low-end
-    if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+    if (nav.connection.saveData || nav.connection.effectiveType === 'slow-2g' || nav.connection.effectiveType === '2g') {
       return true;
     }
   }
@@ -35,7 +48,7 @@ function shouldDisableAnimation(): boolean {
   }
   
   // Check device memory (if available)
-  if ((navigator as any).deviceMemory && (navigator as any).deviceMemory < 4) {
+  if (nav.deviceMemory && nav.deviceMemory < 4) {
     return true;
   }
   
@@ -167,7 +180,7 @@ export function StreamingContent({
       {/* Content */}
       <div 
         className="prose prose-lg dark:prose-invert max-w-none prose-headings:scroll-mt-20 prose-pre:bg-transparent prose-pre:p-0"
-        dangerouslySetInnerHTML={{ __html: visibleHtml }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(visibleHtml) }}
       />
 
       {/* Streaming cursor */}

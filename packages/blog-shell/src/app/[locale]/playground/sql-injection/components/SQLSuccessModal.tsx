@@ -1,0 +1,95 @@
+import { Trophy, ChevronRight, Code, AlertTriangle, Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+interface LevelExplanation {
+  attackName: string;
+  howItWorks: string;
+  whyItSucceeds: string;
+  realWorldImpact: string;
+}
+
+interface SQLSuccessModalProps {
+  currentLevel: number;
+  totalLevels: number;
+  explanation: LevelExplanation;
+  onNextLevel: () => void;
+}
+
+export function SQLSuccessModal({
+  currentLevel,
+  totalLevels,
+  explanation,
+  onNextLevel,
+}: SQLSuccessModalProps) {
+  return (
+    <div className="mb-6 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 animate-in slide-in-from-top-4 overflow-hidden">
+      {/* Success Header */}
+      <div className="p-6 border-b border-green-200 dark:border-green-800">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center flex-shrink-0">
+            <Trophy className="w-6 h-6 text-green-600 dark:text-green-400" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-1">
+              🎉 SQL Injection Successful!
+            </h3>
+            <p className="text-green-700 dark:text-green-300 text-sm">
+              You&apos;ve successfully exploited the SQL vulnerability in Level {currentLevel}!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Attack Explanation */}
+      <div className="p-6 border-b border-green-200 dark:border-green-800 bg-green-100/30 dark:bg-green-900/10">
+        <div className="space-y-4">
+          <div>
+            <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
+              <Code className="w-4 h-4" />
+              {explanation.attackName}
+            </h4>
+            <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
+              {explanation.howItWorks}
+            </p>
+          </div>
+
+          <div className="pt-2 border-t border-green-300 dark:border-green-800/50">
+            <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4" />
+              Why It Succeeded
+            </h4>
+            <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
+              {explanation.whyItSucceeds}
+            </p>
+          </div>
+
+          <div className="pt-2 border-t border-green-300 dark:border-green-800/50">
+            <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              Real-World Impact
+            </h4>
+            <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
+              {explanation.realWorldImpact}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="p-6">
+        {currentLevel < totalLevels ? (
+          <Button onClick={onNextLevel} className="bg-green-600 hover:bg-green-700">
+            Next Level
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        ) : (
+          <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30">
+            <p className="text-green-800 dark:text-green-200 font-medium">
+              🏆 Congratulations! You&apos;ve completed all SQL Injection challenges!
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

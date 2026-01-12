@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { ExternalLink, BookOpen, Calendar } from 'lucide-react';
 import { BlogThumbnail } from './blog-thumbnail';
 import { Button } from '@/components/ui/button';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { EmptyState } from '@/components/ui/empty-state';
 import { useTranslations } from 'next-intl';
 
 function NewsCard({ item }: { item: NewsItem }) {
@@ -191,15 +193,12 @@ export function NewsList({ news: initialNews, initialTotal = 0 }: { news: NewsIt
 
   if (!news || news.length === 0) {
     return (
-      <div className="text-center py-20">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
-          <ExternalLink className="w-8 h-8 text-gray-400" />
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('noNewsFound')}</h3>
-        <p className="text-base text-gray-500 dark:text-gray-400 mt-2 max-w-md mx-auto">
-          {t('noNewsDescription')}
-        </p>
-      </div>
+      <EmptyState
+        icon={ExternalLink}
+        title={t('noNewsFound')}
+        description={t('noNewsDescription')}
+        className="py-20"
+      />
     );
   }
 
@@ -214,20 +213,21 @@ export function NewsList({ news: initialNews, initialTotal = 0 }: { news: NewsIt
         {/* Load More Button */}
         {hasMore && (
             <div className="flex justify-center pt-4">
-                <button
+                <Button
                     onClick={loadMore}
                     disabled={loading}
-                    className="px-6 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    variant="outline"
+                    className="rounded-full"
                 >
                     {loading ? (
                         <>
-                            <div className="w-4 h-4 border-2 border-gray-400 border-t-blue-600 rounded-full animate-spin"></div>
+                            <LoadingSpinner size="sm" />
                             {t('loading')}
                         </>
                     ) : (
                         t('loadMore')
                     )}
-                </button>
+                </Button>
             </div>
         )}
     </div>
