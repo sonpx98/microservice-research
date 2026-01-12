@@ -20,6 +20,15 @@ import { TopDevCrawler } from './crawlers/topdev.crawler';
     }),
     BullModule.registerQueue({
       name: 'news-processing',
+      defaultJobOptions: {
+        removeOnComplete: true,  // Auto-remove completed jobs from Redis
+        removeOnFail: false,     // Keep failed jobs for debugging
+        attempts: 3,             // Retry failed jobs 3 times
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+      },
     }),
   ],
   controllers: [AppController],
