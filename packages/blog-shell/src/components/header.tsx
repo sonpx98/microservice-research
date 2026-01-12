@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useState, useRef, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import { featureFlags } from '@/lib/feature-flags';
 
 interface HeaderProps {
   locale: string;
@@ -34,11 +35,15 @@ export function Header({ locale }: HeaderProps) {
     { href: `/${locale}/blog`, label: 'Blog', active: isActive('/blog') },
     { href: `/${locale}/playground`, label: 'Playground', active: isActive('/playground') },
     { href: `/${locale}/knowledge-graph`, label: 'Knowledge Graph', active: isActive('/knowledge-graph') },
-    { href: `/${locale}/algo-verse`, label: 'Algo Verse', active: isActive('/algo-verse') },
+    // Only show Algo Verse when feature flag is enabled
+    ...(featureFlags.ALGO_VERSE_ENABLED 
+      ? [{ href: `/${locale}/algo-verse`, label: 'Algo Verse', active: isActive('/algo-verse') }] 
+      : []),
   ];
 
   const toolsSubmenu = [
     { href: `/${locale}/tools/cv-generator`, label: 'CV Generator' },
+    { href: `/${locale}/tools/tarot`, label: 'Tarot Reader' },
   ];
 
   return (

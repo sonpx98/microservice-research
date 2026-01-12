@@ -2,21 +2,91 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
+import { ArrowLeft, Skull, User } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
-  ArrowLeft,
-  Shield,
-  Lightbulb,
-  CheckCircle2,
-  RotateCcw,
-  ChevronRight,
-  Trophy,
-  Code,
-  AlertTriangle,
-  Copy,
-  Skull,
-  User
-} from 'lucide-react';
-import { NetworkRequest, VictimSiteTab, MalwareSiteTab, levels, csrfSolutions, csrfLevelExplanations, CSRFLevelSelector } from './components';
+  NetworkRequest, 
+  VictimSiteTab, 
+  MalwareSiteTab, 
+  levels, 
+  csrfLevelExplanations,
+  csrfSolutions,
+  CSRFLevelSelector,
+  CSRFSuccessModal,
+  CSRFAttemptsHistory,
+} from './components';
+
+// Validation logic extracted as a function
+function validatePayload(input: string, currentLevel: number) {
+  const isFromAttackerOrigin = (payload: string) => {
+    const hasEvilDomain = payload.includes('evil.com') || 
+                         payload.includes('localhost') || 
+                         payload.includes('127.0.0.1') ||
+                         payload.includes('attacker') ||
+                         payload.includes('hacker');
+    return hasEvilDomain;
+  };
+
+  switch (currentLevel) {
+    case 1:
+      if (input.includes('<form') && 
+          input.includes('transfer') && 
+          input.includes('attacker@evil.com') &&
+          isFromAttackerOrigin(input)) {
+        return { success: true, message: '🎯 Form-based CSRF crafted! The bank transferred money without verification.' };
+      }
+      if (input.includes('<form') && input.includes('transfer') && input.includes('attacker@evil.com') && !isFromAttackerOrigin(input)) {
+        return { success: false, message: '❌ Form created but not from attacker\'s domain! The server checks Origin/Referer headers.' };
+      }
+      break;
+    case 2:
+      if (input.includes('token_5') || input.includes('next_token')) {
+        return { success: true, message: '🔮 Predictable token guessed! You calculated the next sequential token.' };
+      }
+      break;
+    case 3:
+      if (input.includes('reusable_csrf_token') && input.split('reusable_csrf_token').length >= 3) {
+        return { success: true, message: '♻️ Token reused! The same token worked for multiple requests.' };
+      }
+      break;
+    case 4:
+      if (input.includes('window.location') || input.includes('top-level') || input.includes('<a href')) {
+        return { success: true, message: '🔗 SameSite bypassed! Top-level navigation included cookies despite SameSite=Lax.' };
+      }
+      break;
+    case 5:
+      if (input.includes('<form') && !input.includes('X-Requested-With')) {
+        return { success: true, message: '📝 Custom header bypassed! Regular forms don\'t include custom headers.' };
+      }
+      break;
+    case 6:
+      if (input.includes('subdomain') || input.includes('parent_domain_cookie_token')) {
+        return { success: true, message: '🌐 Domain scope exploited! Subdomain cookies bypassed the validation.' };
+      }
+      break;
+    case 7:
+      if (input.includes('application/x-www-form-urlencoded') || input.includes('form-encoded')) {
+        return { success: true, message: '🔀 Content-Type mismatch! API misinterpreted the request type.' };
+      }
+      break;
+    case 8:
+      if (input.includes('<iframe') && input.includes('opacity') || input.includes('z-index')) {
+        return { success: true, message: '🎭 Clickjacking executed! User clicked on hidden button.' };
+      }
+      break;
+    case 9:
+      if (input.includes('session') && input.includes('fixed_session_csrf_token')) {
+        return { success: true, message: '🔐 Session fixed + CSRF! Attacker controlled both session and token.' };
+      }
+      break;
+    case 10:
+      if (input.includes('state') && !input.includes('validate')) {
+        return { success: true, message: '🔓 OAuth state bypassed! Callback didn\'t validate state parameter properly.' };
+      }
+      break;
+  }
+  return { success: false, message: '❌ Attack failed. Check the hint and try again!' };
+}
 
 export default function CSRFChallengePage() {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -39,206 +109,51 @@ export default function CSRFChallengePage() {
     const savedLevel = localStorage.getItem('csrf-challenge-level');
     const savedCompleted = localStorage.getItem('csrf-challenge-completed');
     
-    if (savedLevel) {
-      setCurrentLevel(parseInt(savedLevel, 10));
-    }
+    if (savedLevel) setCurrentLevel(parseInt(savedLevel, 10));
     if (savedCompleted) {
-      try {
-        setCompletedLevels(JSON.parse(savedCompleted));
-      } catch {
-        // Invalid JSON, ignore
-      }
+      try { setCompletedLevels(JSON.parse(savedCompleted)); } catch { /* ignore */ }
     }
     setIsHydrated(true);
   }, []);
 
-  // Save progress to localStorage
   useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem('csrf-challenge-level', String(currentLevel));
-    }
+    if (isHydrated) localStorage.setItem('csrf-challenge-level', String(currentLevel));
   }, [currentLevel, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem('csrf-challenge-completed', JSON.stringify(completedLevels));
-    }
+    if (isHydrated) localStorage.setItem('csrf-challenge-completed', JSON.stringify(completedLevels));
   }, [completedLevels, isHydrated]);
 
   const level = levels.find(l => l.id === currentLevel)!;
-
-  const validatePayload = (input: string) => {
-    // Helper function to check if payload is from attacker's domain
-    const isFromAttackerOrigin = (payload: string) => {
-      // Must contain attacker's domain (evil.com, localhost, or hacker-like domains)
-      const hasEvilDomain = payload.includes('evil.com') || 
-                           payload.includes('localhost') || 
-                           payload.includes('127.0.0.1') ||
-                           payload.includes('attacker') ||
-                           payload.includes('hacker');
-      return hasEvilDomain;
-    };
-
-    switch (currentLevel) {
-      case 1:
-        // Check for hidden form structure from attacker's origin
-        if (input.includes('<form') && 
-            input.includes('transfer') && 
-            input.includes('attacker@evil.com') &&
-            isFromAttackerOrigin(input)) {
-          return {
-            success: true,
-            message: '🎯 Form-based CSRF crafted! The bank transferred money without verification.',
-          };
-        }
-        // Reject if no attacker origin
-        if (input.includes('<form') && 
-            input.includes('transfer') && 
-            input.includes('attacker@evil.com') &&
-            !isFromAttackerOrigin(input)) {
-          return {
-            success: false,
-            message: '❌ Form created but not from attacker\'s domain! The server checks Origin/Referer headers.',
-          };
-        }
-        break;
-      case 2:
-        // Token generation is predictable
-        if (input.includes('token_5') || input.includes('next_token')) {
-          return {
-            success: true,
-            message: '🔮 Predictable token guessed! You calculated the next sequential token.',
-          };
-        }
-        break;
-      case 3:
-        // Reuse the same token twice
-        if (input.includes('reusable_csrf_token') && input.split('reusable_csrf_token').length >= 3) {
-          return {
-            success: true,
-            message: '♻️ Token reused! The same token worked for multiple requests.',
-          };
-        }
-        break;
-      case 4:
-        // SameSite bypass using navigation
-        if (input.includes('window.location') || input.includes('top-level') || input.includes('<a href')) {
-          return {
-            success: true,
-            message: '🔗 SameSite bypassed! Top-level navigation included cookies despite SameSite=Lax.',
-          };
-        }
-        break;
-      case 5:
-        // Bypass custom header with form
-        if (input.includes('<form') && !input.includes('X-Requested-With')) {
-          return {
-            success: true,
-            message: '📝 Custom header bypassed! Regular forms don\'t include custom headers.',
-          };
-        }
-        break;
-      case 6:
-        // Subdomain cookie scope issue
-        if (input.includes('subdomain') || input.includes('parent_domain_cookie_token')) {
-          return {
-            success: true,
-            message: '🌐 Domain scope exploited! Subdomain cookies bypassed the validation.',
-          };
-        }
-        break;
-      case 7:
-        // Content-Type confusion
-        if (input.includes('application/x-www-form-urlencoded') || input.includes('form-encoded')) {
-          return {
-            success: true,
-            message: '🔀 Content-Type mismatch! API misinterpreted the request type.',
-          };
-        }
-        break;
-      case 8:
-        // Clickjacking with iframe overlay
-        if (input.includes('<iframe') && input.includes('opacity') || input.includes('z-index')) {
-          return {
-            success: true,
-            message: '🎭 Clickjacking executed! User clicked on hidden button.',
-          };
-        }
-        break;
-      case 9:
-        // Session fixation + CSRF
-        if (input.includes('session') && input.includes('fixed_session_csrf_token')) {
-          return {
-            success: true,
-            message: '🔐 Session fixed + CSRF! Attacker controlled both session and token.',
-          };
-        }
-        break;
-      case 10:
-        // OAuth state bypass
-        if (input.includes('state') && !input.includes('validate')) {
-          return {
-            success: true,
-            message: '🔓 OAuth state bypassed! Callback didn\'t validate state parameter properly.',
-          };
-        }
-        break;
-      default:
-        break;
-    }
-    return {
-      success: false,
-      message: '❌ Attack failed. Check the hint and try again!',
-    };
-  };
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!payload.trim()) return;
 
-    const result = validatePayload(payload);
-    const newAttempt = {
-      id: Date.now(),
-      payload,
-      result,
-    };
-
-    setAttempts(prev => [...prev, newAttempt]);
+    const result = validatePayload(payload, currentLevel);
+    setAttempts(prev => [...prev, { id: Date.now(), payload, result }]);
 
     if (result.success) {
-      // Extract values from payload for realistic simulation
+      // Extract values from payload
       const extractValue = (key: string): string | null => {
-        // Try to extract from input value attributes
         const inputMatch = payload.match(new RegExp(`name="${key}"\\s+value="([^"]+)"`, 'i'));
         if (inputMatch) return inputMatch[1];
-        
-        // Try to extract from URL query params
         const urlMatch = payload.match(new RegExp(`[?&]${key}=([^&\\s"']+)`, 'i'));
         if (urlMatch) return urlMatch[1];
-        
-        // Try to extract from body string
         const bodyMatch = payload.match(new RegExp(`${key}=([^&\\s"']+)`, 'i'));
         if (bodyMatch) return bodyMatch[1];
-        
         return null;
       };
 
-      const extractedAmount = extractValue('amount');
-      const extractedRecipient = extractValue('to');
-      const extractedEmail = extractValue('email');
-      const transferAmount = extractedAmount ? parseInt(extractedAmount, 10) : 100;
-      const recipientEmail = extractedRecipient || extractedEmail || 'attacker@evil.com';
-      
-      // Extract target URL from action attribute or fetch URL
+      const transferAmount = parseInt(extractValue('amount') || '100', 10);
+      const recipientEmail = extractValue('to') || extractValue('email') || 'attacker@evil.com';
       const actionMatch = payload.match(/action="([^"]+)"/i);
       const fetchMatch = payload.match(/fetch\(["']([^"']+)["']/i);
       const windowLocationMatch = payload.match(/window\.location\s*=\s*["']([^"']+)["']/i);
       const targetUrl = actionMatch?.[1] || fetchMatch?.[1] || windowLocationMatch?.[1] || 'https://bank.com/transfer';
 
-      // Simulate attack effects on victim
       setIsAttacking(true);
       
-      // Generate network request data with extracted values
       const newRequest: NetworkRequest = {
         id: Date.now(),
         time: new Date().toLocaleTimeString(),
@@ -261,19 +176,13 @@ export default function CSRFChallengePage() {
       };
       setNetworkRequests(prev => [newRequest, ...prev]);
 
-      // Simulate victim state changes after 1 second
       setTimeout(() => {
-        // Transfer money with extracted amount
         if (currentLevel <= 3 || currentLevel === 6 || currentLevel === 7) {
           setVictimBalance(prev => Math.max(0, prev - transferAmount));
           setAttackerBalance(prev => prev + transferAmount);
         }
+        if (currentLevel === 9) setVictimEmail(recipientEmail);
         
-        // Change email
-        if (currentLevel === 9) {
-          setVictimEmail(recipientEmail);
-        }
-
         setIsAttacking(false);
         setShowSuccess(true);
         if (!completedLevels.includes(currentLevel)) {
@@ -281,14 +190,13 @@ export default function CSRFChallengePage() {
         }
       }, 1500);
     }
-  }, [payload, currentLevel, completedLevels, validatePayload]);
+  }, [payload, currentLevel, completedLevels]);
 
   const resetLevel = () => {
     setAttempts([]);
     setShowSuccess(false);
     setShowHint(false);
     setShowSolution(false);
-    // Don't clear payload - let MalwareSiteTab regenerate it
     setVictimBalance(10000);
     setVictimEmail('victim@bank.com');
     setAttackerBalance(0);
@@ -318,11 +226,11 @@ export default function CSRFChallengePage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
           <div className="container mx-auto px-4 py-4">
-            <div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <Skeleton className="h-5 w-32" />
           </div>
         </div>
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          <Skeleton className="h-64 w-full" />
         </div>
       </div>
     );
@@ -344,9 +252,8 @@ export default function CSRFChallengePage() {
       </div>
 
       <div className="mt-[57px] container mx-auto px-4 py-8">
-        {/* Layout: Sidebar + Main Content */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Sidebar: Level Selector */}
+          {/* Sidebar */}
           <div className="lg:col-span-1">
             <CSRFLevelSelector
               level={level}
@@ -363,193 +270,60 @@ export default function CSRFChallengePage() {
             />
           </div>
 
-          {/* Main Content: Tabs + History + Prevention */}
+          {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-
             {/* Success Modal */}
             {showSuccess && (
-          <div className="mb-6 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 animate-in slide-in-from-top-4 overflow-hidden">
-            {/* Success Header */}
-            <div className="p-6 border-b border-green-200 dark:border-green-800">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center flex-shrink-0">
-                  <Trophy className="w-6 h-6 text-green-600 dark:text-green-400" />
+              <CSRFSuccessModal
+                currentLevel={currentLevel}
+                totalLevels={levels.length}
+                explanation={csrfLevelExplanations[currentLevel]}
+                onNextLevel={nextLevel}
+              />
+            )}
+
+            {/* Two-Panel Layout: Malware Site + Victim Site */}
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Malware Site Panel */}
+              <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-red-50 dark:bg-red-900/20 flex items-center gap-2">
+                  <Skull className="w-5 h-5 text-red-600 dark:text-red-400" />
+                  <h3 className="font-semibold text-red-700 dark:text-red-300">Malware Site (Attacker)</h3>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-1">
-                    🎉 CSRF Attack Successful!
-                  </h3>
-                  <p className="text-green-700 dark:text-green-300 text-sm">
-                    You&apos;ve successfully demonstrated the CSRF vulnerability in Level {currentLevel}!
-                  </p>
+                <MalwareSiteTab
+                  payload={payload}
+                  setPayload={setPayload}
+                  handleSubmit={handleSubmit}
+                  isAttacking={isAttacking}
+                  attackerBalance={attackerBalance}
+                  resetLevel={resetLevel}
+                  currentLevel={currentLevel}
+                />
+              </div>
+
+              {/* Victim Site Panel */}
+              <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-blue-50 dark:bg-blue-900/20 flex items-center gap-2">
+                  <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <h3 className="font-semibold text-blue-700 dark:text-blue-300">Victim Site (Bank)</h3>
                 </div>
+                <VictimSiteTab
+                  victimEmail={victimEmail}
+                  victimBalance={victimBalance}
+                  networkRequests={networkRequests}
+                  isAttacking={isAttacking}
+                  attackerBalance={attackerBalance}
+                />
               </div>
             </div>
 
-            {/* Attack Explanation */}
-            <div className="p-6 border-b border-green-200 dark:border-green-800 bg-green-100/30 dark:bg-green-900/10">
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
-                    <Code className="w-4 h-4" />
-                    {csrfLevelExplanations[currentLevel].attackName}
-                  </h4>
-                  <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
-                    {csrfLevelExplanations[currentLevel].howItWorks}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-green-300 dark:border-green-800/50">
-                  <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4" />
-                    Why It Succeeded
-                  </h4>
-                  <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
-                    {csrfLevelExplanations[currentLevel].whyItSucceeds}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-green-300 dark:border-green-800/50">
-                  <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    Real-World Impact
-                  </h4>
-                  <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
-                    {csrfLevelExplanations[currentLevel].realWorldImpact}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-green-300 dark:border-green-800/50">
-                  <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">Prevention Tips</h4>
-                  <ul className="space-y-2">
-                    {csrfLevelExplanations[currentLevel].preventionTips.map((tip, idx) => (
-                      <li key={idx} className="text-sm text-green-800 dark:text-green-200 flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-600 mt-1.5 flex-shrink-0" />
-                        {tip}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="p-6">
-              {currentLevel < levels.length ? (
-                <button
-                  onClick={nextLevel}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
-                >
-                  Next Level
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              ) : (
-                <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30">
-                  <p className="text-green-800 dark:text-green-200 font-medium">
-                    🏆 Congratulations! You&apos;ve completed all CSRF challenges!
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Two-Panel Layout: Malware Site + Victim Site */}
-        <div className="grid lg:grid-cols-2 gap-6 mb-6">
-          {/* Malware Site Panel */}
-          <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-red-50 dark:bg-red-900/20 flex items-center gap-2">
-              <Skull className="w-5 h-5 text-red-600 dark:text-red-400" />
-              <h3 className="font-semibold text-red-700 dark:text-red-300">Malware Site (Attacker)</h3>
-            </div>
-            <MalwareSiteTab
-              payload={payload}
-              setPayload={setPayload}
-              handleSubmit={handleSubmit}
-              isAttacking={isAttacking}
-              attackerBalance={attackerBalance}
-              resetLevel={resetLevel}
-              currentLevel={currentLevel}
+            {/* Attempts History */}
+            <CSRFAttemptsHistory
+              attempts={attempts}
+              copiedId={copiedId}
+              onReset={resetLevel}
+              onCopy={copyToClipboard}
             />
-          </div>
-
-          {/* Victim Site Panel */}
-          <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-blue-50 dark:bg-blue-900/20 flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <h3 className="font-semibold text-blue-700 dark:text-blue-300">Victim Site (Bank)</h3>
-            </div>
-            <VictimSiteTab
-              victimEmail={victimEmail}
-              victimBalance={victimBalance}
-              networkRequests={networkRequests}
-              isAttacking={isAttacking}
-              attackerBalance={attackerBalance}
-            />
-          </div>
-        </div>
-
-          {/* Attempts History */}
-            <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    Attempts ({attempts.length})
-                  </h3>
-                  {attempts.length > 0 && (
-                    <button
-                      onClick={resetLevel}
-                      className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                      Reset
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="p-6 space-y-3 max-h-64 overflow-y-auto">
-                {attempts.length === 0 ? (
-                  <p className="text-center text-gray-500 dark:text-gray-500 py-8">
-                    No attempts yet. Craft your first CSRF exploit!
-                  </p>
-                ) : (
-                  attempts.map((attempt) => (
-                    <div 
-                      key={attempt.id}
-                      className={`p-4 rounded-lg border ${
-                        attempt.result.success 
-                          ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                          : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        {attempt.result.success ? (
-                          <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        ) : (
-                          <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                        )}
-                        <button
-                          onClick={() => copyToClipboard(attempt.payload, attempt.id)}
-                          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                          title="Copy to clipboard"
-                        >
-                          {copiedId === attempt.id ? '✓ Copied' : <Copy className="w-4 h-4" />}
-                        </button>
-                      </div>
-                      <p className="text-xs text-gray-500 mb-2 font-mono">{attempt.payload.slice(0, 100)}...</p>
-                      <p className={`text-sm font-medium ${
-                        attempt.result.success 
-                          ? 'text-green-700 dark:text-green-300'
-                          : 'text-red-700 dark:text-red-300'
-                      }`}>
-                        {attempt.result.message}
-                      </p>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </div>

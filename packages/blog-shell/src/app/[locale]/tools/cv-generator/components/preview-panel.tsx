@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import type { CVData, CVComponent } from '@/lib/cv/types';
 import { 
   CVHeader, 
@@ -13,18 +12,12 @@ import {
   CVLanguages 
 } from '@/components/cv';
 import { CVRaw } from '@/components/cv/cv-raw';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm';
-import remarkRehype from 'remark-rehype';
-import rehypeStringify from 'rehype-stringify';
 
 interface PreviewPanelProps {
   cv: CVData;
-  markdown?: string;
 }
 
-export function PreviewPanel({ cv, markdown }: PreviewPanelProps) {
+export function PreviewPanel({ cv }: PreviewPanelProps) {
   // Note: Orphan content is now handled by parser creating Raw components
   // No need to extract and render orphan markdown separately anymore
 

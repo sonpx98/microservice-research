@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { MessageSquare, Loader2 } from 'lucide-react';
 import { GiscusWidget } from './giscus-widget';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface CommentSectionProps {
   locale: string;
@@ -12,20 +13,20 @@ interface CommentSectionProps {
 // Loading skeleton component
 function CommentLoadingSkeleton() {
   return (
-    <div className="space-y-4 animate-pulse">
+    <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+        <Skeleton className="w-10 h-10 rounded-full" />
         <div className="flex-1">
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"></div>
-          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/6"></div>
+          <Skeleton className="h-4 w-1/4 mb-2" />
+          <Skeleton className="h-3 w-1/6" />
         </div>
       </div>
       <div className="space-y-2">
-        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
-        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-5/6" />
+        <Skeleton className="h-3 w-4/6" />
       </div>
-      <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+      <Skeleton className="h-32 w-full" />
     </div>
   );
 }

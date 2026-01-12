@@ -1,15 +1,13 @@
 'use client';
 
-import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Post } from 'contentlayer/generated';
 import { PostCard } from './post-card';
-import { Badge } from '@/components/ui/badge';
+import { PostSearchModal } from './PostSearchModal';
+import { PostTagFilter } from './PostTagFilter';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
-import { ChevronLeft, ChevronRight, Search, X, FileText, ChevronDown, ChevronUp } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
-import Fuse from 'fuse.js';
+import { Search } from 'lucide-react';
 
 interface PostListProps {
   posts: Post[];
@@ -20,59 +18,9 @@ interface PostListProps {
 export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
   const t = useTranslations('common');
   const tExplore = useTranslations('explore');
-  const router = useRouter();
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(postsPerPage);
-  
-  // Search state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Post[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
-  
-  // Collapsible Tags State
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [showExpandButton, setShowExpandButton] = useState(false);
-  const tagsRef = useRef<HTMLDivElement>(null);
-
-  // Measure tags height
-  useLayoutEffect(() => {
-    if (tagsRef.current) {
-        // 80px covers roughly 2 rows
-        setShowExpandButton(tagsRef.current.scrollHeight > 80);
-    }
-  }, [tags]);
-
-  // ... (Fuse and Search Effects - no changes needed) ...
-
-  // Initialize Fuse.js for search
-  const fuse = useMemo(
-    () =>
-      new Fuse(posts, {
-        keys: [
-          { name: 'title', weight: 0.4 },
-          { name: 'excerpt', weight: 0.3 },
-          { name: 'tags', weight: 0.3 },
-        ],
-        threshold: 0.3,
-        includeScore: true,
-        minMatchCharLength: 2,
-      }),
-    [posts]
-  );
-
-  // Search effect
-  useEffect(() => {
-    if (searchQuery.trim().length < 2) {
-      setSearchResults([]);
-      return;
-    }
-    const results = fuse.search(searchQuery);
-    setSearchResults(results.map((r) => r.item).slice(0, 8));
-    setSelectedIndex(0);
-  }, [searchQuery, fuse]);
 
   // Keyboard shortcut (Cmd/Ctrl + K)
   useEffect(() => {
@@ -89,74 +37,13 @@ export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (!isSearchOpen) return;
-    
-    const html = document.documentElement;
-    const body = document.body;
-    const scrollbarWidth = window.innerWidth - html.clientWidth;
-    
-    // Lock scroll
-    html.style.overflow = 'hidden';
-    body.style.overflow = 'hidden';
-    body.style.paddingRight = `${scrollbarWidth}px`;
-    
-    // Prevent touchmove on mobile
-    const preventScroll = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      // Allow scroll inside modal content
-      if (resultsRef.current?.contains(target)) return;
-      e.preventDefault();
-    };
-    
-    document.addEventListener('touchmove', preventScroll, { passive: false });
-    
-    return () => {
-      html.style.overflow = '';
-      body.style.overflow = '';
-      body.style.paddingRight = '';
-      document.removeEventListener('touchmove', preventScroll);
-    };
-  }, [isSearchOpen]);
-
-  // Focus input when modal opens
-  useEffect(() => {
-    if (isSearchOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isSearchOpen]);
-
-  // Handle keyboard navigation in search
-  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setSelectedIndex((prev) => Math.min(prev + 1, searchResults.length - 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setSelectedIndex((prev) => Math.max(prev - 1, 0));
-    } else if (e.key === 'Enter' && searchResults[selectedIndex]) {
-      e.preventDefault();
-      router.push(searchResults[selectedIndex].url);
-      closeSearch();
-    }
-  };
-
-  const closeSearch = () => {
-    setIsSearchOpen(false);
-    setSearchQuery('');
-    setSearchResults([]);
-  };
-
   const filteredPosts = selectedTag
     ? posts.filter(post => post.tags?.includes(selectedTag))
     : posts;
 
-  // Pagination logic
   const currentPosts = filteredPosts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPosts.length;
 
-  // Reset to page 1 when filter changes
   const handleTagChange = (tag: string | null) => {
     setSelectedTag(tag);
     setVisibleCount(postsPerPage);
@@ -183,190 +70,21 @@ export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
         </button>
 
         {/* Tags Filter */}
-        {tags.length > 0 && (
-          <div className="space-y-3">
-             <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('filterByTag')}</h3>
-                {showExpandButton && (
-                  <button 
-                      onClick={() => setIsExpanded(!isExpanded)}
-                      className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1"
-                  >
-                      {isExpanded ? 'Show Less' : 'Show More'}
-                      {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                  </button>
-                )}
-             </div>
-            
-            <div 
-              ref={tagsRef}
-              className={cn(
-                "flex flex-wrap gap-2 overflow-hidden transition-all duration-300 ease-in-out",
-                isExpanded ? "max-h-[2000px]" : "max-h-[76px]"
-              )}
-            >
-              <button
-                onClick={() => handleTagChange(null)}
-                className={`px-3 py-1.5 text-sm rounded-full transition-all ${
-                  selectedTag === null
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
-                }`}
-              >
-                {t('allPosts')}
-              </button>
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => handleTagChange(tag)}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-all ${
-                    selectedTag === tag
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        <PostTagFilter
+          tags={tags}
+          selectedTag={selectedTag}
+          onTagChange={handleTagChange}
+        />
       </div>
 
       {/* Search Modal */}
-      {isSearchOpen && (
-        <div 
-          className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-[10vh] sm:pt-[15vh]"
-          onClick={closeSearch}
-        >
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            aria-hidden="true"
-          />
-          {/* Modal */}
-          <div 
-            className="relative w-full max-w-xl bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Search Input */}
-            <div className="flex items-center gap-3 px-4 border-b border-gray-200 dark:border-gray-700">
-              <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
-              <input
-                ref={inputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
-                placeholder={t('searchPlaceholder')}
-                className="flex-1 py-4 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                    className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-                {/* Close button - always visible, especially useful on mobile */}
-                <button
-                  onClick={closeSearch}
-                  className="p-2 -mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                  aria-label="Close search"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+      <PostSearchModal
+        posts={posts}
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
 
-              {/* Results */}
-              <div ref={resultsRef} className="max-h-[60vh] overflow-y-auto">
-                {searchQuery.length >= 2 && searchResults.length === 0 && (
-                  <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                    <p>{t('noResults')}</p>
-                  </div>
-                )}
-
-                {searchResults.length > 0 && (
-                  <ul className="py-2">
-                    {searchResults.map((post, index) => (
-                      <li key={post.slug}>
-                        <button
-                          onClick={() => {
-                            router.push(post.url);
-                            closeSearch();
-                          }}
-                          onMouseEnter={() => setSelectedIndex(index)}
-                          className={`w-full px-4 py-3 text-left flex items-start gap-3 transition-colors ${
-                            index === selectedIndex
-                              ? 'bg-blue-50 dark:bg-blue-900/30'
-                              : 'hover:bg-gray-50 dark:hover:bg-gray-800'
-                          }`}
-                        >
-                          <FileText
-                            className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-                              index === selectedIndex
-                                ? 'text-blue-600 dark:text-blue-400'
-                                : 'text-gray-400'
-                            }`}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p
-                              className={`font-medium truncate ${
-                                index === selectedIndex
-                                  ? 'text-blue-600 dark:text-blue-400'
-                                  : 'text-gray-900 dark:text-white'
-                              }`}
-                            >
-                              {post.title}
-                            </p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
-                              {post.excerpt}
-                            </p>
-                            {post.tags && post.tags.length > 0 && (
-                              <div className="flex gap-1 mt-1">
-                                {post.tags.slice(0, 3).map((tag) => (
-                                  <span
-                                    key={tag}
-                                    className="text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {searchQuery.length < 2 && (
-                  <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                    <p className="text-sm">{t('searchHint')}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Footer */}
-              {searchResults.length > 0 && (
-                <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-4">
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↑</kbd>
-                    <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↓</kbd>
-                    {t('toNavigate')}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↵</kbd>
-                    {t('toSelect')}
-                  </span>
-                </div>
-              )}
-          </div>
-        </div>
-      )}
-
+      {/* Posts Grid */}
       {filteredPosts.length === 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400 py-12">
           {t('noPostsFound')}
@@ -382,12 +100,13 @@ export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
           {/* Load More Button */}
           {hasMore && (
             <div className="flex justify-center pt-8">
-              <button
+              <Button
+                variant="outline"
                 onClick={loadMore}
-                className="px-6 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
+                className="rounded-full"
               >
                 {tExplore('loadMore')}
-              </button>
+              </Button>
             </div>
           )}
         </>

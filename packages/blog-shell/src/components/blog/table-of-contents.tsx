@@ -1,170 +1,23 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { List, ChevronLeft, ChevronRight, X } from 'lucide-react';
-
-interface TocItem {
-  id: string;
-  text: string;
-  level: number;
-}
+import { useState } from 'react';
+import { List } from 'lucide-react';
+import { useTableOfContents } from './hooks/useTableOfContents';
+import { MobileTOC } from './MobileTOC';
+import { DesktopTOC } from './DesktopTOC';
 
 interface TableOfContentsProps {
   contentSelector?: string;
 }
 
 export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsProps) {
-  const [headings, setHeadings] = useState<TocItem[]>([]);
-  const [activeId, setActiveId] = useState<string>('');
+  const { headings, activeId, scrollToHeading } = useTableOfContents(contentSelector);
   const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true); // Desktop: collapse by default
-
-  // Function to extract headings
-  const extractHeadings = useCallback(() => {
-    const content = document.querySelector(contentSelector);
-    if (!content) return;
-
-    // GenK and others use <p><b>Heading</b></p> instead of h3
-    const elements = content.querySelectorAll('h2, h3, h4, p > b, p > strong');
-    const items: TocItem[] = [];
-    const seenIds = new Set<string>();
-
-    elements.forEach((element) => {
-        let level = 3;
-        const tagName = element.tagName.toLowerCase();
-
-        // Handle bold tags acting as headings
-        if (tagName === 'b' || tagName === 'strong') {
-             // Only treat as heading if it appears to be the line's main content
-             // (i.e., not just a bold word in the middle of a sentence)
-             const parentText = element.parentElement?.textContent?.trim() || '';
-             const ownText = element.textContent?.trim() || '';
-             
-             // Allow some fuzziness (e.g. punctuation), but mostly should match
-             if (parentText.length > ownText.length + 5) {
-                 return; // content is substantially longer than bold text -> skip
-             }
-             level = 3;
-        } else {
-             level = parseInt(tagName.charAt(1));
-        }
-
-        // Auto-generate ID if missing so it shows in TOC and is clickable
-        let id = element.id;
-        if (!id) {
-            const text = element.textContent || '';
-            const slug = text
-                  .toLowerCase()
-                  .trim()
-                  .replace(/[^\w\s-]/g, '')
-                  .replace(/[\s_-]+/g, '-')
-                  .replace(/^-+|-+$/g, '');
-            id = slug || `heading-${Math.random().toString(36).substr(2, 9)}`;
-        }
-
-        // Deduplicate IDs
-        let uniqueId = id;
-        let counter = 1;
-        while (seenIds.has(uniqueId)) {
-            uniqueId = `${id}-${counter}`;
-            counter++;
-        }
-        seenIds.add(uniqueId);
-        
-        // Update element ID if needed
-        if (element.id !== uniqueId) {
-            element.id = uniqueId;
-        }
-
-        items.push({
-            id: uniqueId,
-            text: element.textContent || '',
-            level: level,
-        });
-    });
-
-    // Only update if headings changed
-    setHeadings(prev => {
-      if (prev.length !== items.length) return items;
-      const changed = items.some((item, i) => prev[i]?.id !== item.id);
-      return changed ? items : prev;
-    });
-  }, [contentSelector]);
-
-  useEffect(() => {
-    // Initial extraction
-    extractHeadings();
-    
-    // Watch for DOM changes (for streaming content)
-    const content = document.querySelector(contentSelector);
-    if (!content) return;
-
-    const observer = new MutationObserver(() => {
-      extractHeadings();
-    });
-
-    observer.observe(content, {
-      childList: true,
-      subtree: true,
-    });
-
-    // Also re-check after a delay (fallback)
-    const timeout = setTimeout(extractHeadings, 1000);
-    const timeout2 = setTimeout(extractHeadings, 3000);
-
-    return () => {
-      observer.disconnect();
-      clearTimeout(timeout);
-      clearTimeout(timeout2);
-    };
-  }, [contentSelector, extractHeadings]);
-
-  useEffect(() => {
-    if (headings.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      {
-        rootMargin: '-80px 0px -80% 0px',
-        threshold: 0,
-      }
-    );
-
-    headings.forEach((heading) => {
-      const element = document.getElementById(heading.id);
-      if (element) observer.observe(element);
-    });
-
-    return () => observer.disconnect();
-  }, [headings]);
-
-  const scrollToHeading = (id: string) => {
-    const element = document.getElementById(id);
-    
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start',
-      });
-      
-      // Close mobile modal
-      setTimeout(() => {
-        setIsOpen(false);
-      }, 300);
-    }
-  };
-
-  // if (headings.length === 0) return null; // Removed early return to show empty state
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
     <>
-      {/* Mobile: Toggle Button - bottom left - ONLY if headings exist */}
+      {/* Mobile: Toggle Button - only if headings exist */}
       {headings.length > 0 && (
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -175,131 +28,23 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
         </button>
       )}
 
-      {/* Mobile: Overlay */}
-      {isOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      {/* Mobile TOC */}
+      <MobileTOC
+        headings={headings}
+        activeId={activeId}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onScrollTo={scrollToHeading}
+      />
 
-      {/* Mobile: Bottom sheet */}
-      <nav
-        className={`
-          lg:hidden fixed z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-t-2xl shadow-lg
-          transition-all duration-300 ease-in-out
-          ${isOpen ? 'bottom-0 left-0 right-0 max-h-[60vh]' : '-bottom-full'}
-        `}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-sm text-gray-900 dark:text-white flex items-center gap-2">
-              <List className="w-4 h-4" />
-              Table of Contents
-            </h3>
-            <button 
-              onClick={() => setIsOpen(false)}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          <ul className="space-y-1 max-h-[50vh] overflow-y-auto">
-            {headings.map((heading) => (
-              <li
-                key={heading.id}
-                style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
-              >
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('heading id', heading)
-                    scrollToHeading(heading.id);
-                  }}
-                  className={`
-                    text-left w-full py-1.5 px-2 rounded text-sm transition-colors
-                    ${activeId === heading.id
-                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 font-medium'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-                    }
-                  `}
-                >
-                  {heading.text}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-
-      {/* Desktop: Collapsible sidebar on LEFT */}
-      <div className="hidden lg:block fixed top-24 left-0 z-30">
-        {/* Collapsed state - just a toggle button */}
-        {isCollapsed ? (
-          <button
-            onClick={() => setIsCollapsed(false)}
-            className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 border-l-0 rounded-r-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            title="Show Table of Contents"
-          >
-            <List className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            <ChevronRight className="w-4 h-4 text-gray-400" />
-          </button>
-        ) : (
-          /* Expanded state - full TOC panel */
-          <nav className="w-72 max-h-[calc(100vh-120px)] overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 border-l-0 rounded-r-lg shadow-lg animate-in slide-in-from-left duration-200">
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-sm text-gray-900 dark:text-white flex items-center gap-2">
-                  <List className="w-4 h-4" />
-                  Table of Contents
-                </h3>
-                <button 
-                  onClick={() => setIsCollapsed(true)}
-                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
-                  title="Collapse"
-                >
-                  <ChevronLeft className="w-4 h-4 text-gray-500" />
-                </button>
-              </div>
-              
-              {headings.length === 0 ? (
-                <div className="text-sm text-gray-400 italic py-2">
-                  No headings found.
-                </div>
-              ) : (
-                <ul className="space-y-0.5 max-h-[calc(100vh-200px)] overflow-y-auto pr-2">
-                  {headings.map((heading) => (
-                    <li
-                      key={heading.id}
-                      style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
-                    >
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          scrollToHeading(heading.id);
-                        }}
-                        className={`
-                          text-left w-full py-1.5 px-2 rounded text-sm transition-colors truncate
-                          ${activeId === heading.id
-                            ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 font-medium'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-                          }
-                        `}
-                        title={heading.text}
-                      >
-                        {heading.text}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </nav>
-        )}
-      </div>
+      {/* Desktop TOC */}
+      <DesktopTOC
+        headings={headings}
+        activeId={activeId}
+        isCollapsed={isCollapsed}
+        onToggle={() => setIsCollapsed(!isCollapsed)}
+        onScrollTo={scrollToHeading}
+      />
     </>
   );
 }

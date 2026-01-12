@@ -4,6 +4,7 @@ import { KnowledgeGraphNode } from 'contentlayer/generated';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import type { Relationship } from '@/lib/knowledge-graph';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 interface NodeDetailProps {
   node: KnowledgeGraphNode;
@@ -94,7 +95,7 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
           <Separator />
 
           <div className="prose dark:prose-invert prose-sm max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: node.body.html }} />
+            <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(node.body.html) }} />
           </div>
         </div>
       </div>

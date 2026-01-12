@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   LevelSelector,
   TokenForger,
@@ -13,6 +14,7 @@ import {
   jwtSolutions,
   levels
 } from './components';
+import { generateJWTPreview, validateJWTToken } from './utils/jwt-validators';
 
 export default function JWTTamperingPage() {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -33,170 +35,30 @@ export default function JWTTamperingPage() {
     const savedLevel = localStorage.getItem('jwt-challenge-level');
     const savedCompleted = localStorage.getItem('jwt-challenge-completed');
     
-    if (savedLevel) {
-      setCurrentLevel(parseInt(savedLevel, 10));
-    }
+    if (savedLevel) setCurrentLevel(parseInt(savedLevel, 10));
     if (savedCompleted) {
-      try {
-        setCompletedLevels(JSON.parse(savedCompleted));
-      } catch {
-        // Invalid JSON, ignore
-      }
+      try { setCompletedLevels(JSON.parse(savedCompleted)); } catch { /* ignore */ }
     }
     setIsHydrated(true);
   }, []);
 
-  // Save progress to localStorage
   useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem('jwt-challenge-level', String(currentLevel));
-    }
+    if (isHydrated) localStorage.setItem('jwt-challenge-level', String(currentLevel));
   }, [currentLevel, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem('jwt-challenge-completed', JSON.stringify(completedLevels));
-    }
+    if (isHydrated) localStorage.setItem('jwt-challenge-completed', JSON.stringify(completedLevels));
   }, [completedLevels, isHydrated]);
 
   const level = levels.find(l => l.id === currentLevel)!;
 
-  // Generate live JWT preview
-  const generateJWTPreview = () => {
-    try {
-      const headerObj = JSON.parse(header);
-      const payloadObj = JSON.parse(payload);
-      
-      const base64Header = btoa(JSON.stringify(headerObj));
-      const base64Payload = btoa(JSON.stringify(payloadObj));
-      
-      return `${base64Header}.${base64Payload}.${signature}`;
-    } catch {
-      return 'Invalid JSON format';
-    }
-  };
-
-  const validateToken = () => {
-    const token = generateJWTPreview();
-    if (token === 'Invalid JSON format') {
-      return {
-        success: false,
-        message: '❌ Invalid JSON format in header or payload',
-      };
-    }
-
-    try {
-      const headerObj = JSON.parse(header);
-      const payloadObj = JSON.parse(payload);
-
-      switch (currentLevel) {
-        case 1:
-          if (headerObj.alg === 'none' || headerObj.alg === 'None') {
-            return {
-              success: true,
-              message: '🎯 None algorithm attack successful! Server accepted unsigned token.',
-            };
-          }
-          break;
-        case 2:
-          if (headerObj.alg === 'HS256' && (header.includes('RS256') === false || payload.includes('admin'))) {
-            return {
-              success: true,
-              message: '🔀 Algorithm confusion exploited! HS256 used with public key.',
-            };
-          }
-          break;
-        case 3:
-          if ((payloadObj.role === 'administrator' || payloadObj.role === 'admin') && signature !== 'original_signature_here') {
-            return {
-              success: true,
-              message: '🔓 Weak secret cracked! Admin token forged successfully.',
-            };
-          }
-          break;
-        case 4:
-          if (payloadObj.exp && payloadObj.exp > 9999999990) {
-            return {
-              success: true,
-              message: '⏰ Token expiry bypassed! Token valid until year 2286.',
-            };
-          }
-          break;
-        case 5:
-          if (payloadObj.admin === true || payloadObj.role === 'superuser' || payloadObj.role === 'administrator') {
-            return {
-              success: true,
-              message: '👑 Privilege escalation successful! Admin access granted.',
-            };
-          }
-          break;
-        case 6:
-          if (headerObj.jku && headerObj.jku.includes('attacker')) {
-            return {
-              success: true,
-              message: '🌐 JKU injection successful! Server fetching malicious keys.',
-            };
-          }
-          break;
-        case 7:
-          if (payloadObj.aud && payloadObj.aud.includes('admin')) {
-            return {
-              success: true,
-              message: '🔄 Cross-service replay successful! Token accepted by different service.',
-            };
-          }
-          break;
-        case 8:
-          if ((payloadObj.user && payloadObj.user.includes("' OR '")) || 
-              (payloadObj.user_id && payloadObj.user_id.includes('UNION'))) {
-            return {
-              success: true,
-              message: '💉 SQL injection via JWT! Database compromised through claims.',
-            };
-          }
-          break;
-        case 9:
-          if (payloadObj.session && payloadObj.session.includes('stolen')) {
-            return {
-              success: true,
-              message: '🎭 Token substitution successful! Stolen token replayed from new device.',
-            };
-          }
-          break;
-        case 10:
-          if (headerObj.kid && headerObj.kid.includes('../')) {
-            return {
-              success: true,
-              message: '📂 Path traversal exploited! Server using arbitrary file as key.',
-            };
-          }
-          break;
-      }
-
-      return {
-        success: false,
-        message: '❌ Token validation failed. Check the hint and try again!',
-      };
-    } catch {
-      return {
-        success: false,
-        message: '❌ Invalid token structure',
-      };
-    }
-  };
-
   const handleForgeToken = useCallback((e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = validateToken();
-    const token = generateJWTPreview();
-    const newAttempt = {
-      id: Date.now(),
-      token,
-      result,
-    };
-
-    setAttempts(prev => [...prev, newAttempt]);
+    const result = validateJWTToken(header, payload, signature, currentLevel);
+    const token = generateJWTPreview(header, payload, signature);
+    
+    setAttempts(prev => [...prev, { id: Date.now(), token, result }]);
 
     if (result.success) {
       setShowSuccess(true);
@@ -204,7 +66,7 @@ export default function JWTTamperingPage() {
         setCompletedLevels(prev => [...prev, currentLevel]);
       }
     }
-  }, [header, payload, signature, currentLevel, completedLevels, generateJWTPreview, validateToken]);
+  }, [header, payload, signature, currentLevel, completedLevels]);
 
   const resetLevel = () => {
     setAttempts([]);
@@ -251,11 +113,11 @@ export default function JWTTamperingPage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
           <div className="container mx-auto px-4 py-4">
-            <div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <Skeleton className="h-5 w-32" />
           </div>
         </div>
         <div className="container mx-auto px-4 py-8">
-          <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          <Skeleton className="h-64 w-full" />
         </div>
       </div>
     );
@@ -327,7 +189,7 @@ export default function JWTTamperingPage() {
               />
 
               <LivePreview
-                token={generateJWTPreview()}
+                token={generateJWTPreview(header, payload, signature)}
                 header={header}
                 payload={payload}
                 signature={signature}
