@@ -7,6 +7,7 @@ import { TarotCard, ReadingType } from "../types";
 import { useState, useEffect } from "react";
 import { generateAIReading, AIReadingResponse, getServerRemainingRequests } from "../actions";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Sparkles, Star, Lock, ScrollText, Bot, Heart, Moon } from 'lucide-react';
 import { 
   checkClientRateLimit, 
   consumeClientQuota, 
@@ -47,7 +48,7 @@ export function ReadingInterpretation({ cards, readingType, onReset, onNewReadin
   const handleAIRequest = async () => {
     // Client-side rate limit check
     if (!checkClientRateLimit()) {
-      setError(`Bạn đã sử dụng hết ${getDailyLimit()} lượt hôm nay. Quay lại vào ngày mai nhé! 🌙`);
+      setError(`Bạn đã sử dụng hết ${getDailyLimit()} lượt hôm nay. Quay lại vào ngày mai nhé!`);
       return;
     }
 
@@ -85,7 +86,7 @@ export function ReadingInterpretation({ cards, readingType, onReset, onNewReadin
        <Card className="bg-slate-50 dark:bg-slate-900 border-purple-200 dark:border-purple-900 border-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              📜 Giải Bài Chi Tiết
+              <ScrollText className="w-5 h-5" /> Giải Bài Chi Tiết
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -127,7 +128,7 @@ export function ReadingInterpretation({ cards, readingType, onReset, onNewReadin
                         ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
                         : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                     }`}>
-                      {remaining > 0 ? `✨ Còn ${remaining}/${getDailyLimit()} lượt hôm nay` : '🌙 Hết lượt hôm nay'}
+                      {remaining > 0 ? <><Sparkles className="w-4 h-4" /> Còn {remaining}/{getDailyLimit()} lượt hôm nay</> : <><Moon className="w-4 h-4" /> Hết lượt hôm nay</>}
                     </span>
                   </div>
                   
@@ -136,7 +137,7 @@ export function ReadingInterpretation({ cards, readingType, onReset, onNewReadin
                     disabled={remaining <= 0}
                     className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                      {remaining > 0 ? '✨ Giải Mã Bằng AI' : '🔒 Quay lại ngày mai'}
+                      {remaining > 0 ? <><Sparkles className="w-4 h-4 mr-1" /> Giải Mã Bằng AI</> : <><Lock className="w-4 h-4 mr-1" /> Quay lại ngày mai</>}
                   </Button>
 
                   {error && (
@@ -158,7 +159,7 @@ export function ReadingInterpretation({ cards, readingType, onReset, onNewReadin
                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-5">
                   <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-purple-100 dark:border-purple-900">
                      <h4 className="flex items-center gap-2 font-bold text-lg text-purple-700 dark:text-purple-300 mb-4">
-                       🤖 Góc Nhìn Sâu Sắc
+                       <Bot className="w-5 h-5" /> Góc Nhìn Sâu Sắc
                      </h4>
                      <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300">
                         <p className="whitespace-pre-line">{aiReading.interpretation}</p>
@@ -167,11 +168,11 @@ export function ReadingInterpretation({ cards, readingType, onReset, onNewReadin
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                      <div className="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-xl border border-blue-100 dark:border-blue-900">
-                        <h4 className="font-bold text-blue-700 dark:text-blue-300 mb-2">🌟 Lời Khuyên</h4>
+                        <h4 className="font-bold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-2"><Star className="w-4 h-4" /> Lời Khuyên</h4>
                         <p className="text-sm text-slate-700 dark:text-slate-300">{aiReading.advice}</p>
                      </div>
                      <div className="bg-pink-50 dark:bg-pink-900/20 p-5 rounded-xl border border-pink-100 dark:border-pink-900">
-                        <h4 className="font-bold text-pink-700 dark:text-pink-300 mb-2">🧘 Thiền Định</h4>
+                        <h4 className="font-bold text-pink-700 dark:text-pink-300 mb-2 flex items-center gap-2"><Heart className="w-4 h-4" /> Thiền Định</h4>
                         <p className="text-sm text-slate-700 dark:text-slate-300">{aiReading.meditation}</p>
                      </div>
                   </div>

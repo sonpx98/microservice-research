@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Link from 'next/link';
-import { Shield, ArrowRight, Lock, Code, AlertTriangle, Terminal } from 'lucide-react';
+import { Shield, ArrowRight, Lock, Code, AlertTriangle, Terminal, Target } from 'lucide-react';
 import { PlaygroundHero } from '@/components/playground/playground-hero';
 
 export default async function PlaygroundPage({ 
@@ -157,8 +157,8 @@ export default async function PlaygroundPage({
 
           {/* Info Card */}
           <div className="mt-12 p-6 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-              🎯 What you&apos;ll learn
+            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+              <Target className="w-5 h-5" /> What you&apos;ll learn
             </h3>
             <ul className="space-y-2 text-blue-800 dark:text-blue-200">
               <li className="flex items-center gap-2">

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { AppState, ReadingType, TarotCard } from './types';
+import { ReadingTypeIcon, ReadingIconType } from './components/ReadingTypeIcon';
 import { ReadingTypeSelector } from './components/ReadingTypeSelector';
 import { CardSpread } from './components/CardSpread';
 import { ReadingResults } from './components/ReadingResults';
@@ -106,7 +107,7 @@ export default function TarotPage() {
                        {readingTypes.map((type) => (
                          <SelectItem key={type.id} value={type.id} className="text-base py-3">
                             <span className="flex items-center gap-3">
-                              <span className="text-xl">{type.icon}</span>
+                              <ReadingTypeIcon type={type.icon as ReadingIconType} className="w-5 h-5" />
                               <span>{type.title}</span>
                             </span>
                          </SelectItem>

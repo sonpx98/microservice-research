@@ -44,7 +44,7 @@ export function MobileTOC({ headings, activeId, isOpen, onClose, onScrollTo }: M
             </h3>
             <button 
               onClick={onClose}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>

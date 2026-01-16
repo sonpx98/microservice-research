@@ -1,4 +1,4 @@
-import { Trophy, ChevronRight, Code, AlertTriangle, Shield } from 'lucide-react';
+import { Trophy, ChevronRight, Code, AlertTriangle, Shield, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface LevelExplanation {
@@ -30,8 +30,8 @@ export function SQLSuccessModal({
             <Trophy className="w-6 h-6 text-green-600 dark:text-green-400" />
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-1">
-              🎉 SQL Injection Successful!
+            <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-1 flex items-center gap-2">
+              <PartyPopper className="w-5 h-5" /> SQL Injection Successful!
             </h3>
             <p className="text-green-700 dark:text-green-300 text-sm">
               You&apos;ve successfully exploited the SQL vulnerability in Level {currentLevel}!
@@ -84,8 +84,8 @@ export function SQLSuccessModal({
           </Button>
         ) : (
           <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30">
-            <p className="text-green-800 dark:text-green-200 font-medium">
-              🏆 Congratulations! You&apos;ve completed all SQL Injection challenges!
+            <p className="text-green-800 dark:text-green-200 font-medium flex items-center gap-2">
+              <Trophy className="w-5 h-5" /> Congratulations! You&apos;ve completed all SQL Injection challenges!
             </p>
           </div>
         )}

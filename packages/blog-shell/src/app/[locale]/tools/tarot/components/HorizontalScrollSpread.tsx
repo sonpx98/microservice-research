@@ -13,9 +13,9 @@ interface HorizontalScrollSpreadProps {
 
 export function HorizontalScrollSpread({ cards, selectedIds, onCardClick }: HorizontalScrollSpreadProps) {
   return (
-    <div className="w-full py-8">
-      <ScrollArea className="w-full whitespace-nowrap rounded-md">
-        <div className="flex w-max space-x-4 p-4">
+    <div className="w-full max-w-[calc(100vw-2rem)] min-w-0 mx-auto py-8">
+      <ScrollArea className="w-full whitespace-nowrap rounded-md border-none">
+        <div className="flex w-max space-x-4 px-4 pb-4 pt-12">
           {cards.map((card) => {
             const isSelected = selectedIds.includes(card.id);
             return (

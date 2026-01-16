@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { AlertTriangle, Unlock } from 'lucide-react';
 
 interface XSSCommentFormProps {
   comment: string;
@@ -23,8 +24,8 @@ export function XSSCommentForm({
         rows={3}
       />
       <div className="flex items-center justify-between mt-3">
-        <p className="text-xs text-gray-500 dark:text-gray-500">
-          {hasFilter ? '⚠️ Some input filtering is active' : '🔓 No input filtering'}
+        <p className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
+          {hasFilter ? <><AlertTriangle className="w-3 h-3" /> Some input filtering is active</> : <><Unlock className="w-3 h-3" /> No input filtering</>}
         </p>
         <Button
           onClick={onSubmit}

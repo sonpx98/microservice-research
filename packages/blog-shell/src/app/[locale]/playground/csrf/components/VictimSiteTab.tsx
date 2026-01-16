@@ -1,4 +1,4 @@
-import { Shield, Mail, Lock, Activity, AlertTriangle } from 'lucide-react';
+import { Shield, Mail, Lock, Activity, AlertTriangle, Building2 } from 'lucide-react';
 import { NetworkRequestInspector, NetworkRequest } from './NetworkRequestInspector';
 
 interface VictimSiteTabProps {
@@ -22,8 +22,8 @@ export function VictimSiteTab({
         <div className="flex items-start gap-3">
           <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
-              🏦 Trusted Banking Site (bank.com)
+            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1 flex items-center gap-2">
+              <Building2 className="w-5 h-5" /> Trusted Banking Site (bank.com)
             </h3>
             <p className="text-sm text-blue-700 dark:text-blue-300">
               This is the legitimate banking website. The victim is logged in. Watch what happens when the CSRF attack is launched.
@@ -65,7 +65,7 @@ export function VictimSiteTab({
                 ? 'text-red-600 dark:text-red-400'
                 : 'text-green-600 dark:text-green-400'
             }`}>
-              {networkRequests.length > 0 ? '⚠️ Under Attack' : '✓ Protected'}
+              {networkRequests.length > 0 ? <span className="flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> Under Attack</span> : '✓ Protected'}
             </div>
           </div>
         </div>

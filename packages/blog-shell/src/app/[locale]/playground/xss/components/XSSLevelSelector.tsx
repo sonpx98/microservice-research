@@ -80,7 +80,7 @@ export function XSSLevelSelector({
         {showHint && (
           <div className="p-6 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-l-yellow-400">
             <p className="text-sm text-yellow-800 dark:text-yellow-200">
-              💡 <strong>Hint:</strong> {level.hint}
+              <Lightbulb className="w-4 h-4 inline mr-1" /> <strong>Hint:</strong> {level.hint}
             </p>
           </div>
         )}

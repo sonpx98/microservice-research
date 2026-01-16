@@ -5,7 +5,7 @@ export const readingTypes: ReadingType[] = [
         id: 'general',
         title: 'Tổng Quan',
         description: 'Cái nhìn tổng thể về cuộc sống và vận mệnh',
-        icon: '🔮',
+        icon: 'general',
         color: 'purple',
         interpretation: {
             past: 'Quá khứ',
@@ -17,7 +17,7 @@ export const readingTypes: ReadingType[] = [
         id: 'love',
         title: 'Tình Cảm',
         description: 'Tình yêu, mối quan hệ và cảm xúc',
-        icon: '💕',
+        icon: 'love',
         color: 'pink',
         interpretation: {
             past: 'Tình cảm trong quá khứ',
@@ -29,7 +29,7 @@ export const readingTypes: ReadingType[] = [
         id: 'career',
         title: 'Công Việc',
         description: 'Sự nghiệp, công việc và phát triển nghề nghiệp',
-        icon: '💼',
+        icon: 'career',
         color: 'blue',
         interpretation: {
             past: 'Sự nghiệp trong quá khứ',
@@ -41,7 +41,7 @@ export const readingTypes: ReadingType[] = [
         id: 'money',
         title: 'Tiền Bạc',
         description: 'Tài chính, đầu tư và thịnh vượng',
-        icon: '💰',
+        icon: 'money',
         color: 'green',
         interpretation: {
             past: 'Tình hình tài chính quá khứ',
@@ -53,7 +53,7 @@ export const readingTypes: ReadingType[] = [
         id: 'challenges',
         title: 'Khó Khăn Sắp Tới',
         description: 'Những thách thức và cách vượt qua',
-        icon: '⚡',
+        icon: 'challenges',
         color: 'red',
         interpretation: {
             past: 'Bài học từ khó khăn quá khứ',
@@ -65,7 +65,7 @@ export const readingTypes: ReadingType[] = [
         id: 'opportunities',
         title: 'Cơ Hội Thuận Lợi',
         description: 'Những điều tích cực và cơ hội sắp đến',
-        icon: '🌟',
+        icon: 'opportunities',
         color: 'yellow',
         interpretation: {
             past: 'Cơ hội đã bỏ lỡ',
@@ -74,3 +74,4 @@ export const readingTypes: ReadingType[] = [
         }
     }
 ];
+

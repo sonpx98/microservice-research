@@ -44,6 +44,7 @@ export function Header({ locale }: HeaderProps) {
   const toolsSubmenu = [
     { href: `/${locale}/tools/cv-generator`, label: 'CV Generator' },
     { href: `/${locale}/tools/tarot`, label: 'Tarot Reader' },
+    { href: `/${locale}/tools/co-browsing`, label: 'Co-browsing' },
   ];
 
   return (

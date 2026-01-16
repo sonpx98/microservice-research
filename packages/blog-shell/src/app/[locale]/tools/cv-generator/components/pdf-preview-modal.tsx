@@ -215,10 +215,10 @@ export function PDFPreviewModal({
                     {analysis.sections.map((section, index) => {
                       const riskIcon =
                         section.riskLevel === 'danger'
-                          ? '🔴'
+                          ? <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
                           : section.riskLevel === 'warning'
-                          ? '🟡'
-                          : '🟢';
+                          ? <span className="w-2 h-2 rounded-full bg-yellow-500 inline-block" />
+                          : <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />;
 
                       return (
                         <div
@@ -232,7 +232,9 @@ export function PDFPreviewModal({
                             </span>
                           </div>
                           {section.willOverflow && (
-                            <p className="text-red-600 dark:text-red-400 mt-1">⚠️ May overflow</p>
+                            <p className="text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
+                              <AlertTriangle className="w-3 h-3" /> May overflow
+                            </p>
                           )}
                         </div>
                       );

@@ -23,7 +23,7 @@ export function CardSpread({
 }: CardSpreadProps) {
   const [selectedCards, setSelectedCards] = useState<TarotCard[]>([]);
   const [shuffledCards, setShuffledCards] = useState<TarotCard[]>([]);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   // Shuffle cards on mount
   useEffect(() => {

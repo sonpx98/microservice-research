@@ -3,6 +3,7 @@
 import { TarotCard } from "../types";
 import { TarotCardFace } from "./TarotCardFace";
 import { cn } from "@/lib/utils";
+import { Sparkles } from 'lucide-react';
 
 interface SelectedCardsSlotsProps {
   slots: number;
@@ -42,7 +43,7 @@ export function SelectedCardsSlots({
                          Actually, usually we see back until revealed.
                      */}
                      <div className="w-full h-full bg-indigo-950 flex items-center justify-center">
-                        <span className="text-2xl opacity-50">✨</span>
+                        <Sparkles className="w-6 h-6 text-amber-400 opacity-50" />
                      </div>
                   </div>
                   

@@ -7,6 +7,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ReadingInterpretation } from './ReadingInterpretation';
 import { cn } from '@/lib/utils';
+import { Sparkles } from 'lucide-react';
+import { ReadingTypeIcon, ReadingIconType } from './ReadingTypeIcon';
 
 interface ReadingResultsProps {
   cards: TarotCard[];
@@ -40,7 +42,9 @@ export function ReadingResults({ cards, readingType, onReset, onNewReading }: Re
       
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="text-4xl mb-2">{readingType.icon}</div>
+        <div className="mb-2">
+          <ReadingTypeIcon type={readingType.icon as ReadingIconType} className="w-12 h-12 mx-auto" />
+        </div>
         <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500">
           {readingType.title}
         </h2>
@@ -63,7 +67,7 @@ export function ReadingResults({ cards, readingType, onReset, onNewReading }: Re
                 {/* Back of Card (Front face in CSS terms currently, until rotated) */}
                 <div className="absolute inset-0 backface-hidden">
                     <div className="w-full h-full rounded-xl bg-indigo-950 border-2 border-amber-400 shadow-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                       <span className="text-4xl animate-pulse">✨</span>
+                       <Sparkles className="w-10 h-10 text-amber-400 animate-pulse" />
                        <div className="absolute bottom-4 text-amber-400 text-sm font-bold">Tap to Reveal</div>
                     </div>
                 </div>

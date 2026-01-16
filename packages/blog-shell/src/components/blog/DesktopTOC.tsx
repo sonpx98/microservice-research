@@ -17,11 +17,11 @@ export function DesktopTOC({ headings, activeId, isCollapsed, onToggle, onScroll
       <div className="hidden lg:block fixed top-24 left-0 z-30">
         <button
           onClick={onToggle}
-          className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 border-l-0 rounded-r-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 border-l-0 rounded-r-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
           title="Show Table of Contents"
         >
           <List className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          <ChevronRight className="w-4 h-4 text-gray-400" />
+          <ChevronRight className="w-4 h-4 text-gray-500 dark:text-gray-400" />
         </button>
       </div>
     );
@@ -38,7 +38,7 @@ export function DesktopTOC({ headings, activeId, isCollapsed, onToggle, onScroll
             </h3>
             <button 
               onClick={onToggle}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors cursor-pointer"
               title="Collapse"
             >
               <ChevronLeft className="w-4 h-4 text-gray-500" />
@@ -46,7 +46,7 @@ export function DesktopTOC({ headings, activeId, isCollapsed, onToggle, onScroll
           </div>
           
           {headings.length === 0 ? (
-            <div className="text-sm text-gray-400 italic py-2">
+            <div className="text-sm text-gray-500 dark:text-gray-400 italic py-2">
               No headings found.
             </div>
           ) : (

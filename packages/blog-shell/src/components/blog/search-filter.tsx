@@ -197,6 +197,7 @@ export function SearchFilter({ tags }: SearchFilterProps) {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
                 placeholder="Search articles..."
+                aria-label="Search articles"
                 className="flex-1 py-4 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none"
               />
                {query && (

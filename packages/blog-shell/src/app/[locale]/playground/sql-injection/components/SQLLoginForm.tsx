@@ -1,4 +1,4 @@
-import { User, Lock, Database } from 'lucide-react';
+import { User, Lock, Database, Unlock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -65,8 +65,8 @@ export function SQLLoginForm({
         </div>
 
         <div className="flex items-center justify-between mt-6">
-          <p className="text-xs text-gray-500 dark:text-gray-500">
-            🔓 SQL Query visible below
+          <p className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
+            <Unlock className="w-3 h-3" /> SQL Query visible below
           </p>
           <Button
             type="submit"
