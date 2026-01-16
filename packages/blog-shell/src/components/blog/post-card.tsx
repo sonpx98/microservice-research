@@ -39,7 +39,7 @@ export function PostCard({ post }: PostCardProps) {
     >
       {/* Base Card (Placeholder) */}
       <div className="h-full">
-          <Card className="h-full flex flex-col transition-all hover:shadow-lg">
+          <Card className="h-full flex flex-col transition-all hover:shadow-lg cursor-pointer">
             <BlogThumbnail 
               src={post.coverImage} 
               alt={post.title} 

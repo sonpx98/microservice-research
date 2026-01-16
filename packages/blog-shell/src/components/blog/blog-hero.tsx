@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, Terminal } from 'lucide-react';
+import { BookOpen, Terminal, Rocket, Tag } from 'lucide-react';
 import { TypewriterLoop } from '@/components/ui/typewriter';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -53,7 +53,7 @@ export function BlogHero({
               </>
             ) : (
               <>
-                <span>🚀</span>
+                <Rocket className="w-4 h-4" />
                 {t('exploreData')}
               </>
             )}
@@ -80,7 +80,7 @@ export function BlogHero({
             <span className="text-white/90">{articlesCount} {articlesLabel}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🏷️</span>
+            <Tag className="w-5 h-5 text-blue-300" />
             <span className="text-white/90">{topicsCount} {topicsLabel}</span>
           </div>
         </div>

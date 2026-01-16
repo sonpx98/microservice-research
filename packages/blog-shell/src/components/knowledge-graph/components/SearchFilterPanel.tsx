@@ -39,7 +39,7 @@ export function SearchFilterPanel({
           <div className="flex items-center gap-2 p-2">
             <button
               onClick={onExpandToggle}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors cursor-pointer"
               title="Expand search"
             >
               <Search className="w-4 h-4 text-gray-600 dark:text-gray-400" />
@@ -60,7 +60,7 @@ export function SearchFilterPanel({
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Search & Filter</h3>
               <button
                 onClick={onExpandToggle}
-                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors cursor-pointer"
                 title="Collapse"
               >
                 <Minimize2 className="w-3.5 h-3.5 text-gray-500" />
@@ -73,6 +73,7 @@ export function SearchFilterPanel({
               <input
                 type="text"
                 placeholder="Search nodes..."
+                aria-label="Search nodes"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 className="w-full pl-10 pr-10 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white placeholder-gray-500"
@@ -80,7 +81,7 @@ export function SearchFilterPanel({
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -91,7 +92,7 @@ export function SearchFilterPanel({
             <div className="relative">
               <button
                 onClick={onFilterToggle}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-gray-400" />

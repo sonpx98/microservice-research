@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Shield, Terminal } from 'lucide-react';
+import { ArrowRight, BookOpen, Shield, Terminal, Unlock } from 'lucide-react';
 import { getAllPosts } from '@/lib/posts';
 import { HeroSection } from '@/components/home/hero-section';
 
@@ -109,7 +109,7 @@ export default async function LocaleHomePage({
                     </div>
                     <div>
                       <p className="font-medium">Security Lab</p>
-                      <p className="text-sm text-gray-400">Think like a hacker 🔓</p>
+                      <p className="text-sm text-gray-400 flex items-center gap-1"><Unlock className="w-4 h-4" /> Think like a hacker</p>
                     </div>
                   </div>
                 </div>

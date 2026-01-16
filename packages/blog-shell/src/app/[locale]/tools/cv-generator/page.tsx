@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useId } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { DndContext, DragEndEvent, DragOverEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverEvent, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import type { CVData, CVComponent } from '@/lib/cv/types';
 import { createEmptyCV, createComponent, reorderSections, updateSection, removeSection, addSection } from '@/lib/cv/utils';
@@ -19,6 +19,8 @@ import { VisualBuilder } from './components/visual-builder';
 import { PreviewPanel } from './components/preview-panel';
 import { CodeEditor } from './components/code-editor';
 import { PDFPreviewModal } from './components/pdf-preview-modal';
+import { useMediaQuery } from '@/hooks/use-media-query';
+import { SegmentTabs, SegmentTabsList, SegmentTabsTrigger, SegmentTabsContent } from '@/components/ui/segment-tabs';
 
 export default function CVGeneratorPage() {
   const [cv, setCV] = useState<CVData>(() => createEmptyCV());
@@ -40,6 +42,12 @@ export default function CVGeneratorPage() {
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 5,
       },
     })
   );
@@ -224,8 +232,44 @@ export default function CVGeneratorPage() {
     }
   }, 500);
 
+  // Responsive check - desktop >= 1024px
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+
+  // Handle move section for mobile (up/down buttons instead of DnD)
+  const handleMoveSection = (id: string, direction: 'up' | 'down') => {
+    const sortedSections = [...cv.sections].sort((a, b) => a.order - b.order);
+    const idx = sortedSections.findIndex(s => s.id === id);
+    
+    if (direction === 'up' && idx > 0) {
+      [sortedSections[idx], sortedSections[idx - 1]] = [sortedSections[idx - 1], sortedSections[idx]];
+    } else if (direction === 'down' && idx < sortedSections.length - 1) {
+      [sortedSections[idx], sortedSections[idx + 1]] = [sortedSections[idx + 1], sortedSections[idx]];
+    }
+    
+    // Re-assign order values
+    const reordered = sortedSections.map((s, i) => ({ ...s, order: i }));
+    setCV({ ...cv, sections: reordered });
+  };
+
+  // Show loading skeleton during SSR/hydration
+  if (isDesktop === null) {
+    return (
+      <div className="flex flex-col bg-gray-50 dark:bg-gray-950 h-full overflow-hidden">
+        <div className="container mx-auto max-w-7xl">
+          <div className="h-14 flex-shrink-0 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="animate-pulse text-gray-400">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col bg-gray-50 dark:bg-gray-950 overflow-hidden h-full">
+    <div className="flex flex-col bg-gray-50 dark:bg-gray-950 h-full overflow-hidden">
       {/* Toolbar with Container */}
       <div className="container mx-auto max-w-7xl">
         <Toolbar
@@ -238,45 +282,135 @@ export default function CVGeneratorPage() {
         />
       </div>
 
-      {/* Main Content - 3 Panel Layout with Internal Scrolling */}
+      {/* Main Content */}
       <div className="flex-1 flex gap-0 overflow-hidden container mx-auto max-w-7xl">
-        <DndContext id={dndId} sensors={sensors} onDragEnd={handleDragEnd}>
-          {/* Left Panel - Component Palette */}
-          <div className="w-64 flex-shrink-0 overflow-y-auto border-r border-gray-200 dark:border-gray-800">
-            <ComponentPalette onAddComponent={handleAddComponent} />
-          </div>
-
-          {/* Middle Panel - 60/40 Visual Builder & Code Editor */}
-          <div className="flex-1 flex flex-col min-w-0">
-            {/* Visual Builder - Top 60% */}
-            <div className="flex-1 overflow-y-auto border-b border-gray-200 dark:border-gray-800 min-h-0">
-              <SortableContext
-                items={cv.sections.map(s => s.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                <VisualBuilder
-                  sections={cv.sections}
-                  onReorder={(sections) => setCV({ ...cv, sections })}
-                  onEdit={setEditingSection}
-                  onDelete={handleDeleteSection}
-                  onToggleVisibility={handleToggleVisibility}
-                />
-              </SortableContext>
+        {isDesktop ? (
+          // Desktop: 3-Column Layout with DnD
+          <DndContext id={dndId} sensors={sensors} onDragEnd={handleDragEnd}>
+            {/* Left Panel - Component Palette */}
+            <div className="w-64 flex-shrink-0 overflow-y-auto border-r border-gray-200 dark:border-gray-800">
+              <ComponentPalette onAddComponent={handleAddComponent} />
             </div>
 
-            {/* Code Editor - Bottom 40% */}
-            <CodeEditor
-              value={markdown}
-              onChange={handleMarkdownChange}
-              format="markdown"
-            />
-          </div>
+            {/* Middle Panel - 60/40 Visual Builder & Code Editor */}
+            <div className="flex-1 flex flex-col min-w-0">
+              {/* Visual Builder - Top 60% */}
+              <div className="flex-1 overflow-y-auto border-b border-gray-200 dark:border-gray-800 min-h-0">
+                <SortableContext
+                  items={cv.sections.map(s => s.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <VisualBuilder
+                    sections={cv.sections}
+                    onReorder={(sections) => setCV({ ...cv, sections })}
+                    onEdit={setEditingSection}
+                    onDelete={handleDeleteSection}
+                    onToggleVisibility={handleToggleVisibility}
+                  />
+                </SortableContext>
+              </div>
 
-          {/* Right Panel - Preview */}
-          <div className="w-96 flex-shrink-0 overflow-y-auto border-l border-gray-200 dark:border-gray-800">
-            <PreviewPanel cv={cv} />
-          </div>
-        </DndContext>
+              {/* Code Editor - Bottom 40% */}
+              <CodeEditor
+                value={markdown}
+                onChange={handleMarkdownChange}
+                format="markdown"
+              />
+            </div>
+
+            {/* Right Panel - Preview */}
+            <div className="w-96 flex-shrink-0 overflow-y-auto border-l border-gray-200 dark:border-gray-800">
+              <PreviewPanel cv={cv} />
+            </div>
+          </DndContext>
+        ) : (
+          // Mobile/Tablet: Tab Layout WITH DnD
+          <DndContext id={dndId} sensors={sensors} onDragEnd={handleDragEnd}>
+            <div className="w-full h-full flex flex-col min-h-0">
+              <SegmentTabs defaultValue="design" className="flex-1 flex flex-col min-h-0">
+                {/* Mobile Tabs - Reusable SegmentTabs Component */}
+                <div className="px-3 py-2 bg-gray-50 dark:bg-gray-900/50 flex-shrink-0">
+                  <SegmentTabsList className="grid grid-cols-3">
+                    <SegmentTabsTrigger 
+                      value="design" 
+                      icon={
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                        </svg>
+                      }
+                    >
+                      Design
+                    </SegmentTabsTrigger>
+                    <SegmentTabsTrigger 
+                      value="code"
+                      icon={
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                      }
+                    >
+                      Code
+                    </SegmentTabsTrigger>
+                    <SegmentTabsTrigger 
+                      value="preview"
+                      icon={
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      }
+                    >
+                      Preview
+                    </SegmentTabsTrigger>
+                  </SegmentTabsList>
+                </div>
+
+                <div className="flex-1 overflow-hidden min-h-0">
+                  {/* Design Tab */}
+                  <SegmentTabsContent value="design" className="h-full m-0 p-0 overflow-y-auto">
+                    <div className="p-4 space-y-4">
+                      {/* Component Palette - NO drag, just tap to add */}
+                      <ComponentPalette onAddComponent={handleAddComponent} isMobile />
+                      
+                      {/* CV Sections with DnD handles */}
+                      <h3 className="font-semibold text-sm text-gray-500 uppercase tracking-wider pb-3">
+                        Your CV Sections
+                      </h3>
+                      <SortableContext
+                        items={cv.sections.map(s => s.id)}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        <VisualBuilder
+                          sections={cv.sections}
+                          onReorder={(sections) => setCV({ ...cv, sections })}
+                          onEdit={setEditingSection}
+                          onDelete={handleDeleteSection}
+                          onToggleVisibility={handleToggleVisibility}
+                          onMoveSection={handleMoveSection}
+                          isMobile
+                        />
+                      </SortableContext>
+                    </div>
+                  </SegmentTabsContent>
+
+                  {/* Code Tab */}
+                  <SegmentTabsContent value="code" className="h-full m-0 p-0 flex flex-col">
+                    <CodeEditor
+                      value={markdown}
+                      onChange={handleMarkdownChange}
+                      format="markdown"
+                    />
+                  </SegmentTabsContent>
+
+                  {/* Preview Tab */}
+                  <SegmentTabsContent value="preview" className="h-full m-0 p-0 overflow-y-auto">
+                    <PreviewPanel cv={cv} />
+                  </SegmentTabsContent>
+                </div>
+              </SegmentTabs>
+            </div>
+          </DndContext>
+        )}
       </div>
 
       {/* PDF Preview Modal */}

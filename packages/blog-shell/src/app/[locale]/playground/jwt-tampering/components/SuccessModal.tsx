@@ -1,6 +1,6 @@
 'use client';
 
-import { Trophy, Code, AlertTriangle, Shield, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Trophy, Code, AlertTriangle, Shield, CheckCircle2, ArrowLeft, PartyPopper } from 'lucide-react';
 import { JWTLevelExplanation } from './types';
 
 interface SuccessModalProps {
@@ -25,7 +25,7 @@ export function SuccessModal({
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-bold text-green-900 dark:text-green-100 mb-1">
-              Level {currentLevel} Complete! 🎉
+              Level {currentLevel} Complete! <PartyPopper className="w-5 h-5 inline ml-1" />
             </h3>
             <p className="text-sm text-green-700 dark:text-green-300">
               {explanation.attackName}
@@ -78,8 +78,8 @@ export function SuccessModal({
       </div>
 
       <div className="p-6 bg-green-50 dark:bg-green-900/5">
-        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-3">
-          🛡️ Prevention Tips:
+        <h4 className="font-semibold text-green-900 dark:text-green-100 mb-3 flex items-center gap-2">
+          <Shield className="w-4 h-4" /> Prevention Tips:
         </h4>
         <ul className="space-y-2">
           {explanation.preventionTips.map((tip, idx) => (

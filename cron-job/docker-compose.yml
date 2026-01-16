@@ -1,0 +1,11 @@
+services:
+  cron:
+    build: .
+    container_name: api-cron-job
+    restart: unless-stopped
+    environment:
+      - CRAWLER_API_KEY=${CRAWLER_API_KEY}
+      - GATEWAY_API_KEY=${GATEWAY_API_KEY}
+    volumes:
+      - ./logs:/var/log
+      - ./scripts:/scripts # Mount scripts folder - changes apply immediately

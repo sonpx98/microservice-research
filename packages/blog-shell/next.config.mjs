@@ -3,6 +3,8 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
+const supabaseUrl = process.env.NEXT_PUBLIC_COBROWSING_SUPABASE_URL?.replace('https://', '') || '';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -48,7 +50,7 @@ const nextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
+            value: 'camera=*, microphone=*, geolocation=()',
           },
           // Content Security Policy
           {
@@ -61,7 +63,7 @@ const nextConfig = {
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: https: blob:",
               "frame-src https://giscus.app",
-              "connect-src 'self' https://giscus.app https://*.onrender.com http://127.0.0.1:3000 https://cdn.jsdelivr.net",
+              `connect-src 'self' https://giscus.app https://*.onrender.com http://127.0.0.1:3000 https://cdn.jsdelivr.net https://${supabaseUrl} wss://${supabaseUrl}`,
               // Monaco uses blob: URLs for web workers
               "worker-src 'self' blob: https://cdn.jsdelivr.net",
             ].join('; '),

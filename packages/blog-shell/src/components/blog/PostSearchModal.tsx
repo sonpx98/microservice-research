@@ -117,7 +117,7 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
       >
         {/* Search Input */}
         <div className="flex items-center gap-3 px-4 border-b border-gray-200 dark:border-gray-700">
-          <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+          <Search className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -125,19 +125,20 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleSearchKeyDown}
             placeholder={t('searchPlaceholder')}
+            aria-label="Search posts"
             className="flex-1 py-4 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           )}
           <button
             onClick={handleClose}
-            className="p-2 -mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 -mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
             aria-label="Close search"
           >
             <X className="w-5 h-5" />

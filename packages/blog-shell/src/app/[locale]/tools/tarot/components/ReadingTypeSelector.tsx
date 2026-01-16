@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/ca
 import { readingTypes } from '../data/reading-types';
 import { ReadingType } from '../types';
 import { cn } from '@/lib/utils';
+import { ReadingTypeIcon, ReadingIconType } from './ReadingTypeIcon';
 
 interface ReadingTypeSelectorProps {
   onSelect: (type: ReadingType) => void;
@@ -33,7 +34,9 @@ export function ReadingTypeSelector({ onSelect }: ReadingTypeSelectorProps) {
             )}
           >
             <CardHeader>
-              <div className="text-4xl mb-4">{type.icon}</div>
+              <div className="mb-4">
+                <ReadingTypeIcon type={type.icon as ReadingIconType} className="w-10 h-10" />
+              </div>
               <CardTitle className="text-xl mb-2">{type.title}</CardTitle>
               <CardDescription className="text-base text-gray-600 dark:text-gray-300">
                 {type.description}
@@ -45,3 +48,4 @@ export function ReadingTypeSelector({ onSelect }: ReadingTypeSelectorProps) {
     </div>
   );
 }
+

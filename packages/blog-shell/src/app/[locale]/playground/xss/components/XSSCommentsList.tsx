@@ -1,4 +1,5 @@
 import { SafeCommentRender } from './SafeCommentRender';
+import { AlertTriangle } from 'lucide-react';
 
 interface Comment {
   id: number;
@@ -37,8 +38,8 @@ export function XSSCommentsList({ comments }: XSSCommentsListProps) {
           <SafeCommentRender html={c.rendered} />
           {c.text !== c.rendered && (
             <div className="mt-3 p-2 rounded bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-              <p className="text-xs text-yellow-700 dark:text-yellow-300">
-                ⚠️ <strong>Filtered:</strong> Some content was blocked
+              <p className="text-xs text-yellow-700 dark:text-yellow-300 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" /> <strong>Filtered:</strong> Some content was blocked
               </p>
             </div>
           )}

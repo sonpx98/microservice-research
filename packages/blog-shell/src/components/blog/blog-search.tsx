@@ -156,7 +156,7 @@ export function BlogSearch({ posts, locale }: BlogSearchProps) {
             <div className="relative w-full max-w-xl bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
               {/* Search Input */}
               <div className="flex items-center gap-3 px-4 border-b border-gray-200 dark:border-gray-700">
-                <Search className="w-5 h-5 text-gray-400" />
+                <Search className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -164,6 +164,7 @@ export function BlogSearch({ posts, locale }: BlogSearchProps) {
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t('searchPlaceholder')}
+                  aria-label="Search posts"
                   className="flex-1 py-4 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none"
                 />
                 {query && (
@@ -174,7 +175,7 @@ export function BlogSearch({ posts, locale }: BlogSearchProps) {
                     <X className="w-4 h-4" />
                   </button>
                 )}
-                <kbd className="px-2 py-1 text-xs font-mono text-gray-400 bg-gray-100 dark:bg-gray-800 rounded">
+                <kbd className="px-2 py-1 text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded">
                   ESC
                 </kbd>
               </div>
@@ -206,7 +207,7 @@ export function BlogSearch({ posts, locale }: BlogSearchProps) {
                           <FileText className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
                             index === selectedIndex
                               ? 'text-blue-600 dark:text-blue-400'
-                              : 'text-gray-400'
+                              : 'text-gray-500 dark:text-gray-400'
                           }`} />
                           <div className="flex-1 min-w-0">
                             <p className={`font-medium truncate ${

@@ -1,6 +1,6 @@
 'use client';
 
-import { Code, Lightbulb } from 'lucide-react';
+import { Code, Lightbulb, FileText } from 'lucide-react';
 import { CSRFLevel, CSRFLevelExplanation } from './types';
 
 interface CSRFLevelSelectorProps {
@@ -102,7 +102,7 @@ export function CSRFLevelSelector({
         {showHint && (
           <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-l-yellow-400">
             <p className="text-sm text-yellow-800 dark:text-yellow-200">
-              💡 <strong>Hint:</strong> {level.hint}
+              <Lightbulb className="w-4 h-4 inline mr-1" /> <strong>Hint:</strong> {level.hint}
             </p>
           </div>
         )}
@@ -110,8 +110,8 @@ export function CSRFLevelSelector({
         {/* Solution Section */}
         {showSolution && (
           <div className="p-6 bg-blue-50 dark:bg-blue-900/20">
-            <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-3">
-              📝 Solution for Level {currentLevel}
+            <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+              <FileText className="w-4 h-4" /> Solution for Level {currentLevel}
             </p>
             <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded border border-blue-300 dark:border-blue-700 text-xs overflow-x-auto font-mono">
               {csrfSolutions[currentLevel]}
