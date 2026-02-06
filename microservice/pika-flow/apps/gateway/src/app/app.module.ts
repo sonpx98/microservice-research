@@ -6,10 +6,14 @@ import { AppService } from './app.service';
 import { HealthController } from './health.controller';
 import { News, NewsSchema } from '@app/common';
 
+import { EnglishLearningModule } from './english-learning/english-learning.module';
+import { ConversationModule } from './conversation/conversation.module';
+import { TtsModule } from './tts/tts.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    
+
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -18,7 +22,12 @@ import { News, NewsSchema } from '@app/common';
       inject: [ConfigService],
     }),
 
-    MongooseModule.forFeature([{ name: News.name, schema: NewsSchema }]),
+    MongooseModule.forFeature([
+      { name: News.name, schema: NewsSchema },
+    ]),
+    EnglishLearningModule,
+    ConversationModule,
+    TtsModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],

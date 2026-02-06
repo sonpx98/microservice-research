@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "types": ["node"],
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "types": [
+      "node"
+    ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "composite": true,
@@ -10,7 +11,9 @@
     "emitDeclarationOnly": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "lib": ["es2022"],
+    "lib": [
+      "es2022"
+    ],
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "noEmitOnError": true,
@@ -21,12 +24,18 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@pika-flow/source"],
+    "customConditions": [
+      "@pika-flow/source"
+    ],
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@app/common": ["libs/common/src"],
-      "@app/common/*": ["libs/common/src/*"]
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
+      ]
     }
   }
 }

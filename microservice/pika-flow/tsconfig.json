@@ -11,6 +11,12 @@
     },
     {
       "path": "./apps/processor"
+    },
+    {
+      "path": "./apps/english-learning-service"
+    },
+    {
+      "path": "./apps/tts-service"
     }
   ]
 }

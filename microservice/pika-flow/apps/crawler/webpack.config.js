@@ -14,6 +14,13 @@ module.exports = {
       '@app/common': join(__dirname, '../../libs/common/src'),
     },
   },
+  // Ignore source map warnings from cron package (dependency of @nestjs/schedule)
+  ignoreWarnings: [
+    {
+      module: /node_modules\/cron/,
+      message: /Failed to parse source map/,
+    },
+  ],
   plugins: [
     new NxAppWebpackPlugin({
       target: 'node',

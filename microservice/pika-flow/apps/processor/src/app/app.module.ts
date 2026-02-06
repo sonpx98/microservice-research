@@ -6,6 +6,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthController } from './health.controller';
 import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schema';
+import { Reading, ReadingSchema } from '../../../../libs/common/src/schemas/reading.schema';
+import { Conversation, ConversationSchema } from '../../../../libs/common/src/schemas/conversation.schema';
+import { EnglishLearningProcessor } from './processors/english-learning.processor';
+import { ConversationConsumer } from './consumers/conversation.consumer';
 
 @Module({
   imports: [
@@ -21,32 +25,31 @@ import { News, NewsSchema } from '../../../../libs/common/src/schemas/news.schem
     }),
     BullModule.registerQueue({
       name: 'news-processing',
-      defaultJobOptions: {
-        removeOnComplete: true,  // Auto-remove completed jobs from Redis
-        removeOnFail: false,     // Keep failed jobs for debugging
-        attempts: 3,             // Retry failed jobs 3 times
-        backoff: {
-          type: 'exponential',
-          delay: 1000,
-        },
-      },
+      defaultJobOptions: { removeOnComplete: true, attempts: 3, backoff: { type: 'exponential', delay: 1000 } },
+    }),
+    BullModule.registerQueue({
+      name: 'english-learning',
+      defaultJobOptions: { removeOnComplete: true, attempts: 3 },
+    }),
+    BullModule.registerQueue({
+      name: 'conversation_queue',
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URI') || 'mongodb://user:password@localhost:27017/pikaflow',
-        serverApi: {
-          version: '1',
-          strict: true,
-          deprecationErrors: true,
-        },
+        serverApi: { version: '1', strict: true, deprecationErrors: true },
       }),
       inject: [ConfigService],
     }),
 
-    MongooseModule.forFeature([{ name: News.name, schema: NewsSchema }]),
+    MongooseModule.forFeature([
+      { name: News.name, schema: NewsSchema },
+      { name: Reading.name, schema: ReadingSchema },
+      { name: Conversation.name, schema: ConversationSchema }
+    ]),
   ],
   controllers: [HealthController],
-  providers: [AppService, AppController],
+  providers: [AppService, AppController, EnglishLearningProcessor, ConversationConsumer],
 })
 export class AppModule { }

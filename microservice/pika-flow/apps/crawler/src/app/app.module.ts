@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { CrawlerService } from './crawler.service';
+import { ScheduledCrawlerService } from './scheduled-crawler.service';
 import { TechCrunchCrawler } from './crawlers/techcrunch.crawler';
 
 import { DevToCrawler } from './crawlers/devto.crawler';
@@ -10,6 +12,7 @@ import { TopDevCrawler } from './crawlers/topdev.crawler';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     BullModule.forRoot({
       redis: {
         host: process.env.REDIS_HOST || 'localhost',
@@ -34,6 +37,7 @@ import { TopDevCrawler } from './crawlers/topdev.crawler';
   controllers: [AppController],
   providers: [
     CrawlerService,
+    ScheduledCrawlerService,
     TechCrunchCrawler,
     DevToCrawler,
     GenkCrawler,
@@ -56,3 +60,4 @@ import { TopDevCrawler } from './crawlers/topdev.crawler';
   ],
 })
 export class AppModule { }
+

@@ -42,3 +42,6 @@ Thumbs.db
 .nx/workspace-data
 
 test-output
+
+# Piper TTS - Download via scripts/setup-tts.sh
+tools/

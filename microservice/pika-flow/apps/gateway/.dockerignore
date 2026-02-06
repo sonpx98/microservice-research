@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+npm-debug.log
+pnpm-debug.log
+yarn-error.log
+
+# Development files
+src
+*.spec.ts
+*.test.ts
+.spec.swcrc
+jest.config.cts
+tsconfig.spec.json
+
+# Build configs
+webpack.config.js
+tsconfig.json
+tsconfig.app.json
+eslint.config.mjs
+
+# IDE
+.vscode
+.idea
+
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Other
+.DS_Store
+.env*
+!.env.production
