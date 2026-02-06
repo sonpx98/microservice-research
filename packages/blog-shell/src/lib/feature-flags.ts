@@ -34,6 +34,18 @@ export const featureFlags = {
      * Set NEXT_PUBLIC_FEATURE_KNOWLEDGE_GRAPH=false to disable
      */
     KNOWLEDGE_GRAPH_ENABLED: parseBoolean(process.env.NEXT_PUBLIC_FEATURE_KNOWLEDGE_GRAPH, true),
+
+    /**
+     * English Learning feature
+     * Set NEXT_PUBLIC_FEATURE_ENGLISH_LEARNING=false to disable
+     */
+    ENGLISH_LEARNING_ENABLED: parseBoolean(process.env.NEXT_PUBLIC_FEATURE_ENGLISH_LEARNING, true),
+
+    /**
+     * Co-browsing feature
+     * Set NEXT_PUBLIC_FEATURE_CO_BROWSING=false to disable
+     */
+    CO_BROWSING_ENABLED: parseBoolean(process.env.NEXT_PUBLIC_FEATURE_CO_BROWSING, true),
 } as const;
 
 export type FeatureFlags = typeof featureFlags;
