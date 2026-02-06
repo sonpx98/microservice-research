@@ -2,6 +2,11 @@
   "name": "module-federation",
   "private": true,
   "packageManager": "pnpm@9.15.0",
+  "pnpm": {
+    "overrides": {
+      "urql": "^5.0.1"
+    }
+  },
   "scripts": {
     "start": "pnpm lerna run --parallel start",
     "build": "pnpm lerna run build",
