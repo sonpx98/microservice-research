@@ -204,7 +204,7 @@ export function SearchPanel<T extends SearchResultItem>({
 
                 {query.length >= 2 && !isLoading && results.length === 0 && (
                    <div className="px-4 py-12 text-center text-gray-500 dark:text-gray-400">
-                     <p>No results found for "{query}"</p>
+                     <p>No results found for &quot;{query}&quot;</p>
                    </div>
                 )}
 
@@ -226,7 +226,7 @@ export function SearchPanel<T extends SearchResultItem>({
                                 )}
                              >
                                 <Search className={cn("w-5 h-5", selectedIndex === results.length ? "text-blue-600 dark:text-blue-400" : "text-gray-400")} />
-                                <span>See all results for "{query}"</span>
+                                <span>See all results for &quot;{query}&quot;</span>
                              </button>
                          </li>
                          )}
