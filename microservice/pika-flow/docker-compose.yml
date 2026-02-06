@@ -12,6 +12,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - mongo_data:/data/db
+    networks:
+      - pikaflow-network
 
   # 2. Queue & Cache: Redis
   redis:
@@ -22,6 +24,83 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
+    networks:
+      - pikaflow-network
+
+  # 3. Gateway Service
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+      platforms:
+        - linux/amd64
+    image: pika-gateway:latest
+    container_name: pikaflow-gateway
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://user:password@mongo:27017
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - pikaflow-network
+    restart: unless-stopped
+
+  # 4. Crawler Service
+  crawler:
+    build:
+      context: .
+      dockerfile: apps/crawler/Dockerfile
+      platforms:
+        - linux/amd64
+    image: pika-crawler:latest
+    container_name: pikaflow-crawler
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://user:password@mongo:27017
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - pikaflow-network
+    restart: unless-stopped
+
+  # 5. Processor Service
+  processor:
+    build:
+      context: .
+      dockerfile: apps/processor/Dockerfile
+      platforms:
+        - linux/amd64
+    image: pika-processor:latest
+    container_name: pikaflow-processor
+    ports:
+      - '3002:3002'
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://user:password@mongo:27017
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - pikaflow-network
+    restart: unless-stopped
+
+networks:
+  pikaflow-network:
+    driver: bridge
 
 volumes:
   mongo_data:

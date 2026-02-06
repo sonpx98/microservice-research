@@ -164,7 +164,7 @@ export default function XSSChallengePage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Header */}
       <div className="fixed top-[60px] left-0 right-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 max-w-7xl">
           <Link 
             href="/playground"
             className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -175,7 +175,7 @@ export default function XSSChallengePage() {
         </div>
       </div>
 
-      <div className="mt-[57px] container mx-auto px-4 py-8">
+      <div className="mt-[57px] container mx-auto px-4 py-8 max-w-7xl">
         {/* Layout: Sidebar + Main Content */}
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Sidebar: Level Selector */}

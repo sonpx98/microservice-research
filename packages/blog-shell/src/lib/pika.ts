@@ -56,7 +56,7 @@ async function fetchWithRetry<T>(
   return null;
 }
 
-const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:3000/api';
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:8080/api';
 
 export async function getCrawledNews(
   page = 1,

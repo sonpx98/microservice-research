@@ -4,6 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const supabaseUrl = process.env.NEXT_PUBLIC_COBROWSING_SUPABASE_URL?.replace('https://', '') || '';
+const gatewayUrl = process.env.NEXT_PUBLIC_GATEWAY_URL?.replace('/api', '') || 'http://localhost:8080';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -62,8 +63,9 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: https: blob:",
+              `media-src 'self' blob: ${gatewayUrl}`,
               "frame-src https://giscus.app",
-              `connect-src 'self' https://giscus.app https://*.onrender.com http://127.0.0.1:3000 https://cdn.jsdelivr.net https://${supabaseUrl} wss://${supabaseUrl}`,
+              `connect-src 'self' https://giscus.app https://*.onrender.com ${gatewayUrl} http://127.0.0.1:8080 https://cdn.jsdelivr.net https://${supabaseUrl} wss://${supabaseUrl}`,
               // Monaco uses blob: URLs for web workers
               "worker-src 'self' blob: https://cdn.jsdelivr.net",
             ].join('; '),

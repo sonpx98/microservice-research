@@ -13,7 +13,7 @@ import { CodeBlockCopyButton } from '@/components/blog/code-copy-button';
 
 async function getArticle(id: string) {
     try {
-        const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:3000/api';
+        const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:8080/api';
         const res = await fetch(`${GATEWAY_URL}/news/${id}`, {
             cache: 'no-store', // Always fetch fresh
             signal: AbortSignal.timeout(60000)
@@ -44,7 +44,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
             <ScrollControls className="bottom-28" />
             <TableOfContents />
             <CodeBlockCopyButton />
-            <article className="container max-w-4xl py-12 px-4 md:px-6 mx-auto">
+            <article className="container max-w-7xl py-12 px-4 md:px-6 mx-auto">
                 {/* Back Navigation */}
                 <div className="mb-8">
                     <Link 

@@ -127,7 +127,7 @@ export default function JWTTamperingPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Header */}
       <div className="fixed top-[60px] left-0 right-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 max-w-7xl">
           <div className="flex items-center justify-between">
             <Link 
               href="/playground"
@@ -140,7 +140,7 @@ export default function JWTTamperingPage() {
         </div>
       </div>
 
-      <div className="mt-[57px] container mx-auto px-4 py-8">
+      <div className="mt-[57px] container mx-auto px-4 py-8 max-w-7xl">
         {/* Layout: Sidebar + Main Content */}
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Sidebar: Level Selector */}

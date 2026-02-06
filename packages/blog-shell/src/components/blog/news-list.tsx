@@ -164,7 +164,7 @@ export function NewsList({ news: initialNews, initialTotal = 0 }: { news: NewsIt
             tag: tag
         });
 
-        const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:3000/api';
+        const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:8080/api';
         const res = await fetch(`${GATEWAY_URL}/news?${params.toString()}`, {
             signal: AbortSignal.timeout(60000), // 60s timeout for Render cold start
         });

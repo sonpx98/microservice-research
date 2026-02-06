@@ -35,6 +35,7 @@ export function Header({ locale }: HeaderProps) {
     { href: `/${locale}/blog`, label: 'Blog', active: isActive('/blog') },
     { href: `/${locale}/playground`, label: 'Playground', active: isActive('/playground') },
     { href: `/${locale}/knowledge-graph`, label: 'Knowledge Graph', active: isActive('/knowledge-graph') },
+    { href: `/${locale}/english-learning`, label: 'English Learning', active: isActive('/english-learning') },
     // Only show Algo Verse when feature flag is enabled
     ...(featureFlags.ALGO_VERSE_ENABLED 
       ? [{ href: `/${locale}/algo-verse`, label: 'Algo Verse', active: isActive('/algo-verse') }] 
