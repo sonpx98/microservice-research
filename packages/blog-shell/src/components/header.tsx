@@ -35,7 +35,10 @@ export function Header({ locale }: HeaderProps) {
     { href: `/${locale}/blog`, label: 'Blog', active: isActive('/blog') },
     { href: `/${locale}/playground`, label: 'Playground', active: isActive('/playground') },
     { href: `/${locale}/knowledge-graph`, label: 'Knowledge Graph', active: isActive('/knowledge-graph') },
-    { href: `/${locale}/english-learning`, label: 'English Learning', active: isActive('/english-learning') },
+    // English Learning
+    ...(featureFlags.ENGLISH_LEARNING_ENABLED 
+      ? [{ href: `/${locale}/english-learning`, label: 'English Learning', active: isActive('/english-learning') }]
+      : []),
     // Only show Algo Verse when feature flag is enabled
     ...(featureFlags.ALGO_VERSE_ENABLED 
       ? [{ href: `/${locale}/algo-verse`, label: 'Algo Verse', active: isActive('/algo-verse') }] 
@@ -45,7 +48,9 @@ export function Header({ locale }: HeaderProps) {
   const toolsSubmenu = [
     { href: `/${locale}/tools/cv-generator`, label: 'CV Generator' },
     { href: `/${locale}/tools/tarot`, label: 'Tarot Reader' },
-    { href: `/${locale}/tools/co-browsing`, label: 'Co-browsing' },
+    ...(featureFlags.CO_BROWSING_ENABLED 
+      ? [{ href: `/${locale}/tools/co-browsing`, label: 'Co-browsing' }]
+      : []),
   ];
 
   return (
