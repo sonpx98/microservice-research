@@ -26,6 +26,9 @@ export default function ConversationPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentLineIndex, setCurrentLineIndex] = useState(-1);
   
+  const [playbackRate, setPlaybackRate] = useState(1.0);
+  const playbackRateRef = useRef(1.0);
+  
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const currentLineIndexRef = useRef(-1);
   const selectedConversationRef = useRef<Conversation | null>(null);
@@ -40,6 +43,14 @@ export default function ConversationPage() {
   useEffect(() => {
     selectedConversationRef.current = selectedConversation;
   }, [selectedConversation]);
+
+  // Update playback rate when state changes or audio element changes
+  useEffect(() => {
+    playbackRateRef.current = playbackRate;
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
 
   useEffect(() => {
     fetchConversations();
@@ -81,6 +92,8 @@ export default function ConversationPage() {
 
     if (audioRef.current) {
       audioRef.current.src = getAudioUrl(conversation._id, lineIndex);
+      // Ensure playback rate is maintained when source changes
+      audioRef.current.playbackRate = playbackRateRef.current;
       audioRef.current.play().catch(err => {
         console.error('Failed to play audio:', err);
         setIsPlaying(false);
@@ -229,21 +242,33 @@ export default function ConversationPage() {
                       )}
                     </p>
                   </div>
-                  <button
-                    onClick={togglePlayPause}
-                    disabled={!selectedConversation.audioGenerated}
-                    className={`p-3 rounded-full shadow-lg transition-transform active:scale-95 ${
-                      !selectedConversation.audioGenerated 
-                        ? 'bg-gray-400 cursor-not-allowed' 
-                        : 'bg-blue-600 hover:bg-blue-700 text-white'
-                    }`}
-                  >
-                    {isPlaying ? (
-                      <Pause className="w-5 h-5" />
-                    ) : (
-                      <Play className="w-5 h-5" />
-                    )}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <select
+                      value={playbackRate}
+                      onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
+                      className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-sm px-2 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                    >
+                      <option value="0.75">0.75x</option>
+                      <option value="1">1.0x</option>
+                      <option value="1.25">1.25x</option>
+                      <option value="1.5">1.5x</option>
+                    </select>
+                    <button
+                      onClick={togglePlayPause}
+                      disabled={!selectedConversation.audioGenerated}
+                      className={`p-3 rounded-full shadow-lg transition-transform active:scale-95 ${
+                        !selectedConversation.audioGenerated 
+                          ? 'bg-gray-400 cursor-not-allowed' 
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
+                    >
+                      {isPlaying ? (
+                        <Pause className="w-5 h-5" />
+                      ) : (
+                        <Play className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
