@@ -17,6 +17,9 @@
     },
     {
       "path": "./apps/tts-service"
+    },
+    {
+      "path": "./apps/monolith"
     }
   ]
 }

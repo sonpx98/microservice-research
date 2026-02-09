@@ -1,0 +1,59 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "es2021",
+    "paths": {
+      "@app/common": [
+        "../../libs/common/src"
+      ],
+      "@app/common/*": [
+        "../../libs/common/src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../apps/gateway/src/**/*.ts",
+    "../../apps/crawler/src/**/*.ts",
+    "../../apps/processor/src/**/*.ts",
+    "../../apps/english-learning-service/src/**/*.ts",
+    "../../apps/tts-service/src/**/*.ts",
+    "../../libs/**/*.ts"
+  ],
+  "exclude": [
+    "out-tsc",
+    "dist",
+    "jest.config.ts",
+    "jest.config.cts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "../../apps/**/*.spec.ts",
+    "../../apps/**/*.test.ts",
+    "eslint.config.js",
+    "eslint.config.cjs",
+    "eslint.config.mjs"
+  ],
+  "references": [
+    {
+      "path": "../tts-service/tsconfig.app.json"
+    },
+    {
+      "path": "../english-learning-service/tsconfig.app.json"
+    },
+    {
+      "path": "../processor/tsconfig.app.json"
+    },
+    {
+      "path": "../crawler/tsconfig.app.json"
+    },
+    {
+      "path": "../gateway/tsconfig.app.json"
+    }
+  ]
+}
