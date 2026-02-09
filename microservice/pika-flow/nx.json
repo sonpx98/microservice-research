@@ -54,7 +54,8 @@
       "exclude": [
         "apps/pika-flow-e2e/**/*",
         "apps/crawler-e2e/**/*",
-        "apps/processor-e2e/**/*"
+        "apps/processor-e2e/**/*",
+        "apps/monolith-e2e/**/*"
       ]
     },
     {
