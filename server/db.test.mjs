@@ -1,0 +1,59 @@
+import { beforeAll, describe, expect, it } from "vitest";
+
+// isolate the DB in memory BEFORE importing the module (it opens the DB at import)
+process.env.HUB_DB = ":memory:";
+let db;
+beforeAll(async () => {
+  db = await import("./db.mjs");
+});
+
+describe("channels seed", () => {
+  it("seeds exactly general + random, no duplicates", () => {
+    const names = db.listChannels().map((c) => c.name).sort();
+    expect(names).toEqual(["general", "random"]);
+  });
+});
+
+describe("users", () => {
+  it("creates then reads a user", () => {
+    const user = db.createUser("alice", "hash:abc");
+    const row = db.getUserByName("alice");
+    expect(row.id).toBe(user.id);
+    expect(row.username).toBe("alice");
+    expect(row.pass_hash).toBe("hash:abc");
+  });
+
+  it("rejects a duplicate username (UNIQUE)", () => {
+    db.createUser("bob", "h");
+    expect(() => db.createUser("bob", "h2")).toThrow();
+  });
+});
+
+describe("messages + keyset pagination", () => {
+  it("stores and reads back a message with camelCase fields", () => {
+    const ch = db.listChannels()[0];
+    const saved = db.addMessage({ channelId: ch.id, userId: "u1", name: "alice", text: "hi" });
+    const page = db.getMessages(ch.id, undefined, 10);
+    expect(page[0].id).toBe(saved.id);
+    expect(page[0].channelId).toBe(ch.id);
+    expect(page[0].userId).toBe("u1");
+    expect(page[0].text).toBe("hi");
+  });
+
+  it("paginates newest-first with a `before` cursor and no overlap", () => {
+    const ch = db.listChannels()[1]; // fresh channel (#random), unused above
+    for (let i = 0; i < 50; i++) db.addMessage({ channelId: ch.id, userId: "u", name: "n", text: `m${i}` });
+
+    const page1 = db.getMessages(ch.id, undefined, 30);
+    expect(page1).toHaveLength(30);
+    // DESC: newest first
+    expect(page1[0].ts).toBeGreaterThan(page1[29].ts);
+
+    const cursor = page1[page1.length - 1].ts;
+    const page2 = db.getMessages(ch.id, cursor, 30);
+    expect(page2).toHaveLength(20); // 50 total - 30
+
+    const ids = new Set([...page1, ...page2].map((m) => m.id));
+    expect(ids.size).toBe(50); // no overlap, nothing dropped
+  });
+});
