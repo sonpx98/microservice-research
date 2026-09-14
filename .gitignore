@@ -1,0 +1,6 @@
+node_modules/
+dist/
+server/hub.db
+*.log
+test-results/
+playwright-report/
