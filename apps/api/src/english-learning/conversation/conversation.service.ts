@@ -2,10 +2,14 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Conversation, ConversationDocument, DialogueLine } from '../../common/schemas';
-import { AiService } from '../ai/ai.service';
 import { PiperService } from '../../tts/piper.service';
 
 type Line = Pick<DialogueLine, 'speaker' | 'text'>;
+export interface CreateConversationDto {
+  topic: string;
+  difficulty?: string;
+  dialogue: Line[];
+}
 
 @Injectable()
 export class ConversationService {
@@ -13,7 +17,6 @@ export class ConversationService {
 
   constructor(
     @InjectModel(Conversation.name) private conversationModel: Model<ConversationDocument>,
-    private aiService: AiService,
     private piper: PiperService,
   ) {}
 
@@ -28,31 +31,8 @@ export class ConversationService {
     return conversation;
   }
 
-  /** Generate dialogue via AI, synthesize audio per line, persist. */
-  async generate(topic: string, difficulty = 'Intermediate') {
-    const prompt = `Generate a natural, engaging English conversation between two friends (Person A and Person B) about "${topic}".
-
-Requirements:
-- Create a realistic small talk conversation like everyday life discussions
-- Include 12-16 dialogue exchanges (24-32 lines total)
-- Use natural filler words, reactions, and expressions (e.g., "Oh really?", "You know what I mean?", "That's so true!")
-- Include idioms, phrasal verbs, and colloquial expressions appropriate for ${difficulty} level
-- Show emotions, opinions, and personal stories
-- Include some interruptions, agreements, and follow-up questions
-- Make it feel like a genuine casual conversation between friends
-
-Return valid JSON with this structure:
-{
-    "dialogue": [
-        { "speaker": "Person A", "text": "Hey! Long time no see! How have you been?" },
-        { "speaker": "Person B", "text": "Oh my gosh, I know right? It's been ages! I've been super busy with..." }
-    ]
-}`;
-
-    this.logger.log(`Generating conversation "${topic}" via ${this.aiService.getCurrentAdapterName()}`);
-    const { dialogue } = await this.aiService.generateConversation(prompt);
-    if (!dialogue?.length) throw new Error('Generated conversation has no dialogue');
-
+  /** Store a dialogue produced elsewhere; synthesizes one audio clip per line. */
+  async create({ topic, difficulty = 'Intermediate', dialogue }: CreateConversationDto) {
     const withAudio = await this.attachAudio(dialogue);
     return new this.conversationModel({
       topic,

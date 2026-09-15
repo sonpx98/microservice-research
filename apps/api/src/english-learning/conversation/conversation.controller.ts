@@ -2,34 +2,26 @@ import {
   Controller, Get, Post, Body, Param, Query, Res, BadRequestException, NotFoundException, UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { ConversationService } from './conversation.service';
-import { AiService } from '../ai/ai.service';
+import { ConversationService, CreateConversationDto } from './conversation.service';
 import { ApiKeyGuard } from '../../common/api-key.guard';
 
 @Controller('conversation')
 export class ConversationController {
-  constructor(
-    private readonly conversations: ConversationService,
-    private readonly aiService: AiService,
-  ) {}
+  constructor(private readonly conversations: ConversationService) {}
 
   @Get()
   findAll() {
     return this.conversations.findAll();
   }
 
-  @Get('adapter-status')
-  getAdapterStatus() {
-    return {
-      currentAdapter: this.aiService.getCurrentAdapterName(),
-      availableAdapters: this.aiService.getAvailableAdapters(),
-    };
-  }
-
-  @Post('generate')
+  /** Dialogue is produced outside this API (e.g. a local LLM via MCP) and pushed here. */
+  @Post()
   @UseGuards(ApiKeyGuard)
-  generate(@Body() body: { topic?: string; difficulty?: string }) {
-    return this.conversations.generate(body.topic || 'Travel', body.difficulty);
+  create(@Body() body: CreateConversationDto) {
+    if (!body?.topic || !Array.isArray(body.dialogue) || body.dialogue.length === 0) {
+      throw new BadRequestException('topic and a non-empty dialogue[] of { speaker, text } are required');
+    }
+    return this.conversations.create(body);
   }
 
   @Post('regenerate-all-audio')

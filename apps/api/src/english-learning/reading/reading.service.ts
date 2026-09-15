@@ -1,56 +1,16 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Reading, ReadingDocument } from '../../common/schemas';
-import { AiService } from '../ai/ai.service';
 
-export interface GeneratedReading {
-  title: string;
-  content: string;
-  quizzes: unknown[];
-}
+export type CreateReadingDto = Pick<Reading, 'title' | 'content' | 'level' | 'topic'> & Partial<Pick<Reading, 'quizzes'>>;
 
 @Injectable()
 export class ReadingService {
-  private readonly logger = new Logger(ReadingService.name);
+  constructor(@InjectModel(Reading.name) private readingModel: Model<ReadingDocument>) {}
 
-  constructor(
-    @InjectModel(Reading.name) private readingModel: Model<ReadingDocument>,
-    private aiService: AiService,
-  ) {}
-
-  async generateReading(level: string, topic: string) {
-    this.logger.log(`Generating reading for level ${level} and topic ${topic}`);
-
-    const prompt = `
-      Create an English reading passage about "${topic}" suitable for CEFR level ${level}.
-      Include 3-5 multiple choice comprehension questions.
-
-      Return valid JSON with this structure:
-      {
-        "title": "Title of the passage",
-        "content": "The full text content...",
-        "quizzes": [
-          {
-            "question": "Question text?",
-            "options": [
-              { "answer": "Option A", "isCorrect": false },
-              { "answer": "Option B", "isCorrect": true },
-              { "answer": "Option C", "isCorrect": false },
-              { "answer": "Option D", "isCorrect": false }
-            ],
-            "explanation": "Why the answer is correct."
-          }
-        ]
-      }
-    `;
-
-    const data = await this.aiService.generateJson<GeneratedReading>(prompt);
-    return this.save({ ...data, level, topic });
-  }
-
-  save(reading: GeneratedReading & { level: string; topic: string }) {
-    return new this.readingModel(reading).save();
+  create(dto: CreateReadingDto) {
+    return new this.readingModel(dto).save();
   }
 
   async findAll(params: { q?: string; topic?: string; level?: string; page?: number; limit?: number }) {
