@@ -16,3 +16,37 @@ export function mergeMessage(old: MsgPages | undefined, msg: ChatMessage): MsgPa
   pages[0] = [msg, ...deduped];
   return { ...old, pages };
 }
+
+// Apply a patch to one message wherever it sits across the pages. No-op if not found / no cache.
+export function updateMessage(
+  old: MsgPages | undefined,
+  messageId: string,
+  patch: (m: ChatMessage) => ChatMessage,
+): MsgPages | undefined {
+  if (!old) return old;
+  const pages = old.pages.map((page) => page.map((m) => (m.id === messageId ? patch(m) : m)));
+  return { ...old, pages };
+}
+
+// Remove one message from the cache.
+export function removeMessage(old: MsgPages | undefined, messageId: string): MsgPages | undefined {
+  if (!old) return old;
+  const pages = old.pages.map((page) => page.filter((m) => m.id !== messageId));
+  return { ...old, pages };
+}
+
+// Idempotent reaction toggle so optimistic apply + server echo can both run without double-counting.
+export function applyReaction(
+  old: MsgPages | undefined,
+  { messageId, emoji, userId, op }: { messageId: string; emoji: string; userId: string; op: "add" | "remove" },
+): MsgPages | undefined {
+  return updateMessage(old, messageId, (m) => {
+    const reactions = { ...(m.reactions ?? {}) };
+    const users = new Set(reactions[emoji] ?? []);
+    if (op === "add") users.add(userId);
+    else users.delete(userId);
+    if (users.size === 0) delete reactions[emoji];
+    else reactions[emoji] = [...users];
+    return { ...m, reactions };
+  });
+}

@@ -57,3 +57,54 @@ describe("messages + keyset pagination", () => {
     expect(ids.size).toBe(50); // no overlap, nothing dropped
   });
 });
+
+describe("reactions", () => {
+  it("toggles a reaction on/off and reports the op", () => {
+    const ch = db.listChannels()[0];
+    const m = db.addMessage({ channelId: ch.id, userId: "u1", name: "n", text: "react me" });
+    expect(db.toggleReaction(m.id, "u2", "👍").op).toBe("add");
+    expect(db.getMessages(ch.id, undefined, 50).find((x) => x.id === m.id).reactions).toEqual({ "👍": ["u2"] });
+    expect(db.toggleReaction(m.id, "u2", "👍").op).toBe("remove");
+    expect(db.getMessages(ch.id, undefined, 50).find((x) => x.id === m.id).reactions).toEqual({});
+  });
+
+  it("returns null for a missing message", () => {
+    expect(db.toggleReaction("nope", "u1", "👍")).toBeNull();
+  });
+});
+
+describe("edit / delete ownership", () => {
+  it("author can edit; non-author cannot", () => {
+    const ch = db.listChannels()[0];
+    const m = db.addMessage({ channelId: ch.id, userId: "owner", name: "n", text: "v1" });
+    expect(db.editMessage(m.id, "someone-else", "hacked")).toBeNull();
+    const ok = db.editMessage(m.id, "owner", "v2");
+    expect(ok.text).toBe("v2");
+    const row = db.getMessages(ch.id, undefined, 50).find((x) => x.id === m.id);
+    expect(row.text).toBe("v2");
+    expect(row.editedAt).toBeTruthy();
+  });
+
+  it("author can delete; non-author cannot", () => {
+    const ch = db.listChannels()[0];
+    const m = db.addMessage({ channelId: ch.id, userId: "owner", name: "n", text: "bye" });
+    expect(db.deleteMessage(m.id, "someone-else")).toBeNull();
+    expect(db.deleteMessage(m.id, "owner").messageId).toBe(m.id);
+    expect(db.getMessages(ch.id, undefined, 50).find((x) => x.id === m.id)).toBeUndefined();
+  });
+});
+
+describe("reply snapshot", () => {
+  it("stores and returns the denormalized reply fields", () => {
+    const ch = db.listChannels()[0];
+    const parent = db.addMessage({ channelId: ch.id, userId: "u1", name: "alice", text: "parent msg" });
+    const child = db.addMessage({
+      channelId: ch.id, userId: "u2", name: "bob", text: "a reply",
+      replyTo: parent.id, replyToName: "alice", replyToPreview: "parent msg",
+    });
+    const row = db.getMessages(ch.id, undefined, 50).find((x) => x.id === child.id);
+    expect(row.replyTo).toBe(parent.id);
+    expect(row.replyToName).toBe("alice");
+    expect(row.replyToPreview).toBe("parent msg");
+  });
+});

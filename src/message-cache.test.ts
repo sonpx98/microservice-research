@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mergeMessage, type MsgPages } from "./message-cache";
+import { applyReaction, mergeMessage, type MsgPages, removeMessage, updateMessage } from "./message-cache";
 import type { ChatMessage } from "./types";
 
 function msg(over: Partial<ChatMessage>): ChatMessage {
@@ -38,5 +38,51 @@ describe("mergeMessage", () => {
 
   it("returns undefined when the channel has no cache yet", () => {
     expect(mergeMessage(undefined, msg({}))).toBeUndefined();
+  });
+});
+
+describe("updateMessage / removeMessage", () => {
+  it("patches a message wherever it sits across pages", () => {
+    const before: MsgPages = { pages: [[msg({ id: "a" })], [msg({ id: "b", text: "old" })]], pageParams: [undefined, 1] };
+    const out = updateMessage(before, "b", (m) => ({ ...m, text: "new", editedAt: 99 }));
+    expect(out!.pages[1][0].text).toBe("new");
+    expect(out!.pages[1][0].editedAt).toBe(99);
+    expect(out!.pages[0][0].text).toBe("t"); // untouched
+  });
+
+  it("removes a message", () => {
+    const before = cache([msg({ id: "a" }), msg({ id: "b" })]);
+    const out = removeMessage(before, "a");
+    expect(out!.pages[0].map((m) => m.id)).toEqual(["b"]);
+  });
+
+  it("no-ops without a cache", () => {
+    expect(updateMessage(undefined, "a", (m) => m)).toBeUndefined();
+    expect(removeMessage(undefined, "a")).toBeUndefined();
+  });
+});
+
+describe("applyReaction", () => {
+  it("adds a reaction", () => {
+    const out = applyReaction(cache([msg({ id: "a" })]), { messageId: "a", emoji: "👍", userId: "u1", op: "add" });
+    expect(out!.pages[0][0].reactions).toEqual({ "👍": ["u1"] });
+  });
+
+  it("is idempotent on add (optimistic + echo don't double-count)", () => {
+    let c = applyReaction(cache([msg({ id: "a" })]), { messageId: "a", emoji: "👍", userId: "u1", op: "add" });
+    c = applyReaction(c, { messageId: "a", emoji: "👍", userId: "u1", op: "add" });
+    expect(c!.pages[0][0].reactions!["👍"]).toEqual(["u1"]);
+  });
+
+  it("removes a reaction and drops the empty emoji key", () => {
+    const start = cache([msg({ id: "a", reactions: { "👍": ["u1"] } })]);
+    const out = applyReaction(start, { messageId: "a", emoji: "👍", userId: "u1", op: "remove" });
+    expect(out!.pages[0][0].reactions).toEqual({});
+  });
+
+  it("keeps other users when one removes", () => {
+    const start = cache([msg({ id: "a", reactions: { "👍": ["u1", "u2"] } })]);
+    const out = applyReaction(start, { messageId: "a", emoji: "👍", userId: "u1", op: "remove" });
+    expect(out!.pages[0][0].reactions!["👍"]).toEqual(["u2"]);
   });
 });

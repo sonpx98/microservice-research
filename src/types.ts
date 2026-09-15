@@ -6,7 +6,13 @@ export interface ChatMessage {
   name: string;
   text: string;
   ts: number;
+  editedAt?: number | null;
+  reactions?: Record<string, string[]>; // emoji -> userIds who reacted
+  replyTo?: string | null; // parent message id
+  replyToName?: string | null; // denormalized author of the parent
+  replyToPreview?: string | null; // denormalized snippet of the parent
   pending?: boolean; // true while an optimistic message awaits the server echo
+  deleting?: boolean; // true while an optimistic delete awaits confirmation
 }
 
 export interface PresenceUser {

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useMessages } from "../queries";
 import { useChat } from "../store";
+import { MessageItem } from "./MessageItem";
 
 export function MessageList({ channelId }: { channelId: string }) {
   const { data, isLoading, isError, hasNextPage, isFetchingNextPage, fetchNextPage } = useMessages(channelId);
@@ -26,14 +27,7 @@ export function MessageList({ channelId }: { channelId: string }) {
         </button>
       )}
       {messages.map((m) => (
-        <div key={m.id} className={"msg" + (m.pending ? " pending" : "") + (m.userId === myId ? " mine" : "")}>
-          <div className="msg-head">
-            <span className="msg-name">{m.name}</span>
-            <span className="msg-time">{new Date(m.ts).toLocaleTimeString()}</span>
-            {m.pending && <span className="msg-pending">sending…</span>}
-          </div>
-          <div className="msg-text">{m.text}</div>
-        </div>
+        <MessageItem key={m.id} m={m} myId={myId} />
       ))}
       <div ref={endRef} />
     </div>
