@@ -1,0 +1,39 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "setup:tts": "bash setup-tts.sh"
+  },
+  "dependencies": {
+    "@google/genai": "^1.38.0",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/mongoose": "^11.0.4",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/schedule": "^5.0.0",
+    "axios": "^1.13.2",
+    "cheerio": "^1.1.2",
+    "groq-sdk": "^0.37.0",
+    "mongoose": "^9.0.2",
+    "p-limit": "^7.2.0",
+    "reflect-metadata": "^0.2.2",
+    "rss-parser": "^3.13.0",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.8.0",
+    "@nestjs/cli": "^11.0.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "20.19.9",
+    "eslint": "^9.8.0",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.40.0"
+  }
+}

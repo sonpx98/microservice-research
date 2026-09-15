@@ -1,5 +1,5 @@
 {
-  "name": "module-federation",
+  "name": "microservice-research",
   "private": true,
   "packageManager": "pnpm@9.15.0",
   "pnpm": {
@@ -8,28 +8,12 @@
     }
   },
   "scripts": {
-    "start": "pnpm lerna run --parallel start",
-    "build": "pnpm lerna run build",
-    "build:portfolio": "cd packages/portfolio-home && npm install && npm run build",
-    "preview": "pnpm lerna run --parallel preview",
-    "start:dev": "pnpm lerna run start --scope=portfolio-home --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
-    "start:remotes": "pnpm build:remotes && pnpm preview:remotes",
-    "start:portfolio": "cd packages/portfolio-home && pnpm start",
-    "start:blog": "cd packages/blog-shell && pnpm dev",
-    "start:blog:multi-zone": "./scripts/start-multi-zone.sh",
-    "build:remotes": "pnpm lerna run build --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
-    "build:blog": "cd packages/blog-shell && pnpm build",
-    "preview:remotes": "pnpm lerna run preview --scope=tarot --scope=snake-game --scope=video-editor --scope=interface-generator --parallel",
-    "stop": "kill-port",
-    "dev:cms": "pnpm --filter keystatic-admin dev",
-    "build:cms": "pnpm --filter keystatic-admin build"
-  },
-  "devDependencies": {
-    "@originjs/vite-plugin-federation": "^1.4.1",
-    "@tailwindcss/vite": "^4.1.13",
-    "@vitejs/plugin-react": "^4.7.0",
-    "concurrently": "^9.2.0",
-    "lerna": "^8.1.8",
-    "vite": "^7.1.6"
+    "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "db": "docker compose up -d mongo"
   }
 }
