@@ -14,9 +14,9 @@ Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 
 ## Branch flow
 
-- `main` = production. `develop` = integration. Work happens on `develop` or short `feature/*` branches off it.
-- Never commit directly to `main`. `main` moves only by fast-forward merge from `develop`:
-  `git checkout main && git merge --ff-only develop && git push`.
+- `master` = production. `develop` = integration. Work happens on `develop` or short `feature/*` branches off it.
+- Never commit directly to `master`. `master` moves only by fast-forward merge from `develop`:
+  `git checkout master && git merge --ff-only develop && git push`.
 - Stage specific files; never `git add .` / `-A`.
 
 ## Rules
