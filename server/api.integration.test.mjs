@@ -1,6 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 process.env.HUB_DB = ":memory:"; // isolate before db.mjs is imported (transitively via index.mjs)
+const UPLOADS = mkdtempSync(join(tmpdir(), "fph-uploads-"));
+process.env.HUB_UPLOADS = UPLOADS; // don't write test images into the real server/uploads dir
 let server, base;
 
 beforeAll(async () => {
@@ -9,7 +14,7 @@ beforeAll(async () => {
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   base = `http://127.0.0.1:${server.address().port}`;
 });
-afterAll(() => new Promise((r) => server.close(r)));
+afterAll(() => { rmSync(UPLOADS, { recursive: true, force: true }); return new Promise((r) => server.close(r)); });
 
 const post = (path, body, headers = {}) =>
   fetch(`${base}${path}`, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(body) });
@@ -71,5 +76,39 @@ describe("REST protected routes", () => {
     const r = await get(`/api/channels/${ch.id}/messages?limit=5`, auth);
     expect(r.status).toBe(200);
     expect(Array.isArray((await r.json()).messages)).toBe(true);
+  });
+});
+
+describe("image upload + serve", () => {
+  // 1x1 transparent PNG
+  const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
+
+  it("requires auth", async () => {
+    const r = await fetch(`${base}/api/upload`, { method: "POST", headers: { "content-type": "image/png" }, body: PNG });
+    expect(r.status).toBe(401);
+  });
+
+  it("rejects a non-image content-type", async () => {
+    const token = await registered("uptype");
+    const r = await fetch(`${base}/api/upload`, { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "text/plain" }, body: "hi" });
+    expect(r.status).toBe(400);
+  });
+
+  it("uploads a PNG and serves it back with the right bytes", async () => {
+    const token = await registered("upok");
+    const up = await fetch(`${base}/api/upload`, { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "image/png" }, body: PNG });
+    expect(up.status).toBe(201);
+    const { url } = await up.json();
+    expect(url).toMatch(/^\/uploads\/[a-f0-9-]+\.png$/);
+
+    const get = await fetch(`${base}${url}`); // served without auth (referenced by <img>), unguessable uuid
+    expect(get.status).toBe(200);
+    expect(get.headers.get("content-type")).toBe("image/png");
+    expect(Buffer.from(await get.arrayBuffer()).length).toBe(PNG.length);
+  });
+
+  it("blocks path traversal on the serve route", async () => {
+    const r = await fetch(`${base}/uploads/..%2f..%2fdb.mjs`);
+    expect([400, 404]).toContain(r.status);
   });
 });

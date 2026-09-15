@@ -13,7 +13,7 @@ interface ChatState {
   typing: { channelId: string | null; users: string[] };
   replyingTo: { id: string; name: string; text: string } | null;
   setChannel: (id: string) => void;
-  send: (text: string) => void;
+  send: (text: string, imageUrl?: string | null) => void;
   setReplyTo: (target: { id: string; name: string; text: string } | null) => void;
   setTyping: (isTyping: boolean) => void;
   toggleReaction: (messageId: string, emoji: string) => void;
@@ -52,17 +52,17 @@ export const useChat = create<ChatState>((set, get) => ({
     sendSocket({ type: "sub", channelId: id });
   },
 
-  send: (text) => {
+  send: (text, imageUrl = null) => {
     const { myId, name, channelId, replyingTo } = get();
-    if (!channelId) return;
+    if (!channelId || (!text.trim() && !imageUrl)) return;
     const clientMsgId = crypto.randomUUID();
     const reply = replyingTo
       ? { replyTo: replyingTo.id, replyToName: replyingTo.name, replyToPreview: replyingTo.text.slice(0, 120) }
       : {};
     upsertMessage({
-      id: clientMsgId, clientMsgId, channelId, userId: myId ?? "me", name: name!, text, ts: Date.now(), pending: true, ...reply,
+      id: clientMsgId, clientMsgId, channelId, userId: myId ?? "me", name: name!, text, ts: Date.now(), pending: true, imageUrl, ...reply,
     });
-    sendSocket({ type: "msg", channelId, text, clientMsgId, replyTo: replyingTo?.id });
+    sendSocket({ type: "msg", channelId, text, clientMsgId, replyTo: replyingTo?.id, imageUrl });
     set({ replyingTo: null });
     // ponytail: no offline resend queue — msg stays pending if socket is down. Add when you build offline mode.
   },
