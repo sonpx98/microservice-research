@@ -6,7 +6,7 @@ Personal blog + backend. pnpm workspace, Node 20 (`.nvmrc`). Solo project.
 
 | Path | What | Run |
 |---|---|---|
-| `apps/web` | Next.js 15 blog (posts via contentlayer, english-learning UI, playground, tools) | `pnpm dev:web` → :5006 |
+| `apps/web` | Next.js 16 blog (posts via contentlayer, english-learning UI, playground, tools) | `pnpm dev:web` → :5006 |
 | `apps/api` | NestJS: news crawler, readings + conversations CRUD, Piper TTS | `pnpm dev:api` → :3000/api |
 | `apps/mcp` | stdio MCP server exposing the API as tools for Claude Desktop/Code | `pnpm --filter mcp build` |
 
