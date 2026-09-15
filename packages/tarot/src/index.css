@@ -1,6 +1,0 @@
-@import "tailwindcss" prefix(tw);
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
-
-@import "@microservice-research/design-tokens/tokens-only.css";
