@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently -n server,client -c blue,green \"npm:dev:server\" \"npm:dev:client\"",
-    "dev:server": "node server/index.mjs",
+    "dev:server": "node --watch server/index.mjs",
     "dev:client": "vite",
     "build": "vite build",
     "preview": "vite preview",
