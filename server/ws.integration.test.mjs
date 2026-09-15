@@ -1,6 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 process.env.HUB_DB = ":memory:";
+const UPLOADS = mkdtempSync(join(tmpdir(), "fph-ws-uploads-"));
+process.env.HUB_UPLOADS = UPLOADS;
 let server, port, signToken, listChannels;
 
 beforeAll(async () => {
@@ -11,7 +16,7 @@ beforeAll(async () => {
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   port = server.address().port;
 });
-afterAll(() => new Promise((r) => server.close(r)));
+afterAll(() => { rmSync(UPLOADS, { recursive: true, force: true }); return new Promise((r) => server.close(r)); });
 
 const tokenFor = (id, name) => signToken({ sub: id, name });
 const wsUrl = (token) => `ws://127.0.0.1:${port}/ws${token ? `?token=${token}` : ""}`;
@@ -165,5 +170,37 @@ describe("WS reply", () => {
     expect(msg.replyToPreview).toBe("the-parent");
     author.close();
     replier.close();
+  });
+});
+
+describe("WS delete removes the image file from disk", () => {
+  const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
+
+  it("unlinks the uploaded file when its message is deleted", async () => {
+    const channelId = listChannels()[0].id;
+    const base = `http://127.0.0.1:${port}`;
+    // register a real user (upload route needs a DB-backed user for auth)
+    const reg = await (await fetch(`${base}/api/register`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ username: "imguser", password: "secret1" }),
+    })).json();
+    const up = await (await fetch(`${base}/api/upload`, {
+      method: "POST", headers: { authorization: `Bearer ${reg.token}`, "content-type": "image/png" }, body: PNG,
+    })).json();
+    const fileName = up.url.split("/").pop();
+    expect(existsSync(join(UPLOADS, fileName))).toBe(true);
+
+    // send a message carrying that image, then delete it, over WS as the same user
+    const ws = await openWs(signToken({ sub: reg.user.id, name: reg.user.username }));
+    const got = waitFrame(ws, (m) => m.type === "msg" && m.message.imageUrl === up.url);
+    ws.send(JSON.stringify({ type: "sub", channelId }));
+    ws.send(JSON.stringify({ type: "msg", channelId, text: "pic", imageUrl: up.url }));
+    const id = (await got).message.id;
+
+    const del = waitFrame(ws, (m) => m.type === "delete");
+    ws.send(JSON.stringify({ type: "delete", messageId: id }));
+    await del;
+    expect(existsSync(join(UPLOADS, fileName))).toBe(false); // file gone from disk
+    ws.close();
   });
 });

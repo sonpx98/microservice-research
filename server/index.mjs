@@ -1,7 +1,10 @@
 // fe-practice-hub server — REST (auth, channels, history) + WebSocket (live chat, presence,
 // typing, WebRTC signaling). SQLite-backed. LOCALHOST dev only.
 import { createServer } from "node:http";
-import { pathToFileURL } from "node:url";
+import { mkdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { randomUUID } from "node:crypto";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { WebSocketServer } from "ws";
 import {
   addMessage, createUser, deleteMessage, editMessage, getChannel, getMessage, getMessages,
@@ -12,6 +15,14 @@ import { hashPassword, signToken, verifyPassword, verifyToken } from "./auth.mjs
 const HOST = "127.0.0.1";
 const PORT = 8787;
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,32}$/;
+
+// image uploads live on disk next to the server; the DB only stores the /uploads/<name> path
+const UPLOADS_DIR = process.env.HUB_UPLOADS || join(dirname(fileURLToPath(import.meta.url)), "uploads");
+mkdirSync(UPLOADS_DIR, { recursive: true });
+const MIME_EXT = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "image/webp": "webp" };
+const EXT_MIME = { png: "image/png", jpg: "image/jpeg", gif: "image/gif", webp: "image/webp" };
+const MAX_UPLOAD = 5 * 1024 * 1024; // 5 MB
+const UPLOAD_NAME_RE = /^[a-f0-9-]+\.(png|jpg|gif|webp)$/; // uuid + known ext only (blocks path traversal)
 
 // ---------- helpers (stateless) ----------
 const readJson = (req) =>
@@ -25,6 +36,37 @@ const sendJson = (res, code, obj) => {
   res.writeHead(code, { "content-type": "application/json" });
   res.end(JSON.stringify(obj));
 };
+
+// read a raw request body as a Buffer, rejecting once it exceeds maxBytes
+const readRawBody = (req, maxBytes) =>
+  new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+    req.on("data", (c) => {
+      size += c.length;
+      if (size > maxBytes) { reject(new Error("too large")); req.destroy(); }
+      else chunks.push(c);
+    });
+    req.on("end", () => resolve(Buffer.concat(chunks)));
+    req.on("error", reject);
+  });
+
+// remove an uploaded file when its message is deleted (best-effort; validate the name first)
+function deleteUpload(imageUrl) {
+  const name = String(imageUrl || "").split("/").pop();
+  if (!name || !UPLOAD_NAME_RE.test(name)) return;
+  try { unlinkSync(join(UPLOADS_DIR, name)); } catch { /* already gone */ }
+}
+
+// serve an uploaded image by name; the regex + fixed dir block path traversal (../ etc)
+function serveUpload(res, name) {
+  if (!UPLOAD_NAME_RE.test(name)) { res.writeHead(400).end("bad name"); return; }
+  try {
+    const buf = readFileSync(join(UPLOADS_DIR, name));
+    res.writeHead(200, { "content-type": EXT_MIME[name.split(".").pop()], "cache-control": "public, max-age=31536000, immutable" });
+    res.end(buf);
+  } catch { res.writeHead(404).end("not found"); }
+}
 
 // Pull + verify the bearer token; returns the user row or null.
 function authUser(req) {
@@ -61,6 +103,17 @@ async function handleApi(req, res, url) {
   if (req.method === "GET" && path === "/api/me") return sendJson(res, 200, { user });
   if (req.method === "GET" && path === "/api/channels") return sendJson(res, 200, { channels: listChannels() });
 
+  if (req.method === "POST" && path === "/api/upload") {
+    const ext = MIME_EXT[String(req.headers["content-type"] || "")]; // type validated at the boundary
+    if (!ext) return sendJson(res, 400, { error: "only PNG/JPEG/GIF/WebP images allowed" });
+    let buf;
+    try { buf = await readRawBody(req, MAX_UPLOAD); } catch { return sendJson(res, 413, { error: "image too large (max 5MB)" }); }
+    if (!buf.length) return sendJson(res, 400, { error: "empty upload" });
+    const name = `${randomUUID()}.${ext}`; // uuid name, never the client's filename
+    writeFileSync(join(UPLOADS_DIR, name), buf);
+    return sendJson(res, 201, { url: `/uploads/${name}` });
+  }
+
   const msgMatch = path.match(/^\/api\/channels\/([^/]+)\/messages$/);
   if (req.method === "GET" && msgMatch) {
     const channelId = msgMatch[1];
@@ -79,6 +132,9 @@ export function createHubServer() {
   const server = createServer((req, res) => {
     const url = new URL(req.url, `http://${HOST}`);
     if (url.pathname.startsWith("/api/")) return handleApi(req, res, url);
+    if (req.method === "GET" && url.pathname.startsWith("/uploads/")) {
+      return serveUpload(res, url.pathname.slice("/uploads/".length));
+    }
     res.writeHead(404).end("not found");
   });
 
@@ -144,7 +200,8 @@ export function createHubServer() {
       if (m.type === "msg") {
         const text = String(m.text || "").slice(0, 2000);
         const channelId = String(m.channelId || "");
-        if (!text.trim() || !getChannel(channelId)) return;
+        const imageUrl = typeof m.imageUrl === "string" && m.imageUrl.startsWith("/uploads/") ? m.imageUrl : null;
+        if ((!text.trim() && !imageUrl) || !getChannel(channelId)) return; // need text or an image
         // reply: snapshot the parent's name + text (server-derived, not client-trusted)
         let reply = {};
         if (m.replyTo) {
@@ -153,7 +210,7 @@ export function createHubServer() {
             reply = { replyTo: parent.id, replyToName: parent.name, replyToPreview: parent.text.slice(0, 120) };
           }
         }
-        const saved = addMessage({ channelId, userId: client.userId, name: client.username, text, ...reply });
+        const saved = addMessage({ channelId, userId: client.userId, name: client.username, text, ...reply, imageUrl });
         const message = { ...saved, clientMsgId: m.clientMsgId ?? null };
         if (client.typing) { client.typing = false; broadcast({ type: "typing", channelId, users: typingIn(channelId) }); }
         broadcast({ type: "msg", message });
@@ -186,8 +243,12 @@ export function createHubServer() {
 
       if (m.type === "delete") {
         const r = deleteMessage(String(m.messageId || ""), client.userId);
-        if (r) broadcast({ type: "delete", ...r });
-        else ws.send(JSON.stringify({ type: "error", op: "delete", messageId: m.messageId }));
+        if (r) {
+          if (r.imageUrl) deleteUpload(r.imageUrl); // remove the orphaned file from disk
+          broadcast({ type: "delete", channelId: r.channelId, messageId: r.messageId });
+        } else {
+          ws.send(JSON.stringify({ type: "error", op: "delete", messageId: m.messageId }));
+        }
       }
     });
 

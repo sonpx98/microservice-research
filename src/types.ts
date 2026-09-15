@@ -11,6 +11,7 @@ export interface ChatMessage {
   replyTo?: string | null; // parent message id
   replyToName?: string | null; // denormalized author of the parent
   replyToPreview?: string | null; // denormalized snippet of the parent
+  imageUrl?: string | null; // /uploads/<name> for an attached image
   pending?: boolean; // true while an optimistic message awaits the server echo
   deleting?: boolean; // true while an optimistic delete awaits confirmation
 }

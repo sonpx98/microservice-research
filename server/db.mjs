@@ -43,6 +43,7 @@ for (const col of [
   "ALTER TABLE messages ADD COLUMN reply_to TEXT",
   "ALTER TABLE messages ADD COLUMN reply_to_name TEXT",
   "ALTER TABLE messages ADD COLUMN reply_to_preview TEXT",
+  "ALTER TABLE messages ADD COLUMN image_url TEXT",
 ]) {
   try { db.exec(col); } catch { /* already migrated */ }
 }
@@ -72,13 +73,13 @@ export const getChannel = (id) => _channelById.get(id);
 
 // --- messages ---
 const _insMsg = db.prepare(
-  "INSERT INTO messages (id, channel_id, user_id, name, text, ts, reply_to, reply_to_name, reply_to_preview) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  "INSERT INTO messages (id, channel_id, user_id, name, text, ts, reply_to, reply_to_name, reply_to_preview, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 );
 // keyset pagination: messages in a channel older than `before`, newest first
 const _msgPage = db.prepare(
-  "SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, edited_at AS editedAt, reply_to AS replyTo, reply_to_name AS replyToName, reply_to_preview AS replyToPreview FROM messages WHERE channel_id = ? AND ts < ? ORDER BY ts DESC LIMIT ?",
+  "SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, edited_at AS editedAt, reply_to AS replyTo, reply_to_name AS replyToName, reply_to_preview AS replyToPreview, image_url AS imageUrl FROM messages WHERE channel_id = ? AND ts < ? ORDER BY ts DESC LIMIT ?",
 );
-const _msgById = db.prepare("SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, edited_at AS editedAt FROM messages WHERE id = ?");
+const _msgById = db.prepare("SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, edited_at AS editedAt, image_url AS imageUrl FROM messages WHERE id = ?");
 const _editMsg = db.prepare("UPDATE messages SET text = ?, edited_at = ? WHERE id = ? AND user_id = ?");
 const _delMsg = db.prepare("DELETE FROM messages WHERE id = ?");
 
@@ -97,11 +98,11 @@ function reactionsFor(messageId) {
 }
 
 let lastTs = 0;
-export function addMessage({ channelId, userId, name, text, replyTo = null, replyToName = null, replyToPreview = null }) {
+export function addMessage({ channelId, userId, name, text, replyTo = null, replyToName = null, replyToPreview = null, imageUrl = null }) {
   const ts = Math.max(Date.now(), lastTs + 1); // strictly increasing → no ts ties for keyset pagination
   lastTs = ts;
-  const msg = { id: randomUUID(), channelId, userId, name, text, ts, replyTo, replyToName, replyToPreview };
-  _insMsg.run(msg.id, msg.channelId, msg.userId, msg.name, msg.text, msg.ts, replyTo, replyToName, replyToPreview);
+  const msg = { id: randomUUID(), channelId, userId, name, text, ts, replyTo, replyToName, replyToPreview, imageUrl };
+  _insMsg.run(msg.id, msg.channelId, msg.userId, msg.name, msg.text, msg.ts, replyTo, replyToName, replyToPreview, imageUrl);
   return msg;
 }
 
@@ -126,7 +127,7 @@ export function deleteMessage(id, userId) {
   if (!m || m.userId !== userId) return null;
   _delMsg.run(id);
   _delReactAll.run(id); // drop orphaned reactions
-  return { messageId: id, channelId: m.channelId };
+  return { messageId: id, channelId: m.channelId, imageUrl: m.imageUrl }; // imageUrl → caller unlinks the file
 }
 
 // toggle: remove if the user already reacted with this emoji, else add. Returns the broadcast payload.

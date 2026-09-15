@@ -9,6 +9,7 @@ export default defineConfig({
     allowedHosts: true, // dev-only: accept tunnel domains (cloudflared/ngrok)
     proxy: {
       "/api": "http://127.0.0.1:8787",
+      "/uploads": "http://127.0.0.1:8787", // serve uploaded images through the API server
       "/ws": { target: "ws://127.0.0.1:8787", ws: true },
     },
   },

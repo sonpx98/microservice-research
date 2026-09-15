@@ -36,3 +36,16 @@ export const login = (username: string, password: string) =>
 export const fetchChannels = () => authGet<{ channels: Channel[] }>("/channels");
 export const fetchMessages = (channelId: string, before?: number) =>
   authGet<{ messages: ChatMessage[] }>(`/channels/${channelId}/messages?limit=30${before ? `&before=${before}` : ""}`);
+
+// upload raw image bytes (no base64, no multipart lib); server returns { url: "/uploads/<name>" }
+export async function uploadImage(file: File): Promise<string> {
+  const token = getToken();
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    headers: { "content-type": file.type, ...(token ? { authorization: `Bearer ${token}` } : {}) },
+    body: file,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data.url as string;
+}

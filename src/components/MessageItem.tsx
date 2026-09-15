@@ -77,7 +77,14 @@ export function MessageItem({ m, myId }: { m: ChatMessage; myId: string | null }
           </div>
         </div>
       ) : (
-        <div className="msg-text">{m.text}</div>
+        <>
+          {m.text && <div className="msg-text">{m.text}</div>}
+          {m.imageUrl && (
+            <a href={m.imageUrl} target="_blank" rel="noreferrer">
+              <img className="msg-image" src={m.imageUrl} alt="attachment" loading="lazy" />
+            </a>
+          )}
+        </>
       )}
 
       {reactions.length > 0 && (
