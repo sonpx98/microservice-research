@@ -7,6 +7,7 @@ import { connectSocket, disconnectSocket } from "../socket";
 import { ChannelList } from "./ChannelList";
 import { Presence } from "./Presence";
 import { CallPanel } from "./CallPanel";
+import { UndoToast } from "./UndoToast";
 
 export function ChatLayout() {
   const user = useAuth((s) => s.user);
@@ -46,6 +47,7 @@ export function ChatLayout() {
         <Outlet />
       </main>
       <CallPanel />
+      <UndoToast />
     </div>
   );
 }

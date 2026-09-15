@@ -108,3 +108,37 @@ describe("reply snapshot", () => {
     expect(row.replyToPreview).toBe("parent msg");
   });
 });
+
+describe("soft delete / restore / purge", () => {
+  it("soft delete hides the message but keeps the row; restore brings it back", () => {
+    const ch = db.listChannels()[0];
+    const m = db.addMessage({ channelId: ch.id, userId: "su", name: "n", text: "soft" });
+    db.deleteMessage(m.id, "su");
+    expect(db.getMessages(ch.id, undefined, 100).find((x) => x.id === m.id)).toBeUndefined(); // hidden
+    expect(db.getMessage(m.id)).toBeTruthy(); // row still exists
+    db.restoreMessage(m.id, "su");
+    expect(db.getMessages(ch.id, undefined, 100).find((x) => x.id === m.id)).toBeTruthy(); // back
+  });
+
+  it("purgeExpired hard-deletes only rows past retention and returns their image files", () => {
+    const ch = db.listChannels()[0];
+    const withImg = db.addMessage({ channelId: ch.id, userId: "pu", name: "n", text: "pic", imageUrl: "/uploads/x.png" });
+    const noImg = db.addMessage({ channelId: ch.id, userId: "pu", name: "n", text: "txt" });
+    db.deleteMessage(withImg.id, "pu");
+    db.deleteMessage(noImg.id, "pu");
+    expect(db.purgeExpired(60_000).count).toBe(0); // huge retention → nothing purged yet
+    const res = db.purgeExpired(0); // retention 0 → purge now
+    expect(res.count).toBeGreaterThanOrEqual(2);
+    expect(res.imageUrls).toContain("/uploads/x.png");
+    expect(db.getMessage(withImg.id)).toBeUndefined(); // row hard-deleted
+  });
+
+  it("only the author can soft-delete or restore", () => {
+    const ch = db.listChannels()[0];
+    const m = db.addMessage({ channelId: ch.id, userId: "owner2", name: "n", text: "mine" });
+    expect(db.deleteMessage(m.id, "intruder")).toBeNull();
+    db.deleteMessage(m.id, "owner2");
+    expect(db.restoreMessage(m.id, "intruder")).toBeNull();
+    expect(db.restoreMessage(m.id, "owner2")).toBeTruthy();
+  });
+});

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useChat } from "../store";
+import { useMask } from "../mask";
 import type { ChatMessage } from "../types";
 
 const PRESET_EMOJIS = ["👍", "❤️", "😂", "🎉", "😮"];
@@ -9,11 +10,38 @@ export function MessageItem({ m, myId }: { m: ChatMessage; myId: string | null }
   const editMessage = useChat((s) => s.editMessage);
   const deleteMessage = useChat((s) => s.deleteMessage);
   const setReplyTo = useChat((s) => s.setReplyTo);
+  const maskEnabled = useMask((s) => s.enabled);
+  const revealed = useMask((s) => s.revealed);
+  const reveal = useMask((s) => s.reveal);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(m.text);
   const [picker, setPicker] = useState(false);
 
   if (m.deleting) return null; // optimistic delete: hide until the server confirms (or rolls back)
+
+  // privacy mask (per channel): hide content behind redaction bars until revealed
+  if (maskEnabled.has(m.channelId) && !revealed.has(m.id)) {
+    return (
+      <div
+        className={"msg masked" + (m.userId === myId ? " mine" : "")}
+        onClick={() => reveal(m.id)}
+        title="Click to reveal"
+        role="button"
+        tabIndex={0}
+      >
+        <div className="msg-head">
+          <span className="msg-name">{m.name}</span>
+          <span className="msg-time">{new Date(m.ts).toLocaleTimeString()}</span>
+        </div>
+        <div className="masked-body">
+          <span className="mask-lock" aria-hidden>🔒</span>
+          <span className="mask-bar" />
+          <span className="mask-bar short" />
+          <span className="mask-hint">Reveal</span>
+        </div>
+      </div>
+    );
+  }
 
   const mine = m.userId === myId;
   const reactions = Object.entries(m.reactions ?? {}).filter(([, users]) => users.length > 0);

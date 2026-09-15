@@ -12,6 +12,7 @@ interface ChatState {
   users: PresenceUser[];
   typing: { channelId: string | null; users: string[] };
   replyingTo: { id: string; name: string; text: string } | null;
+  pendingUndo: { messageId: string; channelId: string } | null;
   setChannel: (id: string) => void;
   send: (text: string, imageUrl?: string | null) => void;
   setReplyTo: (target: { id: string; name: string; text: string } | null) => void;
@@ -19,6 +20,9 @@ interface ChatState {
   toggleReaction: (messageId: string, emoji: string) => void;
   editMessage: (messageId: string, text: string) => void;
   deleteMessage: (messageId: string) => void;
+  undoDelete: () => void;
+  dismissUndo: () => void;
+  restoreById: (messageId: string) => void;
 }
 
 const key = (channelId: string) => ["messages", channelId];
@@ -46,6 +50,7 @@ export const useChat = create<ChatState>((set, get) => ({
   users: [],
   typing: { channelId: null, users: [] },
   replyingTo: null,
+  pendingUndo: null,
 
   setChannel: (id) => {
     set({ channelId: id, replyingTo: null }); // dropping into another channel cancels a pending reply
@@ -95,7 +100,19 @@ export const useChat = create<ChatState>((set, get) => ({
     deleteSnapshots.set(messageId, { channelId });
     setCache(channelId, (old) => updateMessage(old, messageId, (m) => ({ ...m, deleting: true }))); // optimistic hide
     sendSocket({ type: "delete", messageId });
+    set({ pendingUndo: { messageId, channelId } }); // surface an Undo toast
   },
+
+  undoDelete: () => {
+    const p = get().pendingUndo;
+    if (!p) return;
+    sendSocket({ type: "restore", messageId: p.messageId });
+    set({ pendingUndo: null });
+  },
+
+  dismissUndo: () => set({ pendingUndo: null }),
+
+  restoreById: (messageId) => sendSocket({ type: "restore", messageId }), // used by the Trash view
 }));
 
 // --- wire the socket into the store + RQ cache (runs once, at import) ---
@@ -127,7 +144,13 @@ onMessage((m) => {
       break;
     case "delete":
       setCache(m.channelId, (old) => removeMessage(old, m.messageId));
+      queryClient.invalidateQueries({ queryKey: ["trash", m.channelId] }); // it just entered the trash
       deleteSnapshots.delete(m.messageId);
+      break;
+    case "restore":
+      // message un-deleted → refetch the timeline (lands back at its ts) and the trash list
+      queryClient.invalidateQueries({ queryKey: ["messages", m.channelId] });
+      queryClient.invalidateQueries({ queryKey: ["trash", m.channelId] });
       break;
     case "error":
       // server rejected an edit/delete (not the author) → roll the optimistic change back
@@ -143,6 +166,7 @@ onMessage((m) => {
           setCache(snap.channelId, (old) => updateMessage(old, m.messageId, (msg) => ({ ...msg, deleting: false })));
           deleteSnapshots.delete(m.messageId);
         }
+        if (useChat.getState().pendingUndo?.messageId === m.messageId) useChat.setState({ pendingUndo: null });
       }
       break;
   }

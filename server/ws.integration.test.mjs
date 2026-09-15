@@ -6,13 +6,14 @@ import { join } from "node:path";
 process.env.HUB_DB = ":memory:";
 const UPLOADS = mkdtempSync(join(tmpdir(), "fph-ws-uploads-"));
 process.env.HUB_UPLOADS = UPLOADS;
-let server, port, signToken, listChannels;
+let server, port, signToken, listChannels, purgeTick;
 
 beforeAll(async () => {
-  const { createHubServer } = await import("./index.mjs");
+  const mod = await import("./index.mjs");
+  purgeTick = mod.purgeTick;
   ({ signToken } = await import("./auth.mjs"));
   ({ listChannels } = await import("./db.mjs")); // same in-memory DB instance as the server
-  server = createHubServer();
+  server = mod.createHubServer();
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   port = server.address().port;
 });
@@ -173,10 +174,10 @@ describe("WS reply", () => {
   });
 });
 
-describe("WS delete removes the image file from disk", () => {
+describe("soft delete keeps the image file until purge", () => {
   const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
 
-  it("unlinks the uploaded file when its message is deleted", async () => {
+  it("keeps the file on soft delete, then unlinks it on purge", async () => {
     const channelId = listChannels()[0].id;
     const base = `http://127.0.0.1:${port}`;
     // register a real user (upload route needs a DB-backed user for auth)
@@ -200,7 +201,44 @@ describe("WS delete removes the image file from disk", () => {
     const del = waitFrame(ws, (m) => m.type === "delete");
     ws.send(JSON.stringify({ type: "delete", messageId: id }));
     await del;
-    expect(existsSync(join(UPLOADS, fileName))).toBe(false); // file gone from disk
+    expect(existsSync(join(UPLOADS, fileName))).toBe(true); // soft delete keeps the file for undo
+
+    const purged = purgeTick(0); // retention 0 → purge everything soft-deleted now
+    expect(purged).toBeGreaterThanOrEqual(1);
+    expect(existsSync(join(UPLOADS, fileName))).toBe(false); // now gone from disk
+    ws.close();
+  });
+});
+
+describe("Trash: soft-deleted list + restore", () => {
+  it("lists the user's deleted messages and clears them on restore", async () => {
+    const channelId = listChannels()[0].id;
+    const base = `http://127.0.0.1:${port}`;
+    const reg = await (await fetch(`${base}/api/register`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ username: "trashuser", password: "secret1" }),
+    })).json();
+    const auth = { authorization: `Bearer ${reg.token}` };
+    const ws = await openWs(signToken({ sub: reg.user.id, name: reg.user.username }));
+
+    const got = waitFrame(ws, (m) => m.type === "msg" && m.message.text === "trash-me");
+    ws.send(JSON.stringify({ type: "sub", channelId }));
+    ws.send(JSON.stringify({ type: "msg", channelId, text: "trash-me" }));
+    const id = (await got).message.id;
+
+    const del = waitFrame(ws, (m) => m.type === "delete");
+    ws.send(JSON.stringify({ type: "delete", messageId: id }));
+    await del;
+
+    const trashUrl = `${base}/api/channels/${channelId}/trash`;
+    let trash = (await (await fetch(trashUrl, { headers: auth })).json()).messages;
+    expect(trash.some((m) => m.id === id)).toBe(true); // in trash after delete
+
+    const restored = waitFrame(ws, (m) => m.type === "restore");
+    ws.send(JSON.stringify({ type: "restore", messageId: id }));
+    await restored;
+    trash = (await (await fetch(trashUrl, { headers: auth })).json()).messages;
+    expect(trash.some((m) => m.id === id)).toBe(false); // gone from trash after restore
     ws.close();
   });
 });

@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchChannels, fetchMessages } from "./api";
+import { fetchChannels, fetchMessages, fetchTrash } from "./api";
 import { nextBeforeCursor } from "./pagination";
 
 export { PAGE_SIZE } from "./pagination";
@@ -8,6 +8,15 @@ export function useChannels() {
   return useQuery({
     queryKey: ["channels"],
     queryFn: async () => (await fetchChannels()).channels,
+  });
+}
+
+// the current user's soft-deleted messages in a channel (Trash view)
+export function useTrash(channelId?: string) {
+  return useQuery({
+    queryKey: ["trash", channelId],
+    enabled: !!channelId,
+    queryFn: async () => (await fetchTrash(channelId!)).messages,
   });
 }
 

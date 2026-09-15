@@ -12,6 +12,7 @@ export interface ChatMessage {
   replyToName?: string | null; // denormalized author of the parent
   replyToPreview?: string | null; // denormalized snippet of the parent
   imageUrl?: string | null; // /uploads/<name> for an attached image
+  deletedAt?: number | null; // set while soft-deleted (shown in Trash)
   pending?: boolean; // true while an optimistic message awaits the server echo
   deleting?: boolean; // true while an optimistic delete awaits confirmation
 }
