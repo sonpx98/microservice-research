@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -34,6 +34,16 @@ describe("Composer", () => {
       expect.objectContaining({ type: "msg", text: "hello", channelId: "c1" }),
     );
     expect(box).toHaveValue("");
+  });
+
+  it("does not send on Enter while an IME composition is active (no duplicate)", async () => {
+    const user = userEvent.setup();
+    render(<Composer />);
+    const box = screen.getByPlaceholderText(/message/i);
+    await user.type(box, "xin chao");
+    fireEvent.keyDown(box, { key: "Enter", isComposing: true }); // IME commit Enter
+    const msgSends = sendSocket.mock.calls.filter((c) => (c[0] as { type?: string })?.type === "msg");
+    expect(msgSends).toHaveLength(0);
   });
 
   it("Shift+Enter inserts a newline and does not send", async () => {

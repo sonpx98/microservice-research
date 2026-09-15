@@ -4,8 +4,8 @@ import { createServer } from "node:http";
 import { pathToFileURL } from "node:url";
 import { WebSocketServer } from "ws";
 import {
-  addMessage, createUser, getChannel, getMessages,
-  getUserById, getUserByName, listChannels,
+  addMessage, createUser, deleteMessage, editMessage, getChannel, getMessage, getMessages,
+  getUserById, getUserByName, listChannels, toggleReaction,
 } from "./db.mjs";
 import { hashPassword, signToken, verifyPassword, verifyToken } from "./auth.mjs";
 
@@ -145,7 +145,15 @@ export function createHubServer() {
         const text = String(m.text || "").slice(0, 2000);
         const channelId = String(m.channelId || "");
         if (!text.trim() || !getChannel(channelId)) return;
-        const saved = addMessage({ channelId, userId: client.userId, name: client.username, text });
+        // reply: snapshot the parent's name + text (server-derived, not client-trusted)
+        let reply = {};
+        if (m.replyTo) {
+          const parent = getMessage(String(m.replyTo));
+          if (parent && parent.channelId === channelId) {
+            reply = { replyTo: parent.id, replyToName: parent.name, replyToPreview: parent.text.slice(0, 120) };
+          }
+        }
+        const saved = addMessage({ channelId, userId: client.userId, name: client.username, text, ...reply });
         const message = { ...saved, clientMsgId: m.clientMsgId ?? null };
         if (client.typing) { client.typing = false; broadcast({ type: "typing", channelId, users: typingIn(channelId) }); }
         broadcast({ type: "msg", message });
@@ -158,6 +166,28 @@ export function createHubServer() {
           client.typing = t;
           broadcast({ type: "typing", channelId: client.channelId, users: typingIn(client.channelId) });
         }
+        return;
+      }
+
+      if (m.type === "react") {
+        const r = toggleReaction(String(m.messageId || ""), client.userId, String(m.emoji || ""));
+        if (r) broadcast({ type: "reaction", ...r });
+        return;
+      }
+
+      if (m.type === "edit") {
+        const text = String(m.text || "").slice(0, 2000);
+        if (!text.trim()) return;
+        const r = editMessage(String(m.messageId || ""), client.userId, text);
+        if (r) broadcast({ type: "edit", ...r });
+        else ws.send(JSON.stringify({ type: "error", op: "edit", messageId: m.messageId })); // not the author
+        return;
+      }
+
+      if (m.type === "delete") {
+        const r = deleteMessage(String(m.messageId || ""), client.userId);
+        if (r) broadcast({ type: "delete", ...r });
+        else ws.send(JSON.stringify({ type: "error", op: "delete", messageId: m.messageId }));
       }
     });
 

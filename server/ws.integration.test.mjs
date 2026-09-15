@@ -92,3 +92,78 @@ describe("WS messaging", () => {
     bWs.close();
   });
 });
+
+describe("WS reactions / edit / delete", () => {
+  // helper: create a message and resolve its id
+  async function makeMessage(ws, channelId, text) {
+    const got = waitFrame(ws, (m) => m.type === "msg" && m.message.text === text);
+    ws.send(JSON.stringify({ type: "sub", channelId }));
+    ws.send(JSON.stringify({ type: "msg", channelId, text }));
+    return (await got).message.id;
+  }
+
+  it("broadcasts a reaction toggle (add then remove)", async () => {
+    const channelId = listChannels()[0].id;
+    const ws = await openWs(tokenFor("reactor", "reactor"));
+    const id = await makeMessage(ws, channelId, "react-target");
+
+    const add = waitFrame(ws, (m) => m.type === "reaction");
+    ws.send(JSON.stringify({ type: "react", messageId: id, emoji: "👍" }));
+    expect((await add).op).toBe("add");
+
+    const remove = waitFrame(ws, (m) => m.type === "reaction");
+    ws.send(JSON.stringify({ type: "react", messageId: id, emoji: "👍" }));
+    expect((await remove).op).toBe("remove");
+    ws.close();
+  });
+
+  it("the author can edit; a non-author gets an error", async () => {
+    const channelId = listChannels()[0].id;
+    const author = await openWs(tokenFor("author", "author"));
+    const id = await makeMessage(author, channelId, "editable");
+
+    const edited = waitFrame(author, (m) => m.type === "edit");
+    author.send(JSON.stringify({ type: "edit", messageId: id, text: "edited!" }));
+    expect((await edited).text).toBe("edited!");
+
+    const other = await openWs(tokenFor("intruder", "intruder"));
+    const err = waitFrame(other, (m) => m.type === "error");
+    other.send(JSON.stringify({ type: "edit", messageId: id, text: "hacked" }));
+    expect((await err).op).toBe("edit");
+    author.close();
+    other.close();
+  });
+
+  it("the author can delete their message", async () => {
+    const channelId = listChannels()[0].id;
+    const ws = await openWs(tokenFor("deleter", "deleter"));
+    const id = await makeMessage(ws, channelId, "delete-me");
+
+    const del = waitFrame(ws, (m) => m.type === "delete");
+    ws.send(JSON.stringify({ type: "delete", messageId: id }));
+    expect((await del).messageId).toBe(id);
+    ws.close();
+  });
+});
+
+describe("WS reply", () => {
+  it("attaches a server-derived reply snapshot from the parent", async () => {
+    const channelId = listChannels()[0].id;
+    const author = await openWs(tokenFor("pauthor", "pauthor"));
+    const gotParent = waitFrame(author, (m) => m.type === "msg" && m.message.text === "the-parent");
+    author.send(JSON.stringify({ type: "sub", channelId }));
+    author.send(JSON.stringify({ type: "msg", channelId, text: "the-parent" }));
+    const parentId = (await gotParent).message.id;
+
+    const replier = await openWs(tokenFor("replier", "replier"));
+    const got = waitFrame(replier, (m) => m.type === "msg" && m.message.text === "the-reply");
+    replier.send(JSON.stringify({ type: "sub", channelId }));
+    replier.send(JSON.stringify({ type: "msg", channelId, text: "the-reply", replyTo: parentId }));
+    const msg = (await got).message;
+    expect(msg.replyTo).toBe(parentId);
+    expect(msg.replyToName).toBe("pauthor");
+    expect(msg.replyToPreview).toBe("the-parent");
+    author.close();
+    replier.close();
+  });
+});
