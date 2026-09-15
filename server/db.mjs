@@ -44,6 +44,7 @@ for (const col of [
   "ALTER TABLE messages ADD COLUMN reply_to_name TEXT",
   "ALTER TABLE messages ADD COLUMN reply_to_preview TEXT",
   "ALTER TABLE messages ADD COLUMN image_url TEXT",
+  "ALTER TABLE messages ADD COLUMN deleted_at INTEGER",
 ]) {
   try { db.exec(col); } catch { /* already migrated */ }
 }
@@ -77,11 +78,14 @@ const _insMsg = db.prepare(
 );
 // keyset pagination: messages in a channel older than `before`, newest first
 const _msgPage = db.prepare(
-  "SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, edited_at AS editedAt, reply_to AS replyTo, reply_to_name AS replyToName, reply_to_preview AS replyToPreview, image_url AS imageUrl FROM messages WHERE channel_id = ? AND ts < ? ORDER BY ts DESC LIMIT ?",
+  "SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, edited_at AS editedAt, reply_to AS replyTo, reply_to_name AS replyToName, reply_to_preview AS replyToPreview, image_url AS imageUrl FROM messages WHERE channel_id = ? AND ts < ? AND deleted_at IS NULL ORDER BY ts DESC LIMIT ?",
 );
-const _msgById = db.prepare("SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, edited_at AS editedAt, image_url AS imageUrl FROM messages WHERE id = ?");
+const _msgById = db.prepare("SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, edited_at AS editedAt, image_url AS imageUrl, deleted_at AS deletedAt FROM messages WHERE id = ?");
 const _editMsg = db.prepare("UPDATE messages SET text = ?, edited_at = ? WHERE id = ? AND user_id = ?");
-const _delMsg = db.prepare("DELETE FROM messages WHERE id = ?");
+const _softDel = db.prepare("UPDATE messages SET deleted_at = ? WHERE id = ? AND user_id = ? AND deleted_at IS NULL");
+const _restore = db.prepare("UPDATE messages SET deleted_at = NULL WHERE id = ? AND user_id = ?");
+const _expired = db.prepare("SELECT id, image_url AS imageUrl FROM messages WHERE deleted_at IS NOT NULL AND deleted_at <= ?");
+const _purgeRow = db.prepare("DELETE FROM messages WHERE id = ?");
 
 // --- reactions ---
 const _reactByMsg = db.prepare("SELECT emoji, user_id AS userId FROM reactions WHERE message_id = ?");
@@ -113,6 +117,12 @@ export function getMessages(channelId, before, limit) {
 
 export const getMessage = (id) => _msgById.get(id);
 
+// the current user's soft-deleted messages in a channel (restorable until purge)
+const _trash = db.prepare(
+  "SELECT id, channel_id AS channelId, user_id AS userId, name, text, ts, image_url AS imageUrl, deleted_at AS deletedAt FROM messages WHERE channel_id = ? AND user_id = ? AND deleted_at IS NOT NULL ORDER BY deleted_at DESC",
+);
+export const getTrash = (channelId, userId) => _trash.all(channelId, userId);
+
 // ownership enforced by the user_id predicate; returns the broadcast payload or null if not the author
 export function editMessage(id, userId, text) {
   const m = getMessage(id);
@@ -122,12 +132,26 @@ export function editMessage(id, userId, text) {
   return { messageId: id, channelId: m.channelId, text, editedAt };
 }
 
+// SOFT delete: hide the message (deleted_at = now), keep the row + file for restore/undo.
 export function deleteMessage(id, userId) {
   const m = getMessage(id);
+  if (!m || m.userId !== userId || m.deletedAt) return null;
+  _softDel.run(Date.now(), id, userId);
+  return { messageId: id, channelId: m.channelId };
+}
+
+// undo a soft delete
+export function restoreMessage(id, userId) {
+  const m = getMessage(id);
   if (!m || m.userId !== userId) return null;
-  _delMsg.run(id);
-  _delReactAll.run(id); // drop orphaned reactions
-  return { messageId: id, channelId: m.channelId, imageUrl: m.imageUrl }; // imageUrl → caller unlinks the file
+  return _restore.run(id, userId).changes > 0 ? { messageId: id, channelId: m.channelId } : null;
+}
+
+// hard-delete everything soft-deleted longer than retentionMs ago; returns the image files to unlink.
+export function purgeExpired(retentionMs) {
+  const rows = _expired.all(Date.now() - retentionMs);
+  for (const r of rows) { _purgeRow.run(r.id); _delReactAll.run(r.id); }
+  return { count: rows.length, imageUrls: rows.map((r) => r.imageUrl).filter(Boolean) };
 }
 
 // toggle: remove if the user already reacted with this emoji, else add. Returns the broadcast payload.

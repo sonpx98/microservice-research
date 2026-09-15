@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { WebSocketServer } from "ws";
 import {
   addMessage, createUser, deleteMessage, editMessage, getChannel, getMessage, getMessages,
-  getUserById, getUserByName, listChannels, toggleReaction,
+  getTrash, getUserById, getUserByName, listChannels, purgeExpired, restoreMessage, toggleReaction,
 } from "./db.mjs";
 import { hashPassword, signToken, verifyPassword, verifyToken } from "./auth.mjs";
 
@@ -23,6 +23,10 @@ const MIME_EXT = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", 
 const EXT_MIME = { png: "image/png", jpg: "image/jpeg", gif: "image/gif", webp: "image/webp" };
 const MAX_UPLOAD = 5 * 1024 * 1024; // 5 MB
 const UPLOAD_NAME_RE = /^[a-f0-9-]+\.(png|jpg|gif|webp)$/; // uuid + known ext only (blocks path traversal)
+
+// soft-delete retention: how long a deleted message stays undo-able before purge hard-deletes it
+const PURGE_RETENTION_MS = Number(process.env.HUB_PURGE_RETENTION_MS) || 120_000; // 2 min
+const PURGE_INTERVAL_MS = Number(process.env.HUB_PURGE_INTERVAL_MS) || 30_000;
 
 // ---------- helpers (stateless) ----------
 const readJson = (req) =>
@@ -50,6 +54,15 @@ const readRawBody = (req, maxBytes) =>
     req.on("end", () => resolve(Buffer.concat(chunks)));
     req.on("error", reject);
   });
+
+// scheduled cleanup: hard-delete messages soft-deleted past retention, unlink their image files.
+// Pure logic lives in db.purgeExpired; this just wires it to file removal. Runs on a timer now,
+// but can be a cron script later (`node -e "import(...).then(m=>m.purgeTick())"`) with no rewrite.
+export function purgeTick(retentionMs = PURGE_RETENTION_MS) {
+  const { count, imageUrls } = purgeExpired(retentionMs);
+  imageUrls.forEach(deleteUpload);
+  return count;
+}
 
 // remove an uploaded file when its message is deleted (best-effort; validate the name first)
 function deleteUpload(imageUrl) {
@@ -112,6 +125,13 @@ async function handleApi(req, res, url) {
     const name = `${randomUUID()}.${ext}`; // uuid name, never the client's filename
     writeFileSync(join(UPLOADS_DIR, name), buf);
     return sendJson(res, 201, { url: `/uploads/${name}` });
+  }
+
+  const trashMatch = path.match(/^\/api\/channels\/([^/]+)\/trash$/);
+  if (req.method === "GET" && trashMatch) {
+    const channelId = trashMatch[1];
+    if (!getChannel(channelId)) return sendJson(res, 404, { error: "no such channel" });
+    return sendJson(res, 200, { messages: getTrash(channelId, user.id) }); // only the caller's own
   }
 
   const msgMatch = path.match(/^\/api\/channels\/([^/]+)\/messages$/);
@@ -242,13 +262,16 @@ export function createHubServer() {
       }
 
       if (m.type === "delete") {
+        // soft delete: hide it, keep row + file so it can be undone; purge removes it later
         const r = deleteMessage(String(m.messageId || ""), client.userId);
-        if (r) {
-          if (r.imageUrl) deleteUpload(r.imageUrl); // remove the orphaned file from disk
-          broadcast({ type: "delete", channelId: r.channelId, messageId: r.messageId });
-        } else {
-          ws.send(JSON.stringify({ type: "error", op: "delete", messageId: m.messageId }));
-        }
+        if (r) broadcast({ type: "delete", channelId: r.channelId, messageId: r.messageId });
+        else ws.send(JSON.stringify({ type: "error", op: "delete", messageId: m.messageId }));
+        return;
+      }
+
+      if (m.type === "restore") {
+        const r = restoreMessage(String(m.messageId || ""), client.userId);
+        if (r) broadcast({ type: "restore", channelId: r.channelId, messageId: r.messageId });
       }
     });
 
@@ -268,6 +291,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   createHubServer().listen(PORT, HOST, () => {
     console.log(`\n  fe-practice-hub server`);
     console.log(`  http://${HOST}:${PORT}  (REST /api/* + ws /ws)`);
-    console.log(`  SQLite-backed. auth + channels + history + live + WebRTC. localhost only.\n`);
+    console.log(`  SQLite-backed. auth + channels + history + live + WebRTC. localhost only.`);
+    console.log(`  purge: soft-deleted messages hard-deleted after ${PURGE_RETENTION_MS / 1000}s (every ${PURGE_INTERVAL_MS / 1000}s)\n`);
   });
+  setInterval(purgeTick, PURGE_INTERVAL_MS).unref(); // don't keep the process alive just for purging
 }

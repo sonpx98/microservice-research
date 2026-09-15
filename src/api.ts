@@ -36,6 +36,8 @@ export const login = (username: string, password: string) =>
 export const fetchChannels = () => authGet<{ channels: Channel[] }>("/channels");
 export const fetchMessages = (channelId: string, before?: number) =>
   authGet<{ messages: ChatMessage[] }>(`/channels/${channelId}/messages?limit=30${before ? `&before=${before}` : ""}`);
+export const fetchTrash = (channelId: string) =>
+  authGet<{ messages: ChatMessage[] }>(`/channels/${channelId}/trash`);
 
 // upload raw image bytes (no base64, no multipart lib); server returns { url: "/uploads/<name>" }
 export async function uploadImage(file: File): Promise<string> {
