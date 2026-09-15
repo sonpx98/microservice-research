@@ -30,7 +30,7 @@ Scripts: `build` (tsc), `dev` (tsx watch not needed — `node dist/index.js`), `
 
 | Var | Default | Use |
 |---|---|---|
-| `API_URL` | `http://localhost:3000/api` | base URL of apps/api |
+| `API_URL` | `http://127.0.0.1:3000/api` | base URL of apps/api |
 | `API_KEY` | – | sent as `x-api-key` on write tools |
 | `TTS_OUTPUT_DIR` | `~/Downloads` | where `text_to_speech` writes mp3 |
 
@@ -38,7 +38,7 @@ Claude Desktop / Code config:
 
 ```json
 { "mcpServers": { "pika": { "command": "node", "args": ["<repo>/apps/mcp/dist/index.js"],
-  "env": { "API_URL": "http://localhost:3000/api", "API_KEY": "..." } } } }
+  "env": { "API_URL": "http://127.0.0.1:3000/api", "API_KEY": "..." } } } }
 ```
 
 ## Tools

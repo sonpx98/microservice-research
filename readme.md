@@ -5,6 +5,7 @@ Personal blog + backend, one pnpm workspace.
 ```
 apps/web   Next.js 15 blog: posts, knowledge graph, english-learning, playground, tools  (port 5006)
 apps/api   NestJS: news crawler, english-learning (readings + conversations), Piper TTS   (port 3000)
+apps/mcp   stdio MCP server exposing the API as tools for Claude Desktop / Claude Code
 ```
 
 ## Run
@@ -34,11 +35,32 @@ Needs `python3` and `lame` (`brew install lame`).
 | `POST /tts/generate` (wav stream), `/tts/generate-buffer?format=mp3` | – | body `{ text, model? }` |
 | `GET /health` | – | |
 
-## Content generation
+## Content generation via MCP
 
-No AI provider is wired in. Readings and conversations are plain CRUD: generate content with whatever
-model you like (local LLM, MCP tool, script) and `POST` it with `x-api-key`. The API only stores it and
-synthesizes audio.
+No AI provider is wired in. The model runs in your MCP client (Claude Desktop, Claude Code, ...) and
+pushes content through `apps/mcp`, a stdio server wrapping the API.
+
+```bash
+pnpm --filter mcp build
+```
+
+Claude Desktop `claude_desktop_config.json` / Claude Code `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "pika": {
+      "command": "node",
+      "args": ["/absolute/path/microservice-research/apps/mcp/dist/index.js"],
+      "env": { "API_URL": "http://127.0.0.1:3000/api", "API_KEY": "<same as apps/api .env>" }
+    }
+  }
+}
+```
+
+Tools: `list_readings`, `get_reading`, `create_reading`, `list_conversations`, `get_conversation`,
+`create_conversation`, `list_news`, `get_news`, `text_to_speech` (writes mp3 to `TTS_OUTPUT_DIR`, default
+`~/Downloads`). Write tools send `x-api-key`; `create_conversation` is slow because Piper renders every line.
 
 ## Deploy
 
