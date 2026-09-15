@@ -1,3 +1,3 @@
 # web
 
-Next.js 15 blog. See root readme.md.
+Next.js 16 blog. See root readme.md.

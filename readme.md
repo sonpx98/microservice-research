@@ -3,7 +3,7 @@
 Personal blog + backend, one pnpm workspace.
 
 ```
-apps/web   Next.js 15 blog: posts, knowledge graph, english-learning, playground, tools  (port 5006)
+apps/web   Next.js 16 blog: posts, knowledge graph, english-learning, playground, tools  (port 5006)
 apps/api   NestJS: news crawler, english-learning (readings + conversations), Piper TTS   (port 3000)
 apps/mcp   stdio MCP server exposing the API as tools for Claude Desktop / Claude Code
 ```
