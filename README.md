@@ -1,5 +1,7 @@
 # fe-practice-hub
 
+[![ci](https://github.com/sonpx98/fe-practice-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/sonpx98/fe-practice-hub/actions/workflows/ci.yml)
+
 A local practice ground for **comprehensive frontend + realtime + WebRTC**, built as one full-stack
 app (team-hub / Discord-mini) so a single codebase forces you through most real FE patterns instead
 of scattered demos.
