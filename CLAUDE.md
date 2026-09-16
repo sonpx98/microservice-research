@@ -1,6 +1,6 @@
 # microservice-research
 
-Personal blog + backend. pnpm workspace, Node 20 (`.nvmrc`). Solo project.
+Personal blog + backend. pnpm workspace, Node 24 (`.nvmrc`). Solo project.
 
 ## Layout
 
@@ -9,6 +9,7 @@ Personal blog + backend. pnpm workspace, Node 20 (`.nvmrc`). Solo project.
 | `apps/web` | Next.js 16 blog (posts via contentlayer, english-learning UI, playground, tools) | `pnpm dev:web` → :5006 |
 | `apps/api` | NestJS: news crawler, readings + conversations CRUD, Piper TTS | `pnpm dev:api` → :3000/api |
 | `apps/mcp` | stdio MCP server exposing the API as tools for Claude Desktop/Code | `pnpm --filter mcp build` |
+| `apps/practice-hub` | Realtime chat practice app: Vite SPA + node `http`/`ws`/`node:sqlite`. Self-contained, shares nothing with web/api | `pnpm dev:hub` → :5173 + :8787 |
 
 Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 
@@ -30,6 +31,8 @@ Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 - Mongoose schemas live in `apps/api/src/common/schemas`; import from that barrel.
 - Web reads the API through `NEXT_PUBLIC_GATEWAY_URL` (default `http://localhost:3000/api`); never hardcode hosts.
 - Don't add markdown session logs / `*_COMPLETE.md` files. Docs go in `readme.md` or `docs/`.
+- `apps/practice-hub` keeps its own stack (react-router, zustand, Vitest, Playwright) and its own storage.
+  Don't wire it into `apps/api` or next-intl; it is a standalone learning app sharing only the workspace.
 - Code, comments, commits in English. Chat in Vietnamese is fine.
 
 ## Verify before commit
@@ -38,9 +41,10 @@ Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 pnpm --filter api typecheck && pnpm --filter api lint && pnpm --filter api build
 pnpm --filter web type-check && KEYSTATIC_GITHUB_CLIENT_ID=x KEYSTATIC_GITHUB_CLIENT_SECRET=x KEYSTATIC_SECRET=x pnpm --filter web build
 pnpm --filter mcp build
+pnpm --filter practice-hub typecheck && pnpm --filter practice-hub test && pnpm --filter practice-hub build
 ```
 
-No test suite; build + typecheck + lint is the gate. Web build needs dummy `KEYSTATIC_*` locally.
+No test suite except `apps/practice-hub` (Vitest + Playwright); elsewhere build + typecheck + lint is the gate. Web build needs dummy `KEYSTATIC_*` locally.
 
 ## Env
 

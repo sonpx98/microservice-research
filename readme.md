@@ -6,6 +6,7 @@ Personal blog + backend, one pnpm workspace.
 apps/web   Next.js 16 blog: posts, knowledge graph, english-learning, playground, tools  (port 5006)
 apps/api   NestJS: news crawler, english-learning (readings + conversations), Piper TTS   (port 3000)
 apps/mcp   stdio MCP server exposing the API as tools for Claude Desktop / Claude Code
+apps/practice-hub  Vite SPA + node/ws/sqlite realtime chat, self-contained  (client 5173, server 8787)
 ```
 
 ## Run
@@ -15,8 +16,13 @@ pnpm install
 pnpm db                 # MongoDB via docker compose
 cp apps/api/.env.example apps/api/.env   # set API_KEY
 cp apps/web/.env.example apps/web/.env.local
-pnpm dev                # web :5006 + api :3000
+pnpm dev                # every app in parallel
+pnpm dev:web            # :5006
+pnpm dev:api            # :3000
+pnpm dev:hub            # practice-hub client :5173 + server :8787
 ```
+
+Node 24 (`.nvmrc`) — `apps/practice-hub` uses the built-in `node:sqlite`.
 
 TTS (optional, needed for conversation audio): `pnpm --filter api setup:tts` installs Piper into `apps/api/tools/`.
 Needs `python3` and `lame` (`brew install lame`).
