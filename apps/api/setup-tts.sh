@@ -74,5 +74,5 @@ echo ""
 echo "Available voices:"
 ls -lh "$MODELS_DIR"/*.onnx 2>/dev/null | awk '{print "  - " $NF " (" $5 ")"}'
 echo ""
-echo "To start the TTS service, run:"
-echo "  pnpm start:tts-service"
+echo "Start the API (TTS lives inside it):"
+echo "  pnpm dev:api"
