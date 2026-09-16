@@ -1,6 +1,7 @@
 node_modules
 .next
 .contentlayer
+.contentlayer-cache.json
 dist
 *.log
 .env*.local
