@@ -6,7 +6,7 @@ Personal blog + backend. pnpm workspace, Node 24 (`.nvmrc`). Solo project.
 
 | Path | What | Run |
 |---|---|---|
-| `apps/web` | Next.js 16 blog (posts via contentlayer, english-learning UI, playground, tools) | `pnpm dev:web` → :5006 |
+| `apps/web` | Next.js 16 portfolio: blog, knowledge graph, algo-verse, security playground. Unlinked personal tools: english-learning, cv-generator | `pnpm dev:web` → :5006 |
 | `apps/api` | NestJS: news crawler, readings + conversations CRUD, Piper TTS | `pnpm dev:api` → :3000/api |
 | `apps/mcp` | stdio MCP server exposing the API as tools for Claude Desktop/Code | `pnpm --filter mcp build` |
 | `apps/practice-hub` | Realtime chat practice app: Vite SPA + node `http`/`ws`/`node:sqlite`. Self-contained, shares nothing with web/api | `pnpm dev:hub` → :5173 + :8787 |
@@ -33,6 +33,8 @@ Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 - Don't add markdown session logs / `*_COMPLETE.md` files. Docs go in `readme.md` or `docs/`.
 - `apps/practice-hub` keeps its own stack (react-router, zustand, Vitest, Playwright) and its own storage.
   Don't wire it into `apps/api` or next-intl; it is a standalone learning app sharing only the workspace.
+- Portfolio scope: the header nav lists only the four pillars (blog, knowledge graph, algo-verse, playground).
+  New features either strengthen a pillar or stay unlinked. No feature-flag system; leave a link out instead.
 - Code, comments, commits in English. Chat in Vietnamese is fine.
 
 ## Verify before commit
@@ -49,5 +51,5 @@ No test suite except `apps/practice-hub` (Vitest + Playwright); elsewhere build 
 ## Env
 
 - `apps/api/.env` (from `.env.example`): `MONGO_URI`, `API_KEY`, optional `CRAWLER_CRON`, `PIPER_BIN`, `PIPER_MODELS_DIR`.
-- `apps/web/.env.local` (from `.env.example`): Giscus, Keystatic, feature flags, `NEXT_PUBLIC_GATEWAY_URL`, Supabase (co-browsing).
+- `apps/web/.env.local` (from `.env.example`): Giscus, Keystatic, `NEXT_PUBLIC_GATEWAY_URL`.
 - MCP client env: `API_URL`, `API_KEY`, `TTS_OUTPUT_DIR` (see `.mcp.json`).
