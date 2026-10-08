@@ -87,12 +87,7 @@ export default async function LocaleHomePage({
                 <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Terminal className="w-7 h-7" />
                 </div>
-                <div className="flex items-center gap-3 mb-3">
-                  <h3 className="text-2xl font-bold">{t('playgroundSection.title')}</h3>
-                  <span className="px-2 py-1 text-xs font-medium bg-yellow-500/20 text-yellow-300 rounded-full">
-                    {t('playgroundSection.comingSoon')}
-                  </span>
-                </div>
+                <h3 className="text-2xl font-bold mb-3">{t('playgroundSection.title')}</h3>
                 <p className="text-gray-300 mb-6">
                   {t('playgroundSection.description')}
                 </p>

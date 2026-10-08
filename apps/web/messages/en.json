@@ -59,8 +59,7 @@
     "playgroundSection": {
       "title": "Playground",
       "description": "Interactive experiments and learning labs. Currently featuring security challenges where you can think like a hacker.",
-      "cta": "Start Exploring",
-      "comingSoon": "Coming Soon"
+      "cta": "Start Exploring"
     },
     "featuredTopics": {
       "title": "What I Write About",

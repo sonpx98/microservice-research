@@ -4,54 +4,31 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { useState, useRef, useEffect } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
-import { featureFlags } from '@/lib/feature-flags';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 interface HeaderProps {
   locale: string;
 }
 
+// Portfolio pillars: writing, linked concepts, runtime internals, security labs.
+// Personal tools (english-learning, cv-generator) stay routable but are not linked here.
+const NAV = [
+  { path: '/blog', label: 'Blog' },
+  { path: '/knowledge-graph', label: 'Knowledge Graph' },
+  { path: '/algo-verse', label: 'Algo Verse' },
+  { path: '/playground', label: 'Playground' },
+];
+
 export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isActive = (path: string) => pathname.includes(path);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setToolsDropdownOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const navLinks = [
-    { href: `/${locale}/blog`, label: 'Blog', active: isActive('/blog') },
-    { href: `/${locale}/playground`, label: 'Playground', active: isActive('/playground') },
-    { href: `/${locale}/knowledge-graph`, label: 'Knowledge Graph', active: isActive('/knowledge-graph') },
-    // English Learning
-    ...(featureFlags.ENGLISH_LEARNING_ENABLED 
-      ? [{ href: `/${locale}/english-learning`, label: 'English Learning', active: isActive('/english-learning') }]
-      : []),
-    // Only show Algo Verse when feature flag is enabled
-    ...(featureFlags.ALGO_VERSE_ENABLED 
-      ? [{ href: `/${locale}/algo-verse`, label: 'Algo Verse', active: isActive('/algo-verse') }] 
-      : []),
-  ];
-
-  const toolsSubmenu = [
-    { href: `/${locale}/tools/cv-generator`, label: 'CV Generator' },
-    { href: `/${locale}/tools/tarot`, label: 'Tarot Reader' },
-    ...(featureFlags.CO_BROWSING_ENABLED 
-      ? [{ href: `/${locale}/tools/co-browsing`, label: 'Co-browsing' }]
-      : []),
-  ];
+  const navLinks = NAV.map(({ path, label }) => ({
+    href: `/${locale}${path}`,
+    label,
+    active: pathname.includes(path),
+  }));
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
@@ -81,36 +58,6 @@ export function Header({ locale }: HeaderProps) {
                   {link.label}
                 </Link>
               ))}
-              
-              {/* Tools Dropdown */}
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
-                  className={`text-sm font-medium transition-colors flex items-center gap-1 ${
-                    isActive('/tools')
-                      ? 'text-blue-600 dark:text-blue-400' 
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  Tools
-                  <ChevronDown className={`w-4 h-4 transition-transform ${toolsDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-                
-                {toolsDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                    {toolsSubmenu.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setToolsDropdownOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
             </nav>
           </div>
 
@@ -148,25 +95,6 @@ export function Header({ locale }: HeaderProps) {
                   {link.label}
                 </Link>
               ))}
-              
-              {/* Tools Section in Mobile */}
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-2">
-                <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 mb-2">Tools</div>
-                {toolsSubmenu.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`text-sm font-medium transition-colors px-2 py-2 rounded-md block ${
-                      isActive(item.href)
-                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50' 
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
             </div>
           </nav>
         )}

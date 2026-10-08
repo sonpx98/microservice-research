@@ -1,8 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
-import { redirect } from 'next/navigation';
 import { MemoryVisualizer } from '@/components/algo-verse/memory-visualizer';
 import { Cpu } from 'lucide-react';
-import { featureFlags } from '@/lib/feature-flags';
 
 export default async function AlgoVersePage({ 
   params 
@@ -11,11 +9,6 @@ export default async function AlgoVersePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-
-  // Redirect to home if feature is disabled
-  if (!featureFlags.ALGO_VERSE_ENABLED) {
-    redirect(`/${locale}`);
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
