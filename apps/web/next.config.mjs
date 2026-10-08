@@ -3,7 +3,6 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
-const supabaseUrl = process.env.NEXT_PUBLIC_COBROWSING_SUPABASE_URL?.replace('https://', '') || '';
 const gatewayUrl = process.env.NEXT_PUBLIC_GATEWAY_URL?.replace('/api', '') || 'http://localhost:3000';
 
 /** @type {import('next').NextConfig} */
@@ -64,7 +63,7 @@ const nextConfig = {
               "img-src 'self' data: https: blob:",
               `media-src 'self' blob: ${gatewayUrl}`,
               "frame-src https://giscus.app",
-              `connect-src 'self' https://giscus.app https://*.onrender.com ${gatewayUrl} http://127.0.0.1:3000 https://cdn.jsdelivr.net https://${supabaseUrl} wss://${supabaseUrl}`,
+              `connect-src 'self' https://giscus.app https://*.onrender.com ${gatewayUrl} http://127.0.0.1:3000 https://cdn.jsdelivr.net`,
               // Monaco uses blob: URLs for web workers
               "worker-src 'self' blob: https://cdn.jsdelivr.net",
             ].join('; '),
