@@ -1,9 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { CodeExample } from '@/lib/algo-verse/types';
 import { motion } from 'framer-motion';
 import { Code2, ChevronDown } from 'lucide-react';
+import { Panel } from '@/components/layout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Textarea } from '@/components/ui/textarea';
 
 interface CodeEditorProps {
   code: string;
@@ -14,6 +23,12 @@ interface CodeEditorProps {
   disabled?: boolean;
 }
 
+const DIFFICULTY_TONE: Record<string, string> = {
+  beginner: 'bg-success/10 text-success',
+  intermediate: 'bg-warning/10 text-warning',
+  advanced: 'bg-danger/10 text-danger',
+};
+
 export function CodeEditor({
   code,
   currentLine,
@@ -22,74 +37,47 @@ export function CodeEditor({
   onExampleSelect,
   disabled = false,
 }: CodeEditorProps) {
-  const [showExamples, setShowExamples] = useState(false);
   const lines = code.split('\n');
 
   return (
-    <div className="h-full flex flex-col rounded-xl border border-border bg-card">
-      {/* Header */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-border bg-muted flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Code2 className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold text-foreground">
-            Code Editor
-          </h3>
-        </div>
-
-        {/* Example Selector */}
-        <div className="relative">
-          <button
-            onClick={() => setShowExamples(!showExamples)}
-            disabled={disabled}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-foreground bg-card border border-input rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Examples
-            <ChevronDown className={`w-3 h-3 transition-transform ${showExamples ? 'rotate-180' : ''}`} />
-          </button>
-
-          {/* Dropdown */}
-          {showExamples && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="absolute right-0 top-full mt-2 w-64 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden"
-            >
-              <div className="max-h-96 overflow-y-auto">
-                {examples.map((example) => (
-                  <button
-                    key={example.id}
-                    onClick={() => {
-                      onExampleSelect(example);
-                      setShowExamples(false);
-                    }}
-                    className="w-full text-left px-4 py-3 hover:bg-muted border-b border-border last:border-b-0 transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-foreground">
-                        {example.title}
-                      </span>
-                      <span className={`text-xs px-2 py-0.5 rounded ${
-                        example.difficulty === 'beginner' 
-                          ? 'bg-success/10 text-success'
-                          : example.difficulty === 'intermediate'
-                          ? 'bg-warning/10 text-warning'
-                          : 'bg-danger/10 text-danger'
-                      }`}>
-                        {example.difficulty}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {example.description}
-                    </p>
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </div>
-
+    <Panel
+      className="flex h-full flex-col"
+      bodyClassName="flex min-h-0 flex-1 flex-col"
+      padding="none"
+      title={
+        <span className="flex items-center gap-2">
+          <Code2 className="h-4 w-4 text-muted-foreground" />
+          Code editor
+        </span>
+      }
+      actions={
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" disabled={disabled}>
+              Examples
+              <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-72">
+            {examples.map((example) => (
+              <DropdownMenuItem
+                key={example.id}
+                onSelect={() => onExampleSelect(example)}
+                className="flex flex-col items-start gap-1"
+              >
+                <span className="flex w-full items-center justify-between gap-2">
+                  <span className="font-medium">{example.title}</span>
+                  <Badge variant="secondary" className={DIFFICULTY_TONE[example.difficulty] ?? ''}>
+                    {example.difficulty}
+                  </Badge>
+                </span>
+                <span className="text-xs text-muted-foreground">{example.description}</span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      }
+    >
       {/* Code Display with Line Numbers */}
       <div className="flex-1 overflow-auto">
         <div className="flex">
@@ -116,16 +104,14 @@ export function CodeEditor({
 
           {/* Code Content */}
           <div className="flex-1 relative">
-            <textarea
+            {/* Borderless: the text must line up with the line-number gutter. */}
+            <Textarea
               value={code}
               onChange={(e) => onCodeChange(e.target.value)}
               disabled={disabled}
               spellCheck={false}
-              className="w-full h-full px-4 py-4 bg-transparent text-sm font-mono text-foreground leading-6 resize-none focus:outline-none disabled:cursor-not-allowed"
-              style={{
-                tabSize: 2,
-                minHeight: '400px',
-              }}
+              className="h-full min-h-[400px] resize-none rounded-none border-0 bg-transparent p-4 font-mono text-sm leading-6 shadow-none focus-visible:ring-0 md:text-sm dark:bg-transparent"
+              style={{ tabSize: 2 }}
             />
 
             {/* Current Line Highlight */}
@@ -155,6 +141,6 @@ export function CodeEditor({
           )}
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
   locale: string;
@@ -31,7 +32,7 @@ export function Header({ locale }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Logo / Brand */}
           <div className="flex items-center gap-8">
@@ -66,13 +67,15 @@ export function Header({ locale }: HeaderProps) {
             <ThemeToggle />
             
             {/* Mobile menu button */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
+              className="sm:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden p-2 text-muted-foreground hover:text-foreground"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </Button>
           </div>
         </div>
         

@@ -13,15 +13,12 @@ export interface UseGraphFiltersReturn {
     displayNodes: Node[];
     isSearchExpanded: boolean;
     setIsSearchExpanded: (value: boolean) => void;
-    isFilterOpen: boolean;
-    setIsFilterOpen: (value: boolean) => void;
 }
 
 export function useGraphFilters(flowNodes: Node[]): UseGraphFiltersReturn {
     const [searchQuery, setSearchQuery] = useState('');
     const [typeFilter, setTypeFilter] = useState<string>('all');
     const [isSearchExpanded, setIsSearchExpanded] = useState(true);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     // Get unique types for filter dropdown
     const availableTypes = useMemo(() => {
@@ -63,7 +60,5 @@ export function useGraphFilters(flowNodes: Node[]): UseGraphFiltersReturn {
         displayNodes,
         isSearchExpanded,
         setIsSearchExpanded,
-        isFilterOpen,
-        setIsFilterOpen,
     };
 }

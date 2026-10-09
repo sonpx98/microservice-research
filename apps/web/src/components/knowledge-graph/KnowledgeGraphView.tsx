@@ -77,8 +77,6 @@ function KnowledgeGraphViewInner({ nodes }: KnowledgeGraphViewProps) {
     availableTypes: filters.availableTypes,
     isExpanded: filters.isSearchExpanded,
     onExpandToggle: () => filters.setIsSearchExpanded(!filters.isSearchExpanded),
-    isFilterOpen: filters.isFilterOpen,
-    onFilterToggle: () => filters.setIsFilterOpen(!filters.isFilterOpen),
     filteredCount: filters.filteredNodes.length,
     totalCount: flowNodes.length,
   };

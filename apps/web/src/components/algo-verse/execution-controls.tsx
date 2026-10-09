@@ -1,6 +1,8 @@
 'use client';
 
 import { Play, Pause, SkipForward, SkipBack, RotateCcw } from 'lucide-react';
+import { Panel } from '@/components/layout';
+import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
 interface ExecutionControlsProps {
@@ -34,7 +36,7 @@ export function ExecutionControls({
   const canStepBackward = currentStep > 0;
 
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-xl border border-border bg-card">
+    <Panel padding="sm" bodyClassName="flex flex-col gap-4">
       {/* Progress Info */}
       <div className="flex items-center justify-between">
         <div className="text-sm">
@@ -63,48 +65,30 @@ export function ExecutionControls({
       {/* Control Buttons */}
       <div className="flex items-center justify-center gap-2">
         {/* Step Backward */}
-        <button
-          onClick={onStepBackward}
-          disabled={disabled || !canStepBackward}
-          className="p-2 rounded-lg border border-input hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          title="Step Backward"
-        >
-          <SkipBack className="w-5 h-5 text-foreground" />
-        </button>
+        <Button variant="outline" size="icon" onClick={onStepBackward} disabled={disabled || !canStepBackward} aria-label="Step backward" title="Step backward">
+          <SkipBack />
+        </Button>
 
         {/* Play/Pause */}
-        <button
+        <Button
+          size="icon-lg"
           onClick={isPlaying ? onPause : onPlay}
           disabled={disabled || (!canStepForward && !isPlaying)}
-          className="p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
+          aria-label={isPlaying ? 'Pause' : 'Play'}
           title={isPlaying ? 'Pause' : 'Play'}
         >
-          {isPlaying ? (
-            <Pause className="w-6 h-6" fill="currentColor" />
-          ) : (
-            <Play className="w-6 h-6" fill="currentColor" />
-          )}
-        </button>
+          {isPlaying ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}
+        </Button>
 
         {/* Step Forward */}
-        <button
-          onClick={onStepForward}
-          disabled={disabled || !canStepForward}
-          className="p-2 rounded-lg border border-input hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          title="Step Forward"
-        >
-          <SkipForward className="w-5 h-5 text-foreground" />
-        </button>
+        <Button variant="outline" size="icon" onClick={onStepForward} disabled={disabled || !canStepForward} aria-label="Step forward" title="Step forward">
+          <SkipForward />
+        </Button>
 
         {/* Reset */}
-        <button
-          onClick={onReset}
-          disabled={disabled || currentStep === 0}
-          className="p-2 rounded-lg border border-input hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          title="Reset"
-        >
-          <RotateCcw className="w-5 h-5 text-foreground" />
-        </button>
+        <Button variant="outline" size="icon" onClick={onReset} disabled={disabled || currentStep === 0} aria-label="Reset" title="Reset">
+          <RotateCcw />
+        </Button>
       </div>
 
       {/* Speed Control */}
@@ -114,7 +98,7 @@ export function ExecutionControls({
         </label>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground w-8">0.5x</span>
-          <input
+          <input /* layout-exempt: native range input, single use, no slider primitive */
             type="range"
             min="0.5"
             max="2"
@@ -129,6 +113,6 @@ export function ExecutionControls({
           <span className="text-xs text-muted-foreground w-8">2x</span>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

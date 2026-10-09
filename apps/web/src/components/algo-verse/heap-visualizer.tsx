@@ -74,7 +74,7 @@ export function HeapVisualizer({ heap, showAddresses = true, highlightedAddress 
                   }}
                   className={`relative rounded-lg border-2 p-4 transition-all ${
                     isHighlighted
-                      ? 'border-chart-4 bg-chart-4/10 shadow-lg shadow-chart-4/30'
+                      ? 'border-chart-4 bg-chart-4/10 ring-2 ring-chart-4/40'
                       : 'border-chart-4/30 bg-chart-4/10'
                   }`}
                 >

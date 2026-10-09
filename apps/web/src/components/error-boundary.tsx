@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 interface Props {
@@ -60,13 +61,10 @@ export class ErrorBoundary extends Component<Props, State> {
               {this.state.error.message}
             </pre>
           )}
-          <button
-            onClick={this.handleRetry}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-danger hover:bg-danger/90 text-danger-foreground rounded-lg transition-colors"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Try Again
-          </button>
+          <Button variant="destructive" onClick={this.handleRetry}>
+            <RefreshCw />
+            Try again
+          </Button>
         </div>
       );
     }

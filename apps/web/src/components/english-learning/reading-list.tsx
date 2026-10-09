@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { BookOpen, BarChart, ExternalLink } from 'lucide-react';
+import { useParams, useSearchParams } from 'next/navigation';
+import { BookOpen } from 'lucide-react';
+import { ContentCard } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -18,6 +18,7 @@ interface Reading {
 
 export function ReadingList({ readings: initialReadings, initialTotal = 0 }: { readings: Reading[], initialTotal?: number }) {
   const searchParams = useSearchParams();
+  const { locale } = useParams<{ locale: string }>();
   const [readings, setReadings] = useState<Reading[]>(initialReadings);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -70,45 +71,23 @@ export function ReadingList({ readings: initialReadings, initialTotal = 0 }: { r
   };
 
   if (!readings || readings.length === 0) {
-    return (
-      <div className="text-center py-20 bg-muted rounded-xl border border-dashed border-input">
-         <p className="text-muted-foreground">No readings found matching filters.</p>
-      </div>
-    );
+    return <EmptyState icon={BookOpen} title="No readings found" description="Try another topic, level or search." />;
   }
 
   return (
     <div className="space-y-8">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {readings.map((reading) => (
-            <Link 
-                href={`/english-learning/${reading._id}`} 
-                key={reading._id}
-                className="group relative block p-6 bg-card rounded-xl border border-border shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
-            >
-                <div className="flex justify-between items-start mb-4">
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary`}>
-                    Level {reading.level}
-                </span>
-                <span className="text-muted-foreground group-hover:text-primary transition-colors">
-                    <BookOpen className="w-5 h-5" />
-                </span>
-                </div>
-                
-                <h3 className="text-xl font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                {reading.title}
-                </h3>
-                
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                {reading.topic}
-                </p>
-                
-                <div className="flex items-center text-sm text-muted-foreground">
-                    <BarChart className="w-4 h-4 mr-1.5" />
-                    {reading.quizzes?.length || 0} Questions
-                </div>
-            </Link>
-            ))}
+          {readings.map((reading) => (
+            <ContentCard
+              key={reading._id}
+              href={`/${locale}/english-learning/${reading._id}`}
+              media={false}
+              eyebrow={`Level ${reading.level}`}
+              title={reading.title}
+              excerpt={reading.topic}
+              date={`${reading.quizzes?.length || 0} questions`}
+            />
+          ))}
         </div>
 
         {/* Load More Button */}
@@ -118,7 +97,6 @@ export function ReadingList({ readings: initialReadings, initialTotal = 0 }: { r
                     onClick={loadMore}
                     disabled={loading}
                     variant="outline"
-                    className="rounded-full"
                 >
                     {loading ? (
                         <>

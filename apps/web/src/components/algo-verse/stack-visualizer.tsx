@@ -2,6 +2,7 @@
 
 import { StackFrame } from '@/lib/algo-verse/types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 import { useEffect, useRef } from 'react';
 
 interface StackVisualizerProps {
@@ -117,13 +118,15 @@ export function StackVisualizer({ stack, onHeapReferenceClick }: StackVisualizer
                               {variable.type}
                             </span>
                             {(variable.type === 'object' || variable.type === 'array') && variable.heapReference ? (
-                              <button
+                              <Button
+                                variant="link"
+                                size="sm"
+                                className="h-auto p-0 font-mono"
                                 onClick={() => onHeapReferenceClick?.(variable.heapReference!)}
-                                className="font-mono text-primary hover:text-primary hover:underline cursor-pointer transition-colors"
-                                title={`Click to view ${variable.type} at ${variable.heapReference}`}
+                                title={`View ${variable.type} at ${variable.heapReference}`}
                               >
                                 → {variable.heapReference}
-                              </button>
+                              </Button>
                             ) : (
                               <span className="font-mono text-foreground">
                                 {String(variable.value).substring(0, 20)}

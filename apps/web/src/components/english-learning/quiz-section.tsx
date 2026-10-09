@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { CheckCircle, XCircle, ArrowRight, RotateCcw } from 'lucide-react';
+import { Callout, Panel } from '@/components/layout';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface QuizOption {
   answer: string;
@@ -59,107 +62,75 @@ export function QuizSection({ quizzes }: QuizSectionProps) {
 
   if (currentIndex >= quizzes.length) {
     return (
-      <div className="bg-card rounded-xl p-8 shadow-sm border border-border text-center">
-        <h3 className="text-2xl font-bold mb-4 text-foreground">Quiz Completed!</h3>
-        <p className="text-lg mb-6 text-muted-foreground">
-          You scored <span className="font-bold text-primary-500">{score}</span> out of <span className="font-bold">{quizzes.length}</span>
-        </p>
-        <button
-          onClick={restartQuiz}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors"
-        >
-          <RotateCcw className="w-5 h-5" />
-          Try Again
-        </button>
-      </div>
+      <Panel title="Quiz complete">
+        <div className="flex flex-col items-center gap-4 py-4 text-center">
+          <p className="text-lg text-muted-foreground">
+            You scored <span className="font-mono font-semibold text-primary">{score}</span> out of{' '}
+            <span className="font-mono font-semibold text-foreground">{quizzes.length}</span>
+          </p>
+          <Button onClick={restartQuiz}>
+            <RotateCcw />
+            Try again
+          </Button>
+        </div>
+      </Panel>
     );
   }
 
   return (
-    <div className="mt-12 bg-card rounded-xl p-6 md:p-8 shadow-sm border border-border">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold text-foreground">Quiz</h3>
-        <span className="text-sm font-medium text-muted-foreground">
-          Question {currentIndex + 1} of {quizzes.length}
-        </span>
-      </div>
-
-      <div className="mb-6">
-        <p className="text-lg font-medium text-foreground mb-4">{currentQuiz.question}</p>
-        <div className="space-y-3">
-          {currentQuiz.options.map((option, idx) => {
-            const isSelected = selectedOption === idx;
-            const isCorrect = option.isCorrect;
-            
-            let buttonClass = "w-full text-left p-4 rounded-lg border transition-all duration-200 flex justify-between items-center group ";
-            
-            if (isSubmitted) {
-                if (isCorrect) {
-                    buttonClass += "bg-success/10 border-success/30";
-                } else if (isSelected && !isCorrect) {
-                    buttonClass += "bg-danger/10 border-danger/30";
-                } else {
-                    buttonClass += "bg-card border-border opacity-60";
-                }
-            } else {
-                if (isSelected) {
-                    buttonClass += "bg-primary/10 border-primary shadow-sm";
-                } else {
-                    buttonClass += "bg-card border-border hover:border-primary/30 hover:bg-muted";
-                }
-            }
-
-            return (
-              <button
-                key={idx}
-                onClick={() => handleOptionClick(idx)}
-                disabled={isSubmitted}
-                className={buttonClass}
-              >
-                <span className={`text-base ${isSubmitted && isCorrect ? 'font-medium text-success' : 'text-foreground'}`}>
-                    {option.answer}
-                </span>
-                {isSubmitted && isCorrect && <CheckCircle className="w-5 h-5 text-success" />}
-                {isSubmitted && isSelected && !isCorrect && <XCircle className="w-5 h-5 text-danger" />}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {isSubmitted && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-            {currentQuiz.explanation && (
-                <div className="p-4 bg-muted rounded-lg border border-border">
-                    <p className="text-sm text-muted-foreground">
-                        <span className="font-semibold block mb-1">Explanation:</span>
-                        {currentQuiz.explanation}
-                    </p>
-                </div>
-            )}
-            <div className="flex justify-end">
-                <button
-                onClick={nextQuestion}
-                className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors shadow-sm hover:shadow"
-                >
-                {isLastQuestion ? 'Finish Quiz' : 'Next Question'}
-                <ArrowRight className="w-4 h-4" />
-                </button>
-            </div>
-        </div>
-      )}
-
-      {!isSubmitted && (
-        <div className="flex justify-end mt-6">
-            <button
-                onClick={checkAnswer}
-                disabled={selectedOption === null}
-                className="px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90"
+    <Panel title="Quiz" description={`Question ${currentIndex + 1} of ${quizzes.length}`}>
+      <p className="mb-4 text-lg font-medium text-foreground">{currentQuiz.question}</p>
+      <div className="flex flex-col gap-3">
+        {currentQuiz.options.map((option, idx) => {
+          const isSelected = selectedOption === idx;
+          const isCorrect = option.isCorrect;
+          return (
+            <Button
+              key={idx}
+              variant="outline"
+              onClick={() => handleOptionClick(idx)}
+              disabled={isSubmitted}
+              aria-pressed={isSelected}
+              className={cn(
+                'h-auto w-full justify-between p-4 text-left text-base font-normal whitespace-normal disabled:opacity-100',
+                isSubmitted
+                  ? isCorrect
+                    ? 'border-success/40 bg-success/10 text-success'
+                    : isSelected
+                      ? 'border-danger/40 bg-danger/10'
+                      : 'opacity-60'
+                  : isSelected && 'border-primary bg-primary/10',
+              )}
             >
-                Check Answer
-            </button>
+              {option.answer}
+              {isSubmitted && isCorrect && <CheckCircle className="text-success" />}
+              {isSubmitted && isSelected && !isCorrect && <XCircle className="text-danger" />}
+            </Button>
+          );
+        })}
+      </div>
+
+      {isSubmitted ? (
+        <div className="mt-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          {currentQuiz.explanation && (
+            <Callout tone="info" title="Explanation">
+              {currentQuiz.explanation}
+            </Callout>
+          )}
+          <div className="flex justify-end">
+            <Button onClick={nextQuestion}>
+              {isLastQuestion ? 'Finish quiz' : 'Next question'}
+              <ArrowRight />
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-6 flex justify-end">
+          <Button onClick={checkAnswer} disabled={selectedOption === null}>
+            Check answer
+          </Button>
         </div>
       )}
-    </div>
+    </Panel>
   );
 }

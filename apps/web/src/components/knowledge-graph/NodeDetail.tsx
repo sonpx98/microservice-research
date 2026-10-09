@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Play, X } from 'lucide-react';
 import { KnowledgeGraphNode } from 'contentlayer/generated';
 import { Badge } from '@/components/ui/badge';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import type { Relationship } from '@/lib/knowledge-graph';
 import { sanitizeHtml } from '@/lib/sanitize';
@@ -26,18 +27,12 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
   return (
     <div className="flex flex-col h-full">
       {/* Header with close button */}
-      <div className="flex items-center justify-between p-6 border-b border-border bg-muted">
-        <h2 className="text-lg font-bold text-foreground">
-          {node.title}
-        </h2>
+      <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-4">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">{node.title}</h2>
         {onClose && (
-          <button
-            onClick={onClose}
-            className="p-1.5 text-muted-foreground hover:text-foreground rounded-lg hover:bg-accent transition-colors"
-            title="Close panel (Esc or click again)"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <Button variant="ghost" size="icon-sm" onClick={onClose} aria-label="Close panel" title="Close panel (Esc)">
+            <X />
+          </Button>
         )}
       </div>
 
@@ -53,9 +48,9 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
           {node.visualize && (
             <Link
               href={`?view=visualizer&example=${encodeURIComponent(node.visualize)}`}
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              className={buttonVariants({ size: 'sm' })}
             >
-              <Play className="h-4 w-4" />
+              <Play />
               Run in visualizer
             </Link>
           )}
@@ -88,13 +83,15 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
                     key={`${rel.id}-${rel.type}`}
                     className="text-sm"
                   >
-                    <button
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="h-auto p-0"
                       onClick={() => onRelationshipClick?.(rel.id)}
-                      className="font-medium text-primary hover:text-primary hover:underline cursor-pointer transition-colors"
                       title={`Navigate to ${rel.id}`}
                     >
                       {rel.id}
-                    </button>
+                    </Button>
                     <span className="text-muted-foreground mx-2">→</span>
                     <span className="italic text-muted-foreground">{rel.type}</span>
                   </li>

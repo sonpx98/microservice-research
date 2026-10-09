@@ -225,7 +225,7 @@ export function MemoryVisualizer({ initialExampleId }: { initialExampleId?: stri
           {currentStep && (
             <motion.div
               layout
-              className="h-[200px] overflow-y-auto p-4 rounded-xl border border-border bg-card"
+              className="h-[200px] overflow-y-auto rounded-lg border border-border bg-card p-4"
             >
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">

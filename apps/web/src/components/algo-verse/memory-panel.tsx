@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Panel } from '@/components/layout';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { StackVisualizer } from './stack-visualizer';
 import { HeapVisualizer } from './heap-visualizer';
 import { CPURegisterPanel } from './cpu-register-panel';
@@ -58,34 +60,17 @@ export function MemoryPanel({
   ];
 
   return (
-    <div className="h-full flex flex-col rounded-xl border border-border bg-card overflow-hidden">
-      {/* Tab Headers */}
-      <div className="flex-shrink-0 flex items-center gap-1 px-2 py-2 border-b border-border bg-muted">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              activeTab === tab.id
-                ? 'bg-primary text-primary-foreground shadow-sm'
-                : 'text-muted-foreground hover:bg-muted'
-            }`}
-          >
-            {tab.label}
-            {tab.badge !== undefined && (
-              <span
-                className={`px-1.5 py-0.5 rounded-full text-xs font-bold ${
-                  activeTab === tab.id
-                    ? 'bg-primary-foreground/20 text-primary-foreground'
-                    : 'bg-border text-foreground'
-                }`}
-              >
-                {tab.badge}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+    <Panel className="flex h-full flex-col" padding="none" bodyClassName="flex min-h-0 flex-1 flex-col">
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)} className="border-b border-border p-2">
+        <TabsList>
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.id} value={tab.id} className="gap-1.5 text-xs">
+              {tab.label}
+              {tab.badge !== undefined && <span className="font-mono text-muted-foreground">{tab.badge}</span>}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {/* Tab Content */}
       <div className="flex-1 overflow-hidden min-h-0">
@@ -96,6 +81,6 @@ export function MemoryPanel({
           <AssemblyCodeMapper assemblyCode={assemblyCode} currentSourceLine={currentLine} />
         )}
       </div>
-    </div>
+    </Panel>
   );
 }

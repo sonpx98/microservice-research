@@ -4,6 +4,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { Play, Pause, Loader2, Volume2, VolumeX } from 'lucide-react';
 import { EnglishShell } from '@/components/english-learning/english-shell';
+import { Panel, Section } from '@/components/layout';
+import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 interface DialogueLine {
   speaker: string;
@@ -163,116 +168,114 @@ export default function ConversationPage() {
       title="Conversations"
       description="Two-speaker dialogues with per-line audio from Piper TTS."
     >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Sidebar: Conversation List */}
-          <div className="md:col-span-1 space-y-4">
-            <h2 className="text-xl font-semibold mb-4">Topics</h2>
-            <div className="space-y-2 max-h-[600px] overflow-y-auto pr-2">
-              {conversations.map((conv) => (
-                <div
+      <div className="grid gap-6 md:grid-cols-3">
+        <Section title="Topics" className="md:col-span-1">
+          <div className="flex max-h-[600px] flex-col gap-2 overflow-y-auto pr-1">
+            {conversations.map((conv) => {
+              const selected = selectedConversation?._id === conv._id;
+              return (
+                <Button
                   key={conv._id}
+                  variant="outline"
                   onClick={() => handleSelectConversation(conv)}
-                  className={`p-3 rounded-lg cursor-pointer transition-all border ${
-                    selectedConversation?._id === conv._id
-                      ? 'bg-primary/10 border-primary/30'
-                      : 'bg-card border-border hover:border-primary/30'
-                  }`}
+                  aria-pressed={selected}
+                  className={cn(
+                    'h-auto w-full flex-col items-stretch gap-1 px-3 py-2.5 text-left font-normal whitespace-normal',
+                    selected && 'border-primary bg-primary/10',
+                  )}
                 >
-                  <div className="font-medium truncate flex items-center gap-2">
-                    {conv.topic}
+                  <span className="flex items-center gap-2 font-medium">
+                    <span className="truncate">{conv.topic}</span>
                     {conv.audioGenerated ? (
-                      <Volume2 className="w-4 h-4 text-success" />
+                      <Volume2 className="text-success" />
                     ) : (
-                      <VolumeX className="w-4 h-4 text-muted-foreground" />
+                      <VolumeX className="text-muted-foreground" />
                     )}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1 flex justify-between">
+                  </span>
+                  <span className="flex justify-between font-mono text-xs text-muted-foreground">
                     <span>{conv.difficulty}</span>
-                    <span>{new Date(conv.createdAt).toLocaleDateString()}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                    <span>{new Date(conv.createdAt).toLocaleDateString(locale)}</span>
+                  </span>
+                </Button>
+              );
+            })}
           </div>
+        </Section>
 
-          {/* Main: Dialogue View */}
-          <div className="md:col-span-2">
-            {!selectedConversation ? (
-              <div className="h-full flex items-center justify-center text-muted-foreground border-2 border-dashed border-border rounded-xl p-12">
-                Select a topic to start practicing
-              </div>
-            ) : (
-              <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden flex flex-col h-[600px]">
-                <div className="p-4 border-b border-border flex justify-between items-center bg-muted">
-                  <div>
-                    <h2 className="text-lg font-bold">{selectedConversation.topic}</h2>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedConversation.difficulty}
-                      {selectedConversation.audioGenerated ? (
-                        <span className="ml-2 text-success flex items-center gap-1 inline-flex">
-                          <Volume2 className="w-3 h-3" /> Audio ready
-                        </span>
-                      ) : (
-                        <span className="ml-2 text-warning">Audio generating...</span>
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <select
-                      value={playbackRate}
-                      onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
-                      className="bg-card border border-border rounded-md text-sm px-2 py-1.5 focus:ring-2 focus:ring-primary outline-none"
-                    >
-                      <option value="0.75">0.75x</option>
-                      <option value="1">1.0x</option>
-                      <option value="1.25">1.25x</option>
-                      <option value="1.5">1.5x</option>
-                    </select>
-                    <button
-                      onClick={togglePlayPause}
-                      disabled={!selectedConversation.audioGenerated}
-                      className={`p-3 rounded-full shadow-lg transition-transform active:scale-95 ${
-                        !selectedConversation.audioGenerated 
-                          ? 'bg-muted text-muted-foreground cursor-not-allowed' 
-                          : 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                      }`}
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-5 h-5" />
-                      ) : (
-                        <Play className="w-5 h-5" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                  {selectedConversation.dialogue.map((line, idx) => (
-                    <div 
-                      key={idx} 
-                      className={`flex flex-col ${
-                        line.speaker.includes('A') ? 'items-start' : 'items-end'
-                      }`}
-                    >
-                      <div className={`text-xs text-muted-foreground mb-1 px-1`}>{line.speaker}</div>
-                      <div 
-                        className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed transition-all duration-300 ${
-                          currentLineIndex === idx 
-                            ? 'bg-primary text-primary-foreground shadow-md scale-[1.02]' 
-                            : line.speaker.includes('A') 
-                              ? 'bg-muted text-foreground' 
-                              : 'bg-primary/10 text-primary'
-                        }`}
+        <div className="md:col-span-2">
+          {!selectedConversation ? (
+            <Panel>
+              <EmptyState title="Pick a topic" description="Select a conversation on the left to start practicing." />
+            </Panel>
+          ) : (
+            <Panel
+              className="flex h-[600px] flex-col"
+              padding="none"
+              bodyClassName="flex min-h-0 flex-1 flex-col"
+              title={selectedConversation.topic}
+              description={
+                <span className="flex items-center gap-2 font-mono">
+                  {selectedConversation.difficulty}
+                  {selectedConversation.audioGenerated ? (
+                    <span className="inline-flex items-center gap-1 text-success">
+                      <Volume2 className="h-3 w-3" /> audio ready
+                    </span>
+                  ) : (
+                    <span className="text-warning">audio generating…</span>
+                  )}
+                </span>
+              }
+              actions={
+                <>
+                  <Select value={String(playbackRate)} onValueChange={(v) => setPlaybackRate(parseFloat(v))}>
+                    <SelectTrigger size="sm" className="w-20" aria-label="Playback speed">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {['0.75', '1', '1.25', '1.5'].map((r) => (
+                        <SelectItem key={r} value={r}>
+                          {r}x
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    size="icon"
+                    onClick={togglePlayPause}
+                    disabled={!selectedConversation.audioGenerated}
+                    aria-label={isPlaying ? 'Pause' : 'Play'}
+                  >
+                    {isPlaying ? <Pause /> : <Play />}
+                  </Button>
+                </>
+              }
+            >
+              <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-6">
+                {selectedConversation.dialogue.map((line, idx) => {
+                  const isA = line.speaker.includes('A');
+                  return (
+                    <div key={idx} className={cn('flex flex-col', isA ? 'items-start' : 'items-end')}>
+                      <div className="mb-1 px-1 font-mono text-xs text-muted-foreground">{line.speaker}</div>
+                      <div
+                        className={cn(
+                          'max-w-[80%] rounded-lg p-4 text-sm leading-relaxed transition-colors duration-300',
+                          currentLineIndex === idx
+                            ? 'bg-primary text-primary-foreground'
+                            : isA
+                              ? 'bg-muted text-foreground'
+                              : 'bg-primary/10 text-foreground',
+                        )}
                       >
                         {line.text}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
-            )}
-          </div>
+            </Panel>
+          )}
         </div>
+      </div>
 
       <audio ref={audioRef} className="hidden" />
     </EnglishShell>

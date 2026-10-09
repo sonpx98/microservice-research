@@ -11,16 +11,18 @@ export interface ContentCardProps {
   date?: string;
   excerpt?: string;
   tags?: string[];
+  /** Show the cover slot (with a placeholder when image is missing). Off for text-only lists. */
+  media?: boolean;
 }
 
 /** Card for any list of articles: blog posts, crawled news, readings. */
-export function ContentCard({ href, title, eyebrow, image, date, excerpt, tags }: ContentCardProps) {
+export function ContentCard({ href, title, eyebrow, image, date, excerpt, tags, media = true }: ContentCardProps) {
   return (
     <Link
       href={href}
       className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary"
     >
-      <Thumbnail key={image} src={image} alt={title} />
+      {media && <Thumbnail key={image} src={image} alt={title} />}
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground">
           <span className="truncate text-primary">{eyebrow}</span>

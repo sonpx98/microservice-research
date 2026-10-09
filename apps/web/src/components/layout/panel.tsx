@@ -8,13 +8,15 @@ export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   actions?: React.ReactNode;
   /** Padding of the body. Use "none" when children bring their own rows (lists, tables). */
   padding?: keyof typeof PADDING;
+  /** Extra classes on the body, e.g. "flex-1 min-h-0" for a panel that fills its parent. */
+  bodyClassName?: string;
 }
 
 /**
  * The one surface. Border, no shadow, rounded-lg. With a title it gets a header row (h3) separated
  * by a rule; without one it is a plain padded box.
  */
-export function Panel({ title, description, actions, padding = 'md', className, children, ...props }: PanelProps) {
+export function Panel({ title, description, actions, padding = 'md', bodyClassName, className, children, ...props }: PanelProps) {
   return (
     <div className={cn('overflow-hidden rounded-lg border border-border bg-card text-card-foreground', className)} {...props}>
       {(title || actions) && (
@@ -26,7 +28,7 @@ export function Panel({ title, description, actions, padding = 'md', className, 
           {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
         </div>
       )}
-      <div className={PADDING[padding]}>{children}</div>
+      <div className={cn(PADDING[padding], bodyClassName)}>{children}</div>
     </div>
   );
 }

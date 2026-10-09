@@ -39,7 +39,7 @@ export default async function KnowledgeGraphPage({
       bodyClassName={isVisualizer ? 'bg-muted p-4' : 'bg-grid'}
     >
       {isVisualizer ? (
-        <div className="mx-auto h-full max-w-7xl">
+        <div className="mx-auto h-full max-w-6xl">
           <MemoryVisualizer key={example ?? 'default'} initialExampleId={example} />
         </div>
       ) : nodes.length > 0 ? (
