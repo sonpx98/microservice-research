@@ -2,4 +2,8 @@ export { PageHeader, type PageHeaderProps } from './page-header';
 export { PageShell, type PageShellProps } from './page-shell';
 export { FullBleedPage, type FullBleedPageProps } from './full-bleed-page';
 export { ArticleLayout, type ArticleLayoutProps } from './article-layout';
+export { LabShell, type LabShellProps } from './lab-shell';
 export { ViewSwitch, type ViewSwitchItem } from './view-switch';
+export { Section, type SectionProps } from './section';
+export { Panel, type PanelProps } from './panel';
+export { Callout, type CalloutProps } from './callout';
