@@ -1,7 +1,5 @@
-import Link from 'next/link';
-import { BookOpen, BarChart } from 'lucide-react';
 import { ReadingSearchFilter } from '../../../components/english-learning/reading-search-filter';
-import { EnglishHero } from '../../../components/english-learning/english-hero';
+import { EnglishShell } from '@/components/english-learning/english-shell';
 
 const TOPICS = ['Technology', 'Science', 'Culture', 'History', 'Nature', 'Health'];
 const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -29,10 +27,13 @@ async function getReadings(level?: string, topic?: string, q?: string) {
 import { ReadingList } from '../../../components/english-learning/reading-list';
 
 export default async function EnglishLearningPage({
-    searchParams,
+  params,
+  searchParams,
 }: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const { locale } = await params;
   const resolvedSearchParams = await searchParams;
   const level = typeof resolvedSearchParams.level === 'string' ? resolvedSearchParams.level : undefined;
   const topic = typeof resolvedSearchParams.topic === 'string' ? resolvedSearchParams.topic : undefined;
@@ -40,43 +41,16 @@ export default async function EnglishLearningPage({
   
   const { data: readings, total } = await getReadings(level, topic, q);
 
-  const taglines = [
-      "Improve your reading skills with AI",
-      "Tailored content for every level",
-      "Interactive quizzes and feedback",
-      "Master English today"
-  ];
-
   return (
-    <div className="min-h-screen pb-20">
-      <EnglishHero 
-        title="English Learning Hub"
-        taglines={taglines}
-      />
-      
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
-        {/* Navigation Tabs */}
-        <div className="flex gap-4 mb-8">
-          <Link 
-            href="/en/english-learning" 
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium shadow-lg"
-          >
-            <BookOpen size={20} />
-            Readings
-          </Link>
-          <Link 
-            href="/en/english-learning/conversation" 
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 transition-colors border border-gray-700"
-          >
-            <BarChart size={20} />
-            Conversations
-          </Link>
-        </div>
-
+    <EnglishShell
+      locale={locale}
+      active="readings"
+      title="Readings"
+      description="Graded reading passages from A1 to C2, each with a short quiz."
+    >
         <ReadingSearchFilter topics={TOPICS} levels={LEVELS} />
 
         <ReadingList readings={readings} initialTotal={total} />
-      </div>
-    </div>
+    </EnglishShell>
   );
 }

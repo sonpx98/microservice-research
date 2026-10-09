@@ -81,16 +81,16 @@ export function ReadingSearchFilter({ topics, levels }: ReadingSearchFilterProps
                 onClick={() => { router.push(`/english-learning/${item._id}`); close(); }}
                 className={cn(
                     "w-full text-left px-4 py-3 flex items-start gap-3 transition-colors",
-                    isActive ? "bg-blue-50 dark:bg-blue-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                    isActive ? "bg-primary/10" : "hover:bg-muted"
                 )}
             >
-                <FileText className={cn("w-5 h-5 mt-0.5 flex-shrink-0", isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400")} />
+                <FileText className={cn("w-5 h-5 mt-0.5 flex-shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
                 <div className="flex-1 min-w-0">
-                    <div className={cn("font-medium truncate", isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-900 dark:text-white")}>
+                    <div className={cn("font-medium truncate", isActive ? "text-primary" : "text-foreground")}>
                         {item.title}
                     </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                        <span className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-xs">{item.level}</span>
+                    <div className="text-sm text-muted-foreground flex items-center gap-2">
+                        <span className="bg-muted px-1.5 py-0.5 rounded text-xs">{item.level}</span>
                         <span>{item.topic}</span>
                     </div>
                 </div>
@@ -101,13 +101,13 @@ export function ReadingSearchFilter({ topics, levels }: ReadingSearchFilterProps
         {/* Filter by Topic */}
         <div className="space-y-3">
             <div className="flex items-center justify-between">
-                <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Filter by topic
                 </div>
                 {showExpandButton && (
                     <button 
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1"
+                    className="text-xs font-medium text-primary hover:text-primary flex items-center gap-1"
                     >
                     {isExpanded ? 'Show Less' : 'Show More'}
                     {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -125,8 +125,8 @@ export function ReadingSearchFilter({ topics, levels }: ReadingSearchFilterProps
             <Badge
                 variant={!activeTopic ? "default" : "outline"}
                 className={cn(
-                "cursor-pointer hover:bg-blue-600 hover:text-white transition-colors px-4 py-1.5 h-auto text-sm",
-                !activeTopic ? "bg-blue-600 hover:bg-blue-700 border-transparent shadow-sm" : "text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
+                "cursor-pointer hover:bg-primary/90 hover:text-primary-foreground transition-colors px-4 py-1.5 h-auto text-sm",
+                !activeTopic ? "bg-primary hover:bg-primary/90 border-transparent shadow-sm" : "text-muted-foreground border-border bg-card"
                 )}
                 onClick={() => {
                     const params = new URLSearchParams(searchParams);
@@ -144,8 +144,8 @@ export function ReadingSearchFilter({ topics, levels }: ReadingSearchFilterProps
                 className={cn(
                     "cursor-pointer transition-colors px-3 py-1.5 h-auto text-sm font-medium",
                     activeTopic === topic 
-                    ? "bg-blue-600 hover:bg-blue-700 border-transparent text-white shadow-sm" 
-                    : "text-gray-600 dark:text-gray-300 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
+                    ? "bg-primary hover:bg-primary/90 border-transparent text-primary-foreground shadow-sm" 
+                    : "text-muted-foreground hover:border-primary hover:text-primary border-border bg-card"
                 )}
                 onClick={() => toggleTopic(topic)}
                 >
@@ -157,7 +157,7 @@ export function ReadingSearchFilter({ topics, levels }: ReadingSearchFilterProps
 
         {/* Filter by Level */}
          <div className="space-y-3 min-w-[200px]">
-            <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Filter by Level
             </div>
             <div className="flex flex-wrap gap-2">
@@ -168,8 +168,8 @@ export function ReadingSearchFilter({ topics, levels }: ReadingSearchFilterProps
                     className={cn(
                         "cursor-pointer transition-colors px-3 py-1.5 h-auto text-sm font-medium",
                         activeLevel === level 
-                        ? "bg-indigo-600 hover:bg-indigo-700 border-transparent text-white shadow-sm" 
-                        : "text-gray-600 dark:text-gray-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
+                        ? "bg-primary hover:bg-primary/90 border-transparent text-primary-foreground shadow-sm" 
+                        : "text-muted-foreground hover:border-primary hover:text-primary border-border bg-card"
                     )}
                     onClick={() => toggleLevel(level)}
                     >
@@ -181,10 +181,10 @@ export function ReadingSearchFilter({ topics, levels }: ReadingSearchFilterProps
       </div>
       
       {(activeLevel || activeTopic || searchParams.get('q')) && (
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-700/50 flex justify-end">
+          <div className="pt-4 border-t border-border flex justify-end">
               <button 
                 onClick={clearFilters}
-                className="text-sm text-red-500 hover:text-red-600 font-medium px-3 py-1 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-md transition-colors"
+                className="text-sm text-danger hover:text-danger font-medium px-3 py-1 hover:bg-danger/10 rounded-md transition-colors"
             >
                 Clear all filters
               </button>

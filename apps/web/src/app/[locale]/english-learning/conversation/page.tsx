@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Link from 'next/link';
-import { Play, Pause, MessageCircle, BookOpen, Loader2, Volume2, VolumeX } from 'lucide-react';
-import { EnglishHero } from '../../../../components/english-learning/english-hero';
+import { useParams } from 'next/navigation';
+import { Play, Pause, Loader2, Volume2, VolumeX } from 'lucide-react';
+import { EnglishShell } from '@/components/english-learning/english-shell';
 
 interface DialogueLine {
   speaker: string;
@@ -20,6 +20,7 @@ interface Conversation {
 }
 
 export default function ConversationPage() {
+  const { locale } = useParams<{ locale: string }>();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [loading, setLoading] = useState(false);
@@ -155,39 +156,13 @@ export default function ConversationPage() {
     }
   };
 
-  const taglines = [
-    "Practice real-world conversations",
-    "Improve your listening skills",
-    "Learn natural expressions and idioms",
-    "AI-powered dialogue generation"
-  ];
-
   return (
-    <div className="min-h-screen pb-20">
-      <EnglishHero 
-        title="Conversation Practice"
-        taglines={taglines}
-      />
-      
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
-        {/* Navigation Tabs */}
-        <div className="flex gap-4 mb-8">
-          <Link 
-            href="/en/english-learning" 
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 transition-colors border border-gray-700"
-          >
-            <BookOpen size={20} />
-            Readings
-          </Link>
-          <Link 
-            href="/en/english-learning/conversation" 
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium shadow-lg"
-          >
-            <MessageCircle size={20} />
-            Conversations
-          </Link>
-        </div>
-
+    <EnglishShell
+      locale={locale}
+      active="conversations"
+      title="Conversations"
+      description="Two-speaker dialogues with per-line audio from Piper TTS."
+    >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Sidebar: Conversation List */}
           <div className="md:col-span-1 space-y-4">
@@ -199,19 +174,19 @@ export default function ConversationPage() {
                   onClick={() => handleSelectConversation(conv)}
                   className={`p-3 rounded-lg cursor-pointer transition-all border ${
                     selectedConversation?._id === conv._id
-                      ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'
-                      : 'bg-white border-gray-200 hover:border-blue-300 dark:bg-gray-900 dark:border-gray-700'
+                      ? 'bg-primary/10 border-primary/30'
+                      : 'bg-card border-border hover:border-primary/30'
                   }`}
                 >
                   <div className="font-medium truncate flex items-center gap-2">
                     {conv.topic}
                     {conv.audioGenerated ? (
-                      <Volume2 className="w-4 h-4 text-green-500" />
+                      <Volume2 className="w-4 h-4 text-success" />
                     ) : (
-                      <VolumeX className="w-4 h-4 text-gray-400" />
+                      <VolumeX className="w-4 h-4 text-muted-foreground" />
                     )}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1 flex justify-between">
+                  <div className="text-xs text-muted-foreground mt-1 flex justify-between">
                     <span>{conv.difficulty}</span>
                     <span>{new Date(conv.createdAt).toLocaleDateString()}</span>
                   </div>
@@ -223,22 +198,22 @@ export default function ConversationPage() {
           {/* Main: Dialogue View */}
           <div className="md:col-span-2">
             {!selectedConversation ? (
-              <div className="h-full flex items-center justify-center text-gray-500 border-2 border-dashed border-gray-200 rounded-xl p-12">
+              <div className="h-full flex items-center justify-center text-muted-foreground border-2 border-dashed border-border rounded-xl p-12">
                 Select a topic to start practicing
               </div>
             ) : (
-              <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden flex flex-col h-[600px]">
-                <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
+              <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden flex flex-col h-[600px]">
+                <div className="p-4 border-b border-border flex justify-between items-center bg-muted">
                   <div>
                     <h2 className="text-lg font-bold">{selectedConversation.topic}</h2>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {selectedConversation.difficulty}
                       {selectedConversation.audioGenerated ? (
-                        <span className="ml-2 text-green-500 flex items-center gap-1 inline-flex">
+                        <span className="ml-2 text-success flex items-center gap-1 inline-flex">
                           <Volume2 className="w-3 h-3" /> Audio ready
                         </span>
                       ) : (
-                        <span className="ml-2 text-amber-500">Audio generating...</span>
+                        <span className="ml-2 text-warning">Audio generating...</span>
                       )}
                     </p>
                   </div>
@@ -246,7 +221,7 @@ export default function ConversationPage() {
                     <select
                       value={playbackRate}
                       onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
-                      className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-sm px-2 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="bg-card border border-border rounded-md text-sm px-2 py-1.5 focus:ring-2 focus:ring-primary outline-none"
                     >
                       <option value="0.75">0.75x</option>
                       <option value="1">1.0x</option>
@@ -258,8 +233,8 @@ export default function ConversationPage() {
                       disabled={!selectedConversation.audioGenerated}
                       className={`p-3 rounded-full shadow-lg transition-transform active:scale-95 ${
                         !selectedConversation.audioGenerated 
-                          ? 'bg-gray-400 cursor-not-allowed' 
-                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                          ? 'bg-muted text-muted-foreground cursor-not-allowed' 
+                          : 'bg-primary hover:bg-primary/90 text-primary-foreground'
                       }`}
                     >
                       {isPlaying ? (
@@ -279,14 +254,14 @@ export default function ConversationPage() {
                         line.speaker.includes('A') ? 'items-start' : 'items-end'
                       }`}
                     >
-                      <div className={`text-xs text-gray-400 mb-1 px-1`}>{line.speaker}</div>
+                      <div className={`text-xs text-muted-foreground mb-1 px-1`}>{line.speaker}</div>
                       <div 
                         className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed transition-all duration-300 ${
                           currentLineIndex === idx 
-                            ? 'bg-blue-600 text-white shadow-md scale-[1.02]' 
+                            ? 'bg-primary text-primary-foreground shadow-md scale-[1.02]' 
                             : line.speaker.includes('A') 
-                              ? 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200' 
-                              : 'bg-blue-50 dark:bg-blue-900/20 text-blue-900 dark:text-blue-100'
+                              ? 'bg-muted text-foreground' 
+                              : 'bg-primary/10 text-primary'
                         }`}
                       >
                         {line.text}
@@ -298,9 +273,8 @@ export default function ConversationPage() {
             )}
           </div>
         </div>
-      </div>
 
       <audio ref={audioRef} className="hidden" />
-    </div>
+    </EnglishShell>
   );
 }

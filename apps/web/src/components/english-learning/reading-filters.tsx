@@ -34,7 +34,7 @@ export function ReadingFilters() {
     return (
         <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
             <select
-                className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                className="px-4 py-2 rounded-lg border border-input bg-card text-foreground focus:ring-2 focus:ring-primary outline-none"
                 value={searchParams.get('level') || ''}
                 onChange={handleLevelChange}
             >
@@ -45,7 +45,7 @@ export function ReadingFilters() {
             </select>
 
             <select
-                className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                className="px-4 py-2 rounded-lg border border-input bg-card text-foreground focus:ring-2 focus:ring-primary outline-none"
                 value={searchParams.get('topic') || ''}
                 onChange={handleTopicChange}
             >
