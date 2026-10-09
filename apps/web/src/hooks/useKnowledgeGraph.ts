@@ -1,44 +1,32 @@
 import { useMemo } from 'react';
 import { KnowledgeGraphNode } from 'contentlayer/generated';
 import type { Node, Edge } from 'reactflow';
-import type { Relationship } from '@/lib/knowledge-graph';
-import { buildGraphFromNodes, getNodeColor } from '@/lib/knowledge-graph';
+import { buildGraphFromNodes } from '@/lib/knowledge-graph';
+import { layoutNodes } from '@/components/knowledge-graph/utils/layout-nodes';
 
 export function useKnowledgeGraph(nodes: KnowledgeGraphNode[]) {
-  const { rfNodes, rfEdges, nodesMap } = useMemo(() => {
+  return useMemo(() => {
     const graph = buildGraphFromNodes(nodes);
 
-    // Convert to ReactFlow format
-    const rfNodes: Node[] = graph.nodes.map((node) => ({
-      id: node.id,
-      type: 'star',
-      data: { label: node.label, type: node.type },
-      position: { x: 0, y: 0 }, // Layout will be handled by dagre
-    }));
-
-    const rfEdges: Edge[] = graph.edges.map((edge) => ({
+    const edges: Edge[] = graph.edges.map((edge) => ({
       id: `${edge.source}-${edge.target}`,
       source: edge.source,
       target: edge.target,
       label: edge.type,
       animated: true,
-      labelStyle: { 
-        opacity: 0,
-        transition: 'opacity 0.2s ease-in-out',
-      },
-      labelBgStyle: { 
-        opacity: 0,
-        transition: 'opacity 0.2s ease-in-out',
-      },
+      // Colors and hover-to-reveal label come from the reactflow theme adapter in globals.css.
       className: 'knowledge-graph-edge',
     }));
 
-    return {
-      rfNodes,
-      rfEdges,
-      nodesMap: graph.nodesMap,
-    };
-  }, [nodes]);
+    const unpositioned: Node[] = graph.nodes.map((node) => ({
+      id: node.id,
+      type: 'concept',
+      data: { label: node.label, type: node.type },
+      position: { x: 0, y: 0 },
+    }));
+    const positions = layoutNodes(unpositioned, edges);
+    const rfNodes = unpositioned.map((node, i) => ({ ...node, position: positions[i] }));
 
-  return { nodes: rfNodes, edges: rfEdges, nodesMap };
+    return { nodes: rfNodes, edges, nodesMap: graph.nodesMap };
+  }, [nodes]);
 }

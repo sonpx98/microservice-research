@@ -22,12 +22,12 @@ export function StackVisualizer({ stack, onHeapReferenceClick }: StackVisualizer
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+      <div className="flex-shrink-0 px-4 py-3 border-b border-border bg-muted">
+        <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-primary"></span>
           Call Stack
         </h3>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           {stack.length} frame{stack.length !== 1 ? 's' : ''}
         </p>
       </div>
@@ -40,7 +40,7 @@ export function StackVisualizer({ stack, onHeapReferenceClick }: StackVisualizer
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center justify-center h-32 text-gray-400 dark:text-gray-600 text-sm"
+              className="flex items-center justify-center h-32 text-muted-foreground text-sm"
             >
               Stack is empty
             </motion.div>
@@ -74,23 +74,23 @@ export function StackVisualizer({ stack, onHeapReferenceClick }: StackVisualizer
                   }}
                   className={`relative rounded-lg border-2 p-4 ${
                     isTopFrame
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
+                      ? 'border-primary bg-primary/10'
+                      : 'border-input bg-card'
                   }`}
                 >
                   {/* Top frame indicator */}
                   {isTopFrame && (
-                    <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-blue-500 text-white text-xs font-medium rounded-full">
+                    <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded-full">
                       Current
                     </div>
                   )}
 
                   {/* Function name */}
                   <div className="flex items-center gap-2 mb-3">
-                    <code className="text-sm font-bold text-gray-900 dark:text-white">
+                    <code className="text-sm font-bold text-foreground">
                       {frame.functionName}()
                     </code>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-xs text-muted-foreground">
                       Line {frame.lineNumber}
                     </span>
                   </div>
@@ -98,7 +98,7 @@ export function StackVisualizer({ stack, onHeapReferenceClick }: StackVisualizer
                   {/* Variables */}
                   {frame.variables.length > 0 ? (
                     <div className="space-y-2">
-                      <div className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                      <div className="text-xs font-medium text-muted-foreground">
                         Local Variables:
                       </div>
                       {frame.variables.map((variable, varIndex) => (
@@ -107,25 +107,25 @@ export function StackVisualizer({ stack, onHeapReferenceClick }: StackVisualizer
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: varIndex * 0.1 }}
-                          className="flex items-center justify-between text-xs bg-gray-100 dark:bg-gray-700/50 rounded px-2 py-1.5"
+                          className="flex items-center justify-between text-xs bg-muted rounded px-2 py-1.5"
                         >
-                          <span className="font-mono text-gray-700 dark:text-gray-300">
+                          <span className="font-mono text-foreground">
                             {variable.name}
                           </span>
                           <div className="flex items-center gap-2">
-                            <span className="text-gray-500 dark:text-gray-400">
+                            <span className="text-muted-foreground">
                               {variable.type}
                             </span>
                             {(variable.type === 'object' || variable.type === 'array') && variable.heapReference ? (
                               <button
                                 onClick={() => onHeapReferenceClick?.(variable.heapReference!)}
-                                className="font-mono text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline cursor-pointer transition-colors"
+                                className="font-mono text-primary hover:text-primary hover:underline cursor-pointer transition-colors"
                                 title={`Click to view ${variable.type} at ${variable.heapReference}`}
                               >
                                 → {variable.heapReference}
                               </button>
                             ) : (
-                              <span className="font-mono text-gray-900 dark:text-white">
+                              <span className="font-mono text-foreground">
                                 {String(variable.value).substring(0, 20)}
                               </span>
                             )}
@@ -134,14 +134,14 @@ export function StackVisualizer({ stack, onHeapReferenceClick }: StackVisualizer
                       ))}
                     </div>
                   ) : (
-                    <div className="text-xs text-gray-400 dark:text-gray-600 italic">
+                    <div className="text-xs text-muted-foreground italic">
                       No local variables
                     </div>
                   )}
 
                   {/* Return address */}
                   {frame.returnAddress && (
-                    <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="mt-3 pt-2 border-t border-border text-xs text-muted-foreground">
                       Return to line {frame.returnAddress}
                     </div>
                   )}
@@ -156,7 +156,7 @@ export function StackVisualizer({ stack, onHeapReferenceClick }: StackVisualizer
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 pt-2"
+            className="flex items-center gap-2 text-xs text-muted-foreground pt-2"
           >
             <span className="font-mono">SP →</span>
             <span>Stack Pointer</span>

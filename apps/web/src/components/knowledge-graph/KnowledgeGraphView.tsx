@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Node,
   useNodesState,
@@ -13,14 +13,12 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { KnowledgeGraphNode } from 'contentlayer/generated';
 import { useKnowledgeGraph } from '@/hooks/useKnowledgeGraph';
 import { NodeDetail } from './NodeDetail';
-import { StarNode } from './StarNode';
+import { ConceptNode } from './ConceptNode';
 
 // Extracted components and utilities
-import { GalaxyBackground } from './components/GalaxyBackground';
 import { SearchFilterPanel } from './components/SearchFilterPanel';
 import { GraphCanvas } from './components/GraphCanvas';
 import { useGraphFilters } from './hooks/useGraphFilters';
-import { layoutNodes } from './utils/layout-nodes';
 
 interface KnowledgeGraphViewProps {
   nodes: KnowledgeGraphNode[];
@@ -28,63 +26,18 @@ interface KnowledgeGraphViewProps {
 
 // Register custom node types
 const nodeTypes = {
-  star: StarNode,
+  concept: ConceptNode,
 };
-
-// Custom styles for edge labels
-const edgeHoverStyles = `
-  .knowledge-graph-edge:hover .react-flow__edge-textbg,
-  .knowledge-graph-edge:hover .react-flow__edge-text {
-    opacity: 1 !important;
-  }
-  
-  .react-flow__edge-textbg {
-    fill: rgba(31, 41, 55, 0.9);
-  }
-  
-  .react-flow__edge-text {
-    fill: white;
-    font-size: 12px;
-  }
-`;
 
 function KnowledgeGraphViewInner({ nodes }: KnowledgeGraphViewProps) {
   const { nodes: rfNodes, edges: rfEdges, nodesMap } = useKnowledgeGraph(nodes);
-  const [flowNodes, setFlowNodes, onNodesChange] = useNodesState(rfNodes);
-  const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState(rfEdges);
+  const [flowNodes, , onNodesChange] = useNodesState(rfNodes);
+  const [flowEdges, , onEdgesChange] = useEdgesState(rfEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const { setCenter } = useReactFlow();
-  const [isMounted, setIsMounted] = useState(false);
 
   // Use extracted filter hook
   const filters = useGraphFilters(flowNodes);
-
-  // Mount flag to prevent hydration mismatch
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Inject custom styles for edge hover effects
-  useEffect(() => {
-    const styleId = 'knowledge-graph-edge-styles';
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement('style');
-      style.id = styleId;
-      style.textContent = edgeHoverStyles;
-      document.head.appendChild(style);
-    }
-  }, []);
-
-  // Apply layout on mount
-  useEffect(() => {
-    const positions = layoutNodes(rfNodes, rfEdges);
-    const layoutedNodes = rfNodes.map((node, index) => ({
-      ...node,
-      position: positions[index],
-    }));
-    setFlowNodes(layoutedNodes);
-    setFlowEdges(rfEdges);
-  }, [rfNodes, rfEdges, setFlowNodes, setFlowEdges]);
 
   const handleNodeClick = useCallback(
     (event: React.MouseEvent, node: Node) => {
@@ -131,10 +84,7 @@ function KnowledgeGraphViewInner({ nodes }: KnowledgeGraphViewProps) {
   };
 
   return (
-    <div className="h-full bg-gray-50 dark:bg-gray-900 relative overflow-hidden mx-auto max-w-7xl">
-      {/* Galaxy Background */}
-      <GalaxyBackground isMounted={isMounted} />
-
+    <div className="relative h-full overflow-hidden">
       {selectedNode ? (
         <PanelGroup direction="horizontal" className="h-full">
           {/* Main graph panel */}
@@ -153,11 +103,11 @@ function KnowledgeGraphViewInner({ nodes }: KnowledgeGraphViewProps) {
           </Panel>
 
           {/* Resize handle */}
-          <PanelResizeHandle className="w-2 bg-gray-200 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-colors cursor-col-resize" />
+          <PanelResizeHandle className="w-1 cursor-col-resize bg-border transition-colors hover:bg-primary" />
 
           {/* Detail panel */}
           <Panel defaultSize={30} minSize={20} maxSize={60}>
-            <div className="h-full bg-white/95 dark:bg-gray-800/95 shadow-lg backdrop-blur-sm">
+            <div className="h-full border-l border-border bg-card">
               <NodeDetail 
                 node={selectedNode} 
                 onClose={handleCloseDetail}

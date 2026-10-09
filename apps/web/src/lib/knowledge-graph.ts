@@ -87,16 +87,3 @@ export function buildGraphFromNodes(allNodes: KGNode[]): Graph {
     nodesMap,
   };
 }
-
-export function getNodeColor(type: 'technical' | 'issue' | 'slang'): string {
-  switch (type) {
-    case 'technical':
-      return '#3b82f6'; // blue
-    case 'issue':
-      return '#ef4444'; // red
-    case 'slang':
-      return '#8b5cf6'; // purple
-    default:
-      return '#6b7280'; // gray
-  }
-}

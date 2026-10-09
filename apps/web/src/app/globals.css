@@ -149,6 +149,51 @@
     border-left-color: var(--primary);
   }
 
+  /* reactflow → tokens. Third-party adapter, kept here so components stay class-only. */
+  .react-flow__edge-path {
+    stroke: var(--border);
+  }
+  .react-flow__edge.selected .react-flow__edge-path,
+  .react-flow__edge:hover .react-flow__edge-path {
+    stroke: var(--primary);
+  }
+  .react-flow__edge-textbg {
+    fill: var(--popover);
+  }
+  .react-flow__edge-text {
+    fill: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  /* Edge labels appear on hover only, so a dense graph stays readable. */
+  .knowledge-graph-edge .react-flow__edge-textbg,
+  .knowledge-graph-edge .react-flow__edge-text {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  .knowledge-graph-edge:hover .react-flow__edge-textbg,
+  .knowledge-graph-edge:hover .react-flow__edge-text {
+    opacity: 1;
+  }
+  .react-flow__controls {
+    box-shadow: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .react-flow__controls-button {
+    background: var(--card);
+    border-bottom-color: var(--border);
+    fill: var(--foreground);
+  }
+  .react-flow__controls-button:hover {
+    background: var(--accent);
+  }
+  .react-flow__attribution {
+    background: transparent;
+    color: var(--muted-foreground);
+  }
+
   :not(pre) > code {
     @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm;
   }

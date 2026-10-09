@@ -17,12 +17,12 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-green-500"></span>
+      <div className="flex-shrink-0 px-4 py-3 border-b border-border bg-muted">
+        <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-success"></span>
           Assembly Code
         </h3>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           {assemblyCode.length} instruction{assemblyCode.length !== 1 ? 's' : ''}
         </p>
       </div>
@@ -30,7 +30,7 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
       {/* Assembly Instructions */}
       <div className="flex-1 overflow-y-auto p-4">
         {assemblyCode.length === 0 ? (
-          <div className="flex items-center justify-center h-32 text-gray-400 dark:text-gray-600 text-sm">
+          <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">
             No assembly code generated
           </div>
         ) : (
@@ -46,21 +46,15 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
                   <motion.div
                     key={`${inst.lineNumber}-${inst.instruction}`}
                     initial={{ opacity: 0.5 }}
-                    animate={{
-                      opacity: 1,
-                      backgroundColor: isActive
-                        ? 'rgb(34, 197, 94)' // green-500
-                        : 'transparent',
-                      scale: isActive ? 1.02 : 1,
-                    }}
+                    animate={{ opacity: 1, scale: isActive ? 1.02 : 1 }}
                     transition={{ duration: 0.2 }}
-                    className={`flex items-start gap-3 px-2 py-1.5 rounded ${
-                      isActive ? 'text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
+                    className={`flex items-start gap-3 px-2 py-1.5 rounded transition-colors ${
+                      isActive ? 'bg-success text-success-foreground font-semibold' : 'text-foreground'
                     }`}
                   >
                     {/* Line Number */}
                     <span className={`w-8 text-right flex-shrink-0 ${
-                      isActive ? 'text-white' : 'text-gray-400 dark:text-gray-600'
+                      isActive ? 'text-primary-foreground' : 'text-muted-foreground'
                     }`}>
                       {inst.lineNumber.toString().padStart(3, '0')}
                     </span>
@@ -70,18 +64,18 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
                       {/* Label or Instruction */}
                       {inst.instruction === 'LABEL' ? (
                         <span className={`font-bold ${
-                          isActive ? 'text-white' : 'text-purple-600 dark:text-purple-400'
+                          isActive ? 'text-primary-foreground' : 'text-primary'
                         }`}>
                           {inst.operands[0]}:
                         </span>
                       ) : (
                         <>
                           <span className={`w-12 font-bold ${
-                            isActive ? 'text-white' : getInstructionColor(inst.instruction)
+                            isActive ? 'text-primary-foreground' : getInstructionColor(inst.instruction)
                           }`}>
                             {inst.instruction}
                           </span>
-                          <span className={isActive ? 'text-white' : 'text-gray-600 dark:text-gray-400'}>
+                          <span className={isActive ? 'text-primary-foreground' : 'text-muted-foreground'}>
                             {inst.operands.join(', ')}
                           </span>
                         </>
@@ -90,7 +84,7 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
 
                     {/* Source Line Indicator */}
                     <span className={`text-xs flex-shrink-0 ${
-                      isActive ? 'text-white/80' : 'text-gray-400 dark:text-gray-600'
+                      isActive ? 'text-primary-foreground' : 'text-muted-foreground'
                     }`}>
                       ← L{inst.sourceLineNumber}
                     </span>
@@ -103,18 +97,18 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
       </div>
 
       {/* Legend */}
-      <div className="flex-shrink-0 px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-        <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+      <div className="flex-shrink-0 px-4 py-3 border-t border-border bg-muted">
+        <div className="text-xs text-muted-foreground space-y-1">
           <div className="font-semibold mb-2">Instruction Set:</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            <div><span className="font-mono text-blue-600 dark:text-blue-400">LOAD</span> - Load value</div>
-            <div><span className="font-mono text-blue-600 dark:text-blue-400">STORE</span> - Store value</div>
-            <div><span className="font-mono text-green-600 dark:text-green-400">ADD/SUB</span> - Arithmetic</div>
-            <div><span className="font-mono text-green-600 dark:text-green-400">MUL/DIV</span> - Arithmetic</div>
-            <div><span className="font-mono text-purple-600 dark:text-purple-400">CALL</span> - Function call</div>
-            <div><span className="font-mono text-purple-600 dark:text-purple-400">RET</span> - Return</div>
-            <div><span className="font-mono text-yellow-600 dark:text-yellow-400">PUSH</span> - Push to stack</div>
-            <div><span className="font-mono text-yellow-600 dark:text-yellow-400">ALLOC</span> - Allocate memory</div>
+            <div><span className="font-mono text-primary">LOAD</span> - Load value</div>
+            <div><span className="font-mono text-primary">STORE</span> - Store value</div>
+            <div><span className="font-mono text-success">ADD/SUB</span> - Arithmetic</div>
+            <div><span className="font-mono text-success">MUL/DIV</span> - Arithmetic</div>
+            <div><span className="font-mono text-primary">CALL</span> - Function call</div>
+            <div><span className="font-mono text-primary">RET</span> - Return</div>
+            <div><span className="font-mono text-warning">PUSH</span> - Push to stack</div>
+            <div><span className="font-mono text-warning">ALLOC</span> - Allocate memory</div>
           </div>
         </div>
       </div>
@@ -129,27 +123,27 @@ function getInstructionColor(instruction: string): string {
   switch (instruction) {
     case 'LOAD':
     case 'STORE':
-      return 'text-blue-600 dark:text-blue-400';
+      return 'text-primary';
     case 'ADD':
     case 'SUB':
     case 'MUL':
     case 'DIV':
-      return 'text-green-600 dark:text-green-400';
+      return 'text-success';
     case 'CALL':
     case 'RET':
     case 'LABEL':
-      return 'text-purple-600 dark:text-purple-400';
+      return 'text-primary';
     case 'PUSH':
     case 'POP':
     case 'ALLOC':
-      return 'text-yellow-600 dark:text-yellow-400';
+      return 'text-warning';
     case 'CMP':
     case 'JMP':
     case 'JG':
     case 'JL':
     case 'JE':
-      return 'text-red-600 dark:text-red-400';
+      return 'text-danger';
     default:
-      return 'text-gray-600 dark:text-gray-400';
+      return 'text-muted-foreground';
   }
 }

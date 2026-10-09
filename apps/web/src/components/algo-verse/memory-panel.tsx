@@ -58,17 +58,17 @@ export function MemoryPanel({
   ];
 
   return (
-    <div className="h-full flex flex-col rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+    <div className="h-full flex flex-col rounded-xl border border-border bg-card overflow-hidden">
       {/* Tab Headers */}
-      <div className="flex-shrink-0 flex items-center gap-1 px-2 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+      <div className="flex-shrink-0 flex items-center gap-1 px-2 py-2 border-b border-border bg-muted">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               activeTab === tab.id
-                ? 'bg-blue-500 text-white shadow-sm'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-muted'
             }`}
           >
             {tab.label}
@@ -76,8 +76,8 @@ export function MemoryPanel({
               <span
                 className={`px-1.5 py-0.5 rounded-full text-xs font-bold ${
                   activeTab === tab.id
-                    ? 'bg-white/20 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                    ? 'bg-card/20 text-primary-foreground'
+                    : 'bg-border text-foreground'
                 }`}
               >
                 {tab.badge}

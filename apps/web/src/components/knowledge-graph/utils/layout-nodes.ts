@@ -39,7 +39,7 @@ export function layoutNodes(
     // Assign default levels to unvisited nodes (orphaned/only outgoing edges)
     let maxLevel = Math.max(...Object.values(levels), -1);
     nodes.forEach((node) => {
-        if (!levels[node.id]) {
+        if (levels[node.id] === undefined) { // level 0 is a valid (root) level
             levels[node.id] = ++maxLevel;
         }
     });

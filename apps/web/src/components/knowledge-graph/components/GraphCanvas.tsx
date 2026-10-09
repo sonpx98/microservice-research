@@ -4,7 +4,6 @@ import ReactFlow, {
   Node,
   Edge,
   Controls,
-  Background,
   OnNodesChange,
   OnEdgesChange,
   NodeTypes,
@@ -38,7 +37,6 @@ export function GraphCanvas({
       nodeTypes={nodeTypes}
       fitView
     >
-      <Background color="transparent" />
       <Controls />
     </ReactFlow>
   );

@@ -26,12 +26,12 @@ export function CodeEditor({
   const lines = code.split('\n');
 
   return (
-    <div className="h-full flex flex-col rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+    <div className="h-full flex flex-col rounded-xl border border-border bg-card">
       {/* Header */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between">
+      <div className="flex-shrink-0 px-4 py-3 border-b border-border bg-muted flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Code2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+          <Code2 className="w-4 h-4 text-muted-foreground" />
+          <h3 className="text-sm font-semibold text-foreground">
             Code Editor
           </h3>
         </div>
@@ -41,7 +41,7 @@ export function CodeEditor({
           <button
             onClick={() => setShowExamples(!showExamples)}
             disabled={disabled}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-foreground bg-card border border-input rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Examples
             <ChevronDown className={`w-3 h-3 transition-transform ${showExamples ? 'rotate-180' : ''}`} />
@@ -53,7 +53,7 @@ export function CodeEditor({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 overflow-hidden"
+              className="absolute right-0 top-full mt-2 w-64 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden"
             >
               <div className="max-h-96 overflow-y-auto">
                 {examples.map((example) => (
@@ -63,23 +63,23 @@ export function CodeEditor({
                       onExampleSelect(example);
                       setShowExamples(false);
                     }}
-                    className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 last:border-b-0 transition-colors"
+                    className="w-full text-left px-4 py-3 hover:bg-muted border-b border-border last:border-b-0 transition-colors"
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      <span className="text-sm font-medium text-foreground">
                         {example.title}
                       </span>
                       <span className={`text-xs px-2 py-0.5 rounded ${
                         example.difficulty === 'beginner' 
-                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                          ? 'bg-success/10 text-success'
                           : example.difficulty === 'intermediate'
-                          ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
-                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                          ? 'bg-warning/10 text-warning'
+                          : 'bg-danger/10 text-danger'
                       }`}>
                         {example.difficulty}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       {example.description}
                     </p>
                   </button>
@@ -94,7 +94,7 @@ export function CodeEditor({
       <div className="flex-1 overflow-auto">
         <div className="flex">
           {/* Line Numbers */}
-          <div className="flex-shrink-0 px-3 py-4 bg-gray-50 dark:bg-gray-900/50 border-r border-gray-200 dark:border-gray-700 select-none">
+          <div className="flex-shrink-0 px-3 py-4 bg-muted border-r border-border select-none">
             {lines.map((_, index) => {
               const lineNum = index + 1;
               const isCurrentLine = lineNum === currentLine;
@@ -104,8 +104,8 @@ export function CodeEditor({
                   key={index}
                   className={`text-xs font-mono text-right leading-6 ${
                     isCurrentLine
-                      ? 'text-blue-600 dark:text-blue-400 font-bold'
-                      : 'text-gray-400 dark:text-gray-600'
+                      ? 'text-primary font-bold'
+                      : 'text-muted-foreground'
                   }`}
                 >
                   {lineNum}
@@ -121,7 +121,7 @@ export function CodeEditor({
               onChange={(e) => onCodeChange(e.target.value)}
               disabled={disabled}
               spellCheck={false}
-              className="w-full h-full px-4 py-4 bg-transparent text-sm font-mono text-gray-900 dark:text-gray-100 leading-6 resize-none focus:outline-none disabled:cursor-not-allowed"
+              className="w-full h-full px-4 py-4 bg-transparent text-sm font-mono text-foreground leading-6 resize-none focus:outline-none disabled:cursor-not-allowed"
               style={{
                 tabSize: 2,
                 minHeight: '400px',
@@ -133,7 +133,7 @@ export function CodeEditor({
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="absolute left-0 right-0 bg-blue-100 dark:bg-blue-900/20 pointer-events-none"
+                className="absolute left-0 right-0 bg-primary/10 pointer-events-none"
                 style={{
                   top: `${(currentLine - 1) * 24 + 16}px`,
                   height: '24px',
@@ -145,12 +145,12 @@ export function CodeEditor({
       </div>
 
       {/* Footer Info */}
-      <div className="flex-shrink-0 px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex-shrink-0 px-4 py-2 border-t border-border bg-muted">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>{lines.length} lines</span>
           {currentLine > 0 && (
             <span>
-              Executing line <span className="font-semibold text-blue-600 dark:text-blue-400">{currentLine}</span>
+              Executing line <span className="font-semibold text-primary">{currentLine}</span>
             </span>
           )}
         </div>

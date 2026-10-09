@@ -52,34 +52,28 @@ export function CPURegisterPanel({ registers }: CPURegisterPanelProps) {
     return (
       <motion.div
         key={name}
-        animate={{
-          backgroundColor: isChanged 
-            ? 'rgb(59, 130, 246)' // blue-500
-            : 'transparent',
-        }}
-        transition={{ duration: 0.3 }}
-        className={`flex items-center justify-between p-2 rounded ${
+        className={`flex items-center justify-between p-2 rounded transition-colors duration-300 ${
           isSpecial ? 'border-l-2' : ''
-        } ${colorClass}`}
+        } ${isChanged ? 'bg-primary/20' : colorClass}`}
       >
-        <span className="font-mono font-bold text-xs text-gray-700 dark:text-gray-300 w-8">
+        <span className="font-mono font-bold text-xs text-foreground w-8">
           {name}
         </span>
         
         {isSpecial && typeof value === 'string' ? (
           // Instruction Register - show full instruction
           <div className="flex-1 ml-2">
-            <code className="text-xs text-gray-900 dark:text-white font-mono">
+            <code className="text-xs text-foreground font-mono">
               {value || 'NOP'}
             </code>
           </div>
         ) : (
           // Numeric registers - show hex and decimal
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs text-gray-600 dark:text-gray-400 w-16 text-right">
+            <span className="font-mono text-xs text-muted-foreground w-16 text-right">
               {toHex(numValue)}
             </span>
-            <span className="font-mono text-xs text-gray-900 dark:text-white w-12 text-right">
+            <span className="font-mono text-xs text-foreground w-12 text-right">
               {numValue}
             </span>
           </div>
@@ -91,12 +85,12 @@ export function CPURegisterPanel({ registers }: CPURegisterPanelProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+      <div className="flex-shrink-0 px-4 py-3 border-b border-border bg-muted">
+        <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-primary"></span>
           CPU Registers
         </h3>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           Cycle: {registers.pc}
         </p>
       </div>
@@ -105,18 +99,18 @@ export function CPURegisterPanel({ registers }: CPURegisterPanelProps) {
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {/* Special Registers */}
         <div className="space-y-2">
-          <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+          <div className="text-xs font-medium text-muted-foreground mb-2">
             Special Registers
           </div>
           
-          {renderRegister('PC', registers.pc, 'border-blue-500', true)}
-          {renderRegister('IR', registers.ir, 'border-green-500', true)}
-          {renderRegister('ACC', registers.acc, 'border-yellow-500', true)}
+          {renderRegister('PC', registers.pc, 'border-primary', true)}
+          {renderRegister('IR', registers.ir, 'border-success', true)}
+          {renderRegister('ACC', registers.acc, 'border-warning', true)}
         </div>
 
         {/* General Purpose Registers */}
         <div className="space-y-2">
-          <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-xs font-medium text-muted-foreground mb-2 pt-2 border-t border-border">
             General Purpose
           </div>
           
@@ -127,18 +121,18 @@ export function CPURegisterPanel({ registers }: CPURegisterPanelProps) {
         </div>
 
         {/* Legend */}
-        <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-          <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+        <div className="pt-3 border-t border-border">
+          <div className="text-xs text-muted-foreground space-y-1">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 border-l-2 border-blue-500"></div>
+              <div className="w-2 h-2 border-l-2 border-primary"></div>
               <span>PC: Program Counter</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 border-l-2 border-green-500"></div>
+              <div className="w-2 h-2 border-l-2 border-success"></div>
               <span>IR: Instruction Register</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 border-l-2 border-yellow-500"></div>
+              <div className="w-2 h-2 border-l-2 border-warning"></div>
               <span>ACC: Accumulator</span>
             </div>
           </div>

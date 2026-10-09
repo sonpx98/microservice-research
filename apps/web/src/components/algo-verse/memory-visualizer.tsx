@@ -162,14 +162,14 @@ export function MemoryVisualizer({ initialExampleId }: { initialExampleId?: stri
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+            className="flex items-center gap-3 p-4 bg-danger/10 border border-danger/30 rounded-lg"
           >
-            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 text-danger flex-shrink-0" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-red-900 dark:text-red-100">
+              <p className="text-sm font-medium text-danger">
                 Parsing Error
               </p>
-              <p className="text-xs text-red-700 dark:text-red-300 mt-1">
+              <p className="text-xs text-danger mt-1">
                 {error}
               </p>
             </div>
@@ -225,36 +225,36 @@ export function MemoryVisualizer({ initialExampleId }: { initialExampleId?: stri
           {currentStep && (
             <motion.div
               layout
-              className="h-[200px] overflow-y-auto p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20"
+              className="h-[200px] overflow-y-auto p-4 rounded-xl border border-border bg-card"
             >
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
                   {currentStep.stepNumber}
                 </div>
                 <div className="flex-1">
-                  <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                  <div className="text-xs font-medium text-muted-foreground mb-1">
                     {currentStep.action.replace(/_/g, ' ').toUpperCase()}
                   </div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-foreground">
                     {currentStep.description}
                   </p>
                   
                   {/* Global Variables */}
                   {currentStep.state.globalVariables.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                      <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <div className="text-xs font-medium text-muted-foreground mb-2">
                         Global Scope:
                       </div>
                       <div className="space-y-1">
                         {currentStep.state.globalVariables.map((variable: Variable, index: number) => (
                           <div
                             key={`global-${variable.name}-${index}`}
-                            className="flex items-center justify-between text-xs bg-white dark:bg-gray-800 rounded px-2 py-1"
+                            className="flex items-center justify-between text-xs bg-card rounded px-2 py-1"
                           >
-                            <span className="font-mono text-gray-700 dark:text-gray-300">
+                            <span className="font-mono text-foreground">
                               {variable.name}
                             </span>
-                            <span className="font-mono text-gray-900 dark:text-white">
+                            <span className="font-mono text-foreground">
                               {variable.type === 'object' && variable.heapReference
                                 ? `→ ${variable.heapReference}`
                                 : String(variable.value)
@@ -268,11 +268,11 @@ export function MemoryVisualizer({ initialExampleId }: { initialExampleId?: stri
 
                   {/* Output */}
                   {output.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                      <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <div className="text-xs font-medium text-muted-foreground mb-2">
                         Console Output:
                       </div>
-                      <div className="bg-gray-900 dark:bg-black rounded px-3 py-2 font-mono text-xs text-green-400">
+                      <div data-theme="terminal" className="bg-background rounded px-3 py-2 font-mono text-xs text-success">
                         {output.map((line, index) => (
                           <div key={index}>{line}</div>
                         ))}

@@ -14,9 +14,9 @@ interface NodeDetailProps {
 }
 
 const typeColors = {
-  technical: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  issue: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-  slang: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+  technical: 'bg-chart-1/10 text-chart-1',
+  issue: 'bg-danger/10 text-danger',
+  slang: 'bg-chart-4/10 text-chart-4',
 };
 
 export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailProps) {
@@ -26,14 +26,14 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
   return (
     <div className="flex flex-col h-full">
       {/* Header with close button */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+      <div className="flex items-center justify-between p-6 border-b border-border bg-muted">
+        <h2 className="text-lg font-bold text-foreground">
           {node.title}
         </h2>
         {onClose && (
           <button
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="p-1.5 text-muted-foreground hover:text-foreground rounded-lg hover:bg-accent transition-colors"
             title="Close panel (Esc or click again)"
           >
             <X className="w-5 h-5" />
@@ -64,7 +64,7 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
 
           {node.tags && node.tags.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              <h3 className="text-sm font-semibold text-foreground mb-2">
                 Tags
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -79,7 +79,7 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
 
           {relationships && relationships.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              <h3 className="text-sm font-semibold text-foreground mb-2">
                 Relationships
               </h3>
               <ul className="space-y-1">
@@ -90,13 +90,13 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
                   >
                     <button
                       onClick={() => onRelationshipClick?.(rel.id)}
-                      className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline cursor-pointer transition-colors"
+                      className="font-medium text-primary hover:text-primary hover:underline cursor-pointer transition-colors"
                       title={`Navigate to ${rel.id}`}
                     >
                       {rel.id}
                     </button>
-                    <span className="text-gray-400 mx-2">→</span>
-                    <span className="italic text-gray-500">{rel.type}</span>
+                    <span className="text-muted-foreground mx-2">→</span>
+                    <span className="italic text-muted-foreground">{rel.type}</span>
                   </li>
                 ))}
               </ul>
