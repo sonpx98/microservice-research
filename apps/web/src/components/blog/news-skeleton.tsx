@@ -4,7 +4,7 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 export function NewsCardSkeleton() {
   return (
-    <Card className="h-full flex flex-col border-gray-200 dark:border-gray-800">
+    <Card className="h-full flex flex-col border-border">
       {/* Thumbnail Skeleton */}
       <Skeleton className="rounded-t-xl aspect-video" />
       
@@ -38,11 +38,11 @@ export function NewsListSkeleton({ count = 6 }: { count?: number }) {
     <div className="space-y-8">
       {/* Loading Message */}
       <div className="text-center py-4">
-        <div className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-          <LoadingSpinner size="sm" className="text-blue-600" />
+        <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <LoadingSpinner size="sm" className="text-primary" />
           <span>Loading fresh content from Gateway...</span>
         </div>
-        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           This may take up to 60 seconds if the server is waking up
         </p>
       </div>

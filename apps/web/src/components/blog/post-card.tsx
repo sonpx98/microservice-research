@@ -50,7 +50,7 @@ export function PostCard({ post }: PostCardProps) {
                 <Badge variant="secondary" className="text-xs font-normal">
                   Blog
                 </Badge>
-                <time className="text-xs text-gray-500 whitespace-nowrap">
+                <time className="text-xs text-muted-foreground whitespace-nowrap">
                   {formatDate(post.date, post.locale)}
                 </time>
               </div>
@@ -74,7 +74,7 @@ export function PostCard({ post }: PostCardProps) {
       {isExpanded && (
           <div className="absolute top-[-10%] left-[-10%] w-[120%] z-50 animate-in fade-in zoom-in-95 duration-200">
                <Link href={post.url} className="block">
-                  <Card className="shadow-2xl border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900 border-0 ring-1 ring-black/5 dark:ring-white/10">
+                  <Card className="shadow-2xl border-border overflow-hidden bg-card border-0 ring-1 ring-border">
                       {/* Cinematic Image */}
                       <div className="relative h-48 w-full">
                           <BlogThumbnail 
@@ -83,10 +83,10 @@ export function PostCard({ post }: PostCardProps) {
                               className="h-full w-full object-cover"
                           />
                           {/* Gradient Overlay */}
-                          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
+                          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-overlay to-transparent" />
                           
                           <div className="absolute bottom-3 left-4 right-4">
-                               <h4 className="font-bold text-lg leading-tight text-white drop-shadow-sm line-clamp-2">
+                               <h4 className="font-bold text-lg leading-tight text-primary-foreground drop-shadow-sm line-clamp-2">
                                   {post.title}
                               </h4>
                           </div>
@@ -102,8 +102,8 @@ export function PostCard({ post }: PostCardProps) {
                           </div>
 
                           {/* Meta Info */}
-                          <div className="flex items-center gap-3 text-xs font-medium text-gray-500 dark:text-gray-400">
-                              <span className="text-gray-900 dark:text-gray-200">Blog</span>
+                          <div className="flex items-center gap-3 text-xs font-medium text-muted-foreground">
+                              <span className="text-foreground">Blog</span>
                               <span className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
                                   {post.date ? new Date(post.date).getFullYear() : '2025'}
@@ -118,7 +118,7 @@ export function PostCard({ post }: PostCardProps) {
                           {post.tags && post.tags.length > 0 && (
                                <div className="flex flex-wrap gap-1.5">
                                   {post.tags.slice(0, 3).map((tag, tIdx) => (
-                                      <span key={`${tag}-${tIdx}`} className="text-xs text-gray-500 dark:text-gray-400">
+                                      <span key={`${tag}-${tIdx}`} className="text-xs text-muted-foreground">
                                           {tIdx > 0 && '•'} {tag}
                                       </span>
                                   ))}
@@ -126,7 +126,7 @@ export function PostCard({ post }: PostCardProps) {
                           )}
                           
                           {/* Description */}
-                          <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-3 leading-relaxed">
+                          <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
                                 {post.excerpt}
                           </p>
                       </div>

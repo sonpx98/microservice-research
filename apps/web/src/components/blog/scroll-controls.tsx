@@ -53,7 +53,7 @@ export function ScrollControls({ className }: ScrollControlsProps) {
         {/* Scroll To Bottom */}
       <button
         onClick={scrollToBottom}
-        className={`p-3 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${
+        className={`p-3 rounded-full bg-card text-muted-foreground shadow-lg border border-border hover:bg-muted transition-all duration-300 ${
             showBottom ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none absolute'
         }`}
         aria-label="Scroll to bottom"
@@ -65,7 +65,7 @@ export function ScrollControls({ className }: ScrollControlsProps) {
       {/* Scroll To Top */}
       <button
         onClick={scrollToTop}
-        className={`p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all duration-300 ${
+        className={`p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-300 ${
           showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
         aria-label="Scroll to top"

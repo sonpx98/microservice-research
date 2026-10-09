@@ -49,7 +49,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 <div className="mb-8">
                     <Link 
                         href={`/${locale || 'en'}/blog/explore`}
-                        className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50 transition-colors"
+                        className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         {t('backToExplore')}
@@ -65,7 +65,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                             {article.source || 'Aggregated'}
                         </Badge>
                         {article.pubDate && (
-                            <time className="text-sm text-gray-500">
+                            <time className="text-sm text-muted-foreground">
                                 {new Date(article.pubDate).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', {
                                     year: 'numeric',
                                     month: 'long', 
@@ -75,7 +75,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                         )}
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
                         {article.title}
                     </h1>
                     
@@ -118,7 +118,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                         href={article.link} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+                        className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     >
                         {t('readOn')} {article.source}
                     </a>

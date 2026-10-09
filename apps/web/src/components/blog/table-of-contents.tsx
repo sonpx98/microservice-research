@@ -21,7 +21,7 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
       {headings.length > 0 && (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="lg:hidden fixed bottom-6 left-6 z-40 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors"
+          className="lg:hidden fixed bottom-6 left-6 z-40 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors"
           aria-label="Toggle table of contents"
         >
           <List className="w-5 h-5" />

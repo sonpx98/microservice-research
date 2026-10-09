@@ -210,28 +210,28 @@ export function ReadingBookmark({ slug, locale }: ReadingBookmarkProps) {
       {/* Resume reading prompt */}
       {showResumePrompt && savedBookmark && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 max-w-sm">
+          <div className="bg-card rounded-2xl shadow-2xl border border-border p-4 max-w-sm">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                <Bookmark className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Bookmark className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-gray-900 dark:text-white text-sm">
+                <p className="font-medium text-foreground text-sm">
                   Continue reading?
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   You were {savedBookmark.scrollPercentage}% through this article
                 </p>
                 <div className="flex gap-2 mt-3">
                   <button
                     onClick={handleResume}
-                    className="flex-1 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                    className="flex-1 px-3 py-1.5 text-xs font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors"
                   >
                     Resume
                   </button>
                   <button
                     onClick={handleStartOver}
-                    className="flex-1 px-3 py-1.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+                    className="flex-1 px-3 py-1.5 text-xs font-medium bg-muted hover:bg-accent text-foreground rounded-lg transition-colors"
                   >
                     Start over
                   </button>
@@ -239,7 +239,7 @@ export function ReadingBookmark({ slug, locale }: ReadingBookmarkProps) {
               </div>
               <button
                 onClick={() => setShowResumePrompt(false)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <ChevronUp className="w-4 h-4" />
               </button>
@@ -253,8 +253,8 @@ export function ReadingBookmark({ slug, locale }: ReadingBookmarkProps) {
         onClick={handleBookmark}
         className={`fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 ${
           isBookmarked
-            ? 'bg-blue-600 text-white hover:bg-blue-700'
-            : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 border border-gray-200 dark:border-gray-700'
+            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+            : 'bg-card text-muted-foreground hover:text-primary border border-border'
         }`}
         title={isBookmarked ? 'Remove bookmark' : 'Bookmark this position'}
       >
@@ -267,7 +267,7 @@ export function ReadingBookmark({ slug, locale }: ReadingBookmarkProps) {
 
       {/* Current position indicator (when bookmarked) */}
       {isBookmarked && (
-        <div className="fixed bottom-20 right-6 z-40 text-xs text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 px-2 py-1 rounded-full shadow border border-gray-200 dark:border-gray-700">
+        <div className="fixed bottom-20 right-6 z-40 text-xs text-muted-foreground bg-card px-2 py-1 rounded-full shadow border border-border">
           {displayPercentage !== null ? displayPercentage : currentPercentage}%
         </div>
       )}

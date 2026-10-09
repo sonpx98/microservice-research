@@ -37,7 +37,7 @@ export default async function ReadingDetailPage({ params }: { params: Promise<{ 
             </h1>
         </div>
 
-      <article className="prose prose-slate dark:prose-invert lg:prose-lg max-w-none mb-12">
+      <article className="prose lg:prose-lg max-w-none mb-12">
         <div className="text-slate-800 dark:text-slate-200">
             {reading.content.split('\n\n').map((paragraph: string, idx: number) => (
                 <p key={idx} className="mb-4 leading-relaxed">

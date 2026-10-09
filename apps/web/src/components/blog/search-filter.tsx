@@ -104,15 +104,15 @@ export function SearchFilter({ tags }: SearchFilterProps) {
   }
 
   return (
-    <div className="space-y-6 mb-10 p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm">
+    <div className="space-y-6 mb-10 p-6 rounded-2xl bg-card border border-border shadow-sm">
       {/* Search Bar - Trigger */}
         <button
           onClick={() => setIsOpen(true)}
-          className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm group"
+          className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground bg-card rounded-lg hover:bg-muted transition-colors border border-border shadow-sm group"
         >
-          <Search className="w-5 h-5 group-hover:text-blue-500 transition-colors" />
+          <Search className="w-5 h-5 group-hover:text-primary transition-colors" />
           <span className="flex-1 font-medium">Search explore posts...</span>
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-mono text-gray-400 bg-gray-100 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-600">
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-mono text-muted-foreground bg-muted rounded border border-border">
             ⌘K
           </kbd>
         </button>
@@ -120,13 +120,13 @@ export function SearchFilter({ tags }: SearchFilterProps) {
       {/* Filter by Tag */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-            <div className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Filter by tag
             </div>
             {showExpandButton && (
                 <button 
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1"
+                  className="text-xs font-medium text-primary hover:text-primary flex items-center gap-1"
                 >
                   {isExpanded ? 'Show Less' : 'Show More'}
                   {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -144,8 +144,8 @@ export function SearchFilter({ tags }: SearchFilterProps) {
           <Badge
             variant={!activeTag ? "default" : "outline"}
             className={cn(
-              "cursor-pointer hover:bg-blue-600 hover:text-white transition-colors px-4 py-1.5 h-auto text-sm",
-              !activeTag ? "bg-blue-600 hover:bg-blue-700 border-transparent" : "text-gray-600 dark:text-gray-400"
+              "cursor-pointer hover:bg-primary/90 hover:text-primary-foreground transition-colors px-4 py-1.5 h-auto text-sm",
+              !activeTag ? "bg-primary hover:bg-primary/90 border-transparent" : "text-muted-foreground"
             )}
             onClick={clearTag}
           >
@@ -159,8 +159,8 @@ export function SearchFilter({ tags }: SearchFilterProps) {
               className={cn(
                 "cursor-pointer transition-colors px-3 py-1.5 h-auto text-sm font-medium",
                 activeTag === tag 
-                  ? "bg-blue-600 hover:bg-blue-700 border-transparent text-white" 
-                  : "text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-600 hover:text-gray-900 dark:hover:text-gray-200"
+                  ? "bg-primary hover:bg-primary/90 border-transparent text-primary-foreground" 
+                  : "text-muted-foreground hover:border-input hover:text-foreground"
               )}
               onClick={() => toggleTag(tag)}
             >
@@ -178,18 +178,18 @@ export function SearchFilter({ tags }: SearchFilterProps) {
         >
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-overlay backdrop-blur-sm"
             aria-hidden="true"
           />
           
           {/* Modal */}
           <div 
-            className="relative w-full max-w-xl bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+            className="relative w-full max-w-xl bg-card rounded-xl shadow-2xl border border-border overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Search Input */}
-            <div className="flex items-center gap-3 px-4 border-b border-gray-200 dark:border-gray-700">
-              <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <div className="flex items-center gap-3 px-4 border-b border-border">
+              <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
               <input
                 ref={inputRef}
                 type="text"
@@ -198,12 +198,12 @@ export function SearchFilter({ tags }: SearchFilterProps) {
                 onKeyDown={handleSearchKeyDown}
                 placeholder="Search articles..."
                 aria-label="Search articles"
-                className="flex-1 py-4 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none"
+                className="flex-1 py-4 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
                {query && (
                 <button
                   onClick={() => setQuery('')}
-                  className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                  className="p-1 text-muted-foreground hover:text-foreground"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -211,7 +211,7 @@ export function SearchFilter({ tags }: SearchFilterProps) {
                {/* Close button for mobile accessibility */}
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 -mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                  className="p-2 -mr-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                   aria-label="Close search"
                 >
                   <X className="w-5 h-5" />
@@ -221,20 +221,20 @@ export function SearchFilter({ tags }: SearchFilterProps) {
             {/* Results */}
             <div ref={resultsRef} className="max-h-[60vh] overflow-y-auto">
                 {query.length < 2 && (
-                  <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                  <div className="px-4 py-8 text-center text-muted-foreground">
                     <p className="text-sm">Type at least 2 characters to search</p>
                   </div>
                 )}
 
                 {query.length >= 2 && results.length === 0 && !isLoading && (
-                   <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                   <div className="px-4 py-8 text-center text-muted-foreground">
                      <p>No results found</p>
                    </div>
                 )}
                 
                 {isLoading && (
-                   <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                      <Loader2 className="w-6 h-6 animate-spin mx-auto text-blue-500" />
+                   <div className="px-4 py-8 text-center text-muted-foreground">
+                      <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary" />
                    </div>
                 )}
 
@@ -247,15 +247,15 @@ export function SearchFilter({ tags }: SearchFilterProps) {
                                     onMouseEnter={() => setSelectedIndex(idx)}
                                     className={cn(
                                         "w-full text-left px-4 py-3 flex items-start gap-3 transition-colors",
-                                        idx === selectedIndex ? "bg-blue-50 dark:bg-blue-900/30" : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                                        idx === selectedIndex ? "bg-primary/10" : "hover:bg-muted"
                                     )}
                                 >
-                                    <FileText className={cn("w-5 h-5 mt-0.5 flex-shrink-0", idx === selectedIndex ? "text-blue-600 dark:text-blue-400" : "text-gray-400")} />
+                                    <FileText className={cn("w-5 h-5 mt-0.5 flex-shrink-0", idx === selectedIndex ? "text-primary" : "text-muted-foreground")} />
                                     <div className="flex-1 min-w-0">
-                                        <div className={cn("font-medium truncate", idx === selectedIndex ? "text-blue-600 dark:text-blue-400" : "text-gray-900 dark:text-white")}>
+                                        <div className={cn("font-medium truncate", idx === selectedIndex ? "text-primary" : "text-foreground")}>
                                             {item.title}
                                         </div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                                        <div className="text-sm text-muted-foreground line-clamp-1">
                                             {item.source} • {item.pubDate ? new Date(item.pubDate).getFullYear() : 'N/A'}
                                         </div>
                                     </div>
@@ -268,11 +268,11 @@ export function SearchFilter({ tags }: SearchFilterProps) {
                                 onClick={handleSearchAll}
                                 onMouseEnter={() => setSelectedIndex(results.length)}
                                 className={cn(
-                                    "w-full text-left px-4 py-3 flex items-start gap-3 transition-colors text-sm font-medium border-t border-gray-100 dark:border-gray-800",
-                                    selectedIndex === results.length ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                                    "w-full text-left px-4 py-3 flex items-start gap-3 transition-colors text-sm font-medium border-t border-border",
+                                    selectedIndex === results.length ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
                                 )}
                              >
-                                <Search className={cn("w-5 h-5", selectedIndex === results.length ? "text-blue-600 dark:text-blue-400" : "text-gray-400")} />
+                                <Search className={cn("w-5 h-5", selectedIndex === results.length ? "text-primary" : "text-muted-foreground")} />
                                 <span>Search all results for &quot;{query}&quot;</span>
                              </button>
                             </li>
@@ -283,14 +283,14 @@ export function SearchFilter({ tags }: SearchFilterProps) {
             
              {/* Footer */}
               {results.length > 0 && (
-                <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-4 bg-gray-50 dark:bg-gray-900/50">
+                <div className="px-4 py-2 border-t border-border text-xs text-muted-foreground flex items-center gap-4 bg-muted">
                   <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↑</kbd>
-                    <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↓</kbd>
+                    <kbd className="px-1.5 py-0.5 bg-muted rounded">↑</kbd>
+                    <kbd className="px-1.5 py-0.5 bg-muted rounded">↓</kbd>
                     to navigate
                   </span>
                   <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↵</kbd>
+                    <kbd className="px-1.5 py-0.5 bg-muted rounded">↵</kbd>
                     to select
                   </span>
                 </div>

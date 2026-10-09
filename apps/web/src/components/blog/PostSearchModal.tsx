@@ -108,16 +108,16 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
       onClick={handleClose}
     >
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
+      <div className="fixed inset-0 bg-overlay backdrop-blur-sm" aria-hidden="true" />
       
       {/* Modal */}
       <div 
-        className="relative w-full max-w-xl bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+        className="relative w-full max-w-xl bg-card rounded-xl shadow-2xl border border-border overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input */}
-        <div className="flex items-center gap-3 px-4 border-b border-gray-200 dark:border-gray-700">
-          <Search className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+        <div className="flex items-center gap-3 px-4 border-b border-border">
+          <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -126,19 +126,19 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
             onKeyDown={handleSearchKeyDown}
             placeholder={t('searchPlaceholder')}
             aria-label="Search posts"
-            className="flex-1 py-4 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none"
+            className="flex-1 py-4 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+              className="p-1 text-muted-foreground hover:text-foreground cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           )}
           <button
             onClick={handleClose}
-            className="p-2 -mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
+            className="p-2 -mr-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors cursor-pointer"
             aria-label="Close search"
           >
             <X className="w-5 h-5" />
@@ -148,7 +148,7 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
         {/* Results */}
         <div ref={resultsRef} className="max-h-[60vh] overflow-y-auto">
           {searchQuery.length >= 2 && searchResults.length === 0 && (
-            <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+            <div className="px-4 py-8 text-center text-muted-foreground">
               <p>{t('noResults')}</p>
             </div>
           )}
@@ -165,22 +165,22 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`w-full px-4 py-3 text-left flex items-start gap-3 transition-colors ${
                       index === selectedIndex
-                        ? 'bg-blue-50 dark:bg-blue-900/30'
-                        : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                        ? 'bg-primary/10'
+                        : 'hover:bg-muted'
                     }`}
                   >
                     <FileText
                       className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-                        index === selectedIndex ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'
+                        index === selectedIndex ? 'text-primary' : 'text-muted-foreground'
                       }`}
                     />
                     <div className="flex-1 min-w-0">
                       <p className={`font-medium truncate ${
-                        index === selectedIndex ? 'text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-white'
+                        index === selectedIndex ? 'text-primary' : 'text-foreground'
                       }`}>
                         {post.title}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                      <p className="text-sm text-muted-foreground line-clamp-1">
                         {post.excerpt}
                       </p>
                       {post.tags && post.tags.length > 0 && (
@@ -188,7 +188,7 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
                           {post.tags.slice(0, 3).map((tag) => (
                             <span
                               key={tag}
-                              className="text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
+                              className="text-xs px-1.5 py-0.5 bg-muted text-muted-foreground rounded"
                             >
                               {tag}
                             </span>
@@ -203,7 +203,7 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
           )}
 
           {searchQuery.length < 2 && (
-            <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+            <div className="px-4 py-8 text-center text-muted-foreground">
               <p className="text-sm">{t('searchHint')}</p>
             </div>
           )}
@@ -211,14 +211,14 @@ export function PostSearchModal({ posts, isOpen, onClose }: PostSearchModalProps
 
         {/* Footer */}
         {searchResults.length > 0 && (
-          <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-4">
+          <div className="px-4 py-2 border-t border-border text-xs text-muted-foreground flex items-center gap-4">
             <span className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↑</kbd>
-              <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↓</kbd>
+              <kbd className="px-1.5 py-0.5 bg-muted rounded">↑</kbd>
+              <kbd className="px-1.5 py-0.5 bg-muted rounded">↓</kbd>
               {t('toNavigate')}
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">↵</kbd>
+              <kbd className="px-1.5 py-0.5 bg-muted rounded">↵</kbd>
               {t('toSelect')}
             </span>
           </div>

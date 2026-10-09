@@ -25,14 +25,7 @@
   },
   "blog": {
     "title": "Blog",
-    "description": "Deep dives into web development, architecture patterns, and lessons learned from building real-world applications.",
-    "taglines": [
-      "Deep dives into web development and architecture patterns",
-      "Lessons learned from building real-world applications",
-      "Tutorials, tips, and best practices for modern development",
-      "From micro-frontends to security — everything in between"
-    ],
-    "badge": "Technical Blog",
+    "description": "Write-ups on architecture decisions: what was tried, what it cost, and what got deleted.",
     "articlesCount": "articles",
     "topicsCount": "topics",
     "latestPosts": "Latest Posts",
@@ -87,14 +80,6 @@
   "explore": {
     "badge": "Technology News",
     "title": "Global Tech Pulse",
-    "taglines": [
-      "Curated from Top Sources",
-      "Real-time Tech Updates",
-      "Aggregated Developer News",
-      "Stay Informed, Stay Ahead"
-    ],
-    "articlesLabel": "Items",
-    "topicsLabel": "Sources",
     "latestUpdates": "Latest Updates",
     "readNow": "Read Now",
     "loadMore": "Load More Articles",
@@ -104,6 +89,7 @@
     "backToBlog": "Back to Blog",
     "exploreData": "Explore Technology News",
     "backToExplore": "Back to Explore",
-    "readOn": "Read on"
+    "readOn": "Read on",
+    "description": "Tech news crawled daily from TechCrunch, DEV, Genk and TopDev."
   }
 }

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { ArticleLayout } from '@/components/layout';
 import { getPostBySlug, getAllPosts, getPostBySlugAnyLocale, getAvailableLocalesForPost } from '@/lib/posts';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
@@ -59,30 +60,30 @@ export default async function PostPage({
     const availableLocales = getAvailableLocalesForPost(slug);
     
     return (
-      <div className="container mx-auto px-4 py-12 max-w-7.5xl">
+      <div className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
         <Link 
           href={`/${locale}/blog`}
-          className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50 mb-8"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           {t('backToBlog')}
         </Link>
 
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="w-20 h-20 mb-6 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-            <Languages className="w-10 h-10 text-yellow-600 dark:text-yellow-400" />
+          <div className="w-20 h-20 mb-6 rounded-full bg-warning/10 flex items-center justify-center">
+            <Languages className="w-10 h-10 text-warning" />
           </div>
           
-          <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold mb-4 text-foreground">
             {t('translationUnavailable')}
           </h1>
           
-          <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md">
+          <p className="text-muted-foreground mb-8 max-w-md">
             {t('translationUnavailableDescription')}
           </p>
 
           <div className="space-y-4">
-            <p className="text-sm text-gray-500 dark:text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {t('availableIn')}:
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
@@ -90,7 +91,7 @@ export default async function PostPage({
                 <Link
                   key={loc}
                   href={`/${loc}/blog/${slug}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-colors"
                 >
                   {localeNames[loc] || loc}
                 </Link>
@@ -109,47 +110,31 @@ export default async function PostPage({
       <TableOfContents />
       <ReadingBookmark slug={slug} locale={locale} />
       <CodeBlockCopyButton />
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
-        <Link
-          href={`/${locale}/blog`}
-          className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50 mb-8"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {t('backToBlog')}
-        </Link>
-
-        <article>
-          <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-          
-            <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
-              <time dateTime={post.date}>
-                {t('publishedOn')} {formatDate(post.date, locale)}
-              </time>
-              <span className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                {post.readingTime.text}
-              </span>
-            </div>
-
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </header>
-
-          <StreamingContent 
-            html={post.body.html} 
-            charsPerTick={30}
-            tickInterval={15}
-          />
-        </article>
-
+      <ArticleLayout
+        title={post.title}
+        meta={
+          <>
+            <Link href={`/${locale}/blog`} className="inline-flex items-center gap-1 hover:text-foreground">
+              <ArrowLeft className="h-3.5 w-3.5" />
+              {t('backToBlog')}
+            </Link>
+            <span aria-hidden>/</span>
+            <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3.5 w-3.5" />
+              {post.readingTime.text}
+            </span>
+            {post.tags?.map((tag) => (
+              <Badge key={tag} variant="secondary">
+                {tag}
+              </Badge>
+            ))}
+          </>
+        }
+      >
+        <StreamingContent html={post.body.html} charsPerTick={30} tickInterval={15} />
+      </ArticleLayout>
+      <div className="mx-auto w-full max-w-3xl px-4 pb-12 sm:px-6">
         <CommentSection locale={locale} />
       </div>
     </>

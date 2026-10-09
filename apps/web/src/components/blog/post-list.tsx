@@ -56,15 +56,15 @@ export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
   return (
     <div className="space-y-8">
       {/* Search & Filter Section */}
-      <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 space-y-5">
+      <div className="bg-muted rounded-xl p-6 space-y-5">
         {/* Search Bar */}
         <button
           onClick={() => setIsSearchOpen(true)}
-          className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm"
+          className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground bg-card rounded-lg hover:bg-muted transition-colors border border-border shadow-sm"
         >
           <Search className="w-5 h-5" />
           <span className="flex-1">{t('searchPlaceholder')}</span>
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-mono text-gray-400 bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-mono text-muted-foreground bg-muted rounded border border-border">
             ⌘K
           </kbd>
         </button>
@@ -86,7 +86,7 @@ export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
 
       {/* Posts Grid */}
       {filteredPosts.length === 0 ? (
-        <p className="text-center text-gray-500 dark:text-gray-400 py-12">
+        <p className="text-center text-muted-foreground py-12">
           {t('noPostsFound')}
         </p>
       ) : (

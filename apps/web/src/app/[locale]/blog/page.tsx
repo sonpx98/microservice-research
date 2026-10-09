@@ -1,44 +1,35 @@
+import Link from 'next/link';
+import { Rocket } from 'lucide-react';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { getAllPosts, getAllTags } from '@/lib/posts';
 import { PostList } from '@/components/blog/post-list';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { BlogHero } from '@/components/blog/blog-hero';
+import { PageShell } from '@/components/layout';
+import { Button } from '@/components/ui/button';
 
-export default async function BlogPage({ 
-  params 
-}: { 
-  params: Promise<{ locale: string }> 
-}) {
+export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  
+
   const t = await getTranslations('blog');
+  const te = await getTranslations('explore');
   const posts = getAllPosts(locale);
   const tags = getAllTags(locale);
 
-  const taglines = [
-    t('taglines.0'),
-    t('taglines.1'),
-    t('taglines.2'),
-    t('taglines.3'),
-  ];
-
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <BlogHero
-        badge={t('badge')}
-        title={t('title')}
-        taglines={taglines}
-        articlesCount={posts.length}
-        topicsCount={tags.length}
-        articlesLabel={t('articlesCount')}
-        topicsLabel={t('topicsCount')}
-      />
-
-      {/* Posts Section */}
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
-        <PostList posts={posts} tags={tags} />
-      </div>
-    </div>
+    <PageShell
+      eyebrow={`${posts.length} ${t('articlesCount')} · ${tags.length} ${t('topicsCount')}`}
+      title={t('title')}
+      description={t('description')}
+      actions={
+        <Button asChild variant="outline">
+          <Link href={`/${locale}/blog/explore`}>
+            <Rocket />
+            {te('exploreData')}
+          </Link>
+        </Button>
+      }
+    >
+      <PostList posts={posts} tags={tags} />
+    </PageShell>
   );
 }

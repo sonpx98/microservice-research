@@ -39,8 +39,8 @@ export function GiscusWidget({ locale }: GiscusWidgetProps) {
   // Don't render if env vars are missing
   if (!repo || !repoId || !categoryId) {
     return (
-      <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-        <p className="text-yellow-800 dark:text-yellow-200">
+      <div className="p-4 bg-warning/10 border border-warning/30 rounded-lg">
+        <p className="text-warning">
           Giscus configuration missing. Please set NEXT_PUBLIC_GISCUS_* environment variables.
         </p>
       </div>
@@ -51,10 +51,10 @@ export function GiscusWidget({ locale }: GiscusWidgetProps) {
     <div className="relative">
       {/* Loading overlay - fades out when Giscus loads */}
       {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-gray-950 z-10 transition-opacity duration-300">
+        <div className="absolute inset-0 flex items-center justify-center bg-card z-10 transition-opacity duration-300">
           <div className="flex flex-col items-center gap-3">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">Loading comments...</p>
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading comments...</p>
           </div>
         </div>
       )}

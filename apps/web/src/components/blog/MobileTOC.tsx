@@ -22,7 +22,7 @@ export function MobileTOC({ headings, activeId, isOpen, onClose, onScrollTo }: M
       {/* Overlay */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          className="lg:hidden fixed inset-0 bg-overlay z-40"
           onClick={onClose}
         />
       )}
@@ -30,7 +30,7 @@ export function MobileTOC({ headings, activeId, isOpen, onClose, onScrollTo }: M
       {/* Bottom sheet */}
       <nav
         className={`
-          lg:hidden fixed z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-t-2xl shadow-lg
+          lg:hidden fixed z-50 bg-card border border-border rounded-t-2xl shadow-lg
           transition-all duration-300 ease-in-out
           ${isOpen ? 'bottom-0 left-0 right-0 max-h-[60vh]' : '-bottom-full'}
         `}
@@ -38,13 +38,13 @@ export function MobileTOC({ headings, activeId, isOpen, onClose, onScrollTo }: M
       >
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-sm text-gray-900 dark:text-white flex items-center gap-2">
+            <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
               <List className="w-4 h-4" />
               Table of Contents
             </h3>
             <button 
               onClick={onClose}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer"
+              className="p-1 hover:bg-muted rounded cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -57,8 +57,8 @@ export function MobileTOC({ headings, activeId, isOpen, onClose, onScrollTo }: M
                   className={`
                     text-left w-full py-1.5 px-2 rounded text-sm transition-colors
                     ${activeId === heading.id
-                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 font-medium'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'text-primary bg-primary/10 font-medium'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     }
                   `}
                 >

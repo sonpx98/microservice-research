@@ -105,7 +105,7 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
 
           <Separator />
 
-          <div className="prose dark:prose-invert prose-sm max-w-none">
+          <div className="prose prose-sm max-w-none">
             <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(node.body.html) }} />
           </div>
         </div>

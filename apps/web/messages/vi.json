@@ -25,14 +25,7 @@
   },
   "blog": {
     "title": "Blog",
-    "description": "Đi sâu vào phát triển web, các mẫu kiến trúc và bài học từ việc xây dựng ứng dụng thực tế.",
-    "taglines": [
-      "Đi sâu vào phát triển web và các mẫu kiến trúc",
-      "Bài học từ việc xây dựng ứng dụng thực tế",
-      "Hướng dẫn, mẹo và best practices cho phát triển hiện đại",
-      "Từ micro-frontends đến bảo mật — tất cả đều có ở đây"
-    ],
-    "badge": "Blog Kỹ Thuật",
+    "description": "Ghi chép về các quyết định kiến trúc: đã thử gì, trả giá gì, và đã xoá gì.",
     "articlesCount": "bài viết",
     "topicsCount": "chủ đề",
     "latestPosts": "Bài viết mới nhất",
@@ -87,14 +80,6 @@
   "explore": {
     "badge": "Tin Tức Công Nghệ",
     "title": "Nhịp Đập Công Nghệ Toàn Cầu",
-    "taglines": [
-      "Tuyển chọn từ các nguồn hàng đầu",
-      "Cập nhật công nghệ thời gian thực",
-      "Tổng hợp tin tức cho lập trình viên",
-      "Luôn cập nhật, luôn dẫn đầu"
-    ],
-    "articlesLabel": "Bài viết",
-    "topicsLabel": "Nguồn",
     "latestUpdates": "Cập nhật mới nhất",
     "readNow": "Đọc Ngay",
     "loadMore": "Tải Thêm Bài Viết",
@@ -104,6 +89,7 @@
     "backToBlog": "Quay lại Blog",
     "exploreData": "Khám phá thêm nhiều thông tin công nghệ",
     "backToExplore": "Quay lại Khám phá",
-    "readOn": "Đọc trên"
+    "readOn": "Đọc trên",
+    "description": "Tin công nghệ được crawl mỗi ngày từ TechCrunch, DEV, Genk và TopDev."
   }
 }

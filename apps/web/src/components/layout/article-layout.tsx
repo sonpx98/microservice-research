@@ -17,7 +17,7 @@ export function ArticleLayout({ title, meta, className, children }: ArticleLayou
         </div>
       )}
       <h1 className="mb-8 text-4xl font-semibold tracking-tight text-foreground">{title}</h1>
-      <div className="prose max-w-none">{children}</div>
+      <div className="prose prose-lg max-w-none">{children}</div>
     </article>
   );
 }

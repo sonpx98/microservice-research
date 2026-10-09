@@ -64,7 +64,7 @@ export function CommentSection({ locale }: CommentSectionProps) {
   return (
     <div 
       ref={sectionRef}
-      className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800"
+      className="mt-12 pt-8 border-t border-border"
     >
       <h2 className="text-2xl font-bold mb-6">{t('comments')}</h2>
 

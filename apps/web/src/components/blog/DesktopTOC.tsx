@@ -17,11 +17,11 @@ export function DesktopTOC({ headings, activeId, isCollapsed, onToggle, onScroll
       <div className="hidden lg:block fixed top-24 left-0 z-30">
         <button
           onClick={onToggle}
-          className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 border-l-0 rounded-r-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+          className="flex items-center gap-2 px-3 py-2 bg-card border border-border border-l-0 rounded-r-lg shadow-sm hover:bg-muted transition-colors cursor-pointer"
           title="Show Table of Contents"
         >
-          <List className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          <ChevronRight className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          <List className="w-4 h-4 text-muted-foreground" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </button>
       </div>
     );
@@ -29,24 +29,24 @@ export function DesktopTOC({ headings, activeId, isCollapsed, onToggle, onScroll
 
   return (
     <div className="hidden lg:block fixed top-24 left-0 z-30">
-      <nav className="w-72 max-h-[calc(100vh-120px)] overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 border-l-0 rounded-r-lg shadow-lg animate-in slide-in-from-left duration-200">
+      <nav className="w-72 max-h-[calc(100vh-120px)] overflow-hidden bg-card border border-border border-l-0 rounded-r-lg shadow-lg animate-in slide-in-from-left duration-200">
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-sm text-gray-900 dark:text-white flex items-center gap-2">
+            <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
               <List className="w-4 h-4" />
               Table of Contents
             </h3>
             <button 
               onClick={onToggle}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors cursor-pointer"
+              className="p-1 hover:bg-muted rounded transition-colors cursor-pointer"
               title="Collapse"
             >
-              <ChevronLeft className="w-4 h-4 text-gray-500" />
+              <ChevronLeft className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
           
           {headings.length === 0 ? (
-            <div className="text-sm text-gray-500 dark:text-gray-400 italic py-2">
+            <div className="text-sm text-muted-foreground italic py-2">
               No headings found.
             </div>
           ) : (
@@ -58,8 +58,8 @@ export function DesktopTOC({ headings, activeId, isCollapsed, onToggle, onScroll
                     className={`
                       text-left w-full py-1.5 px-2 rounded text-sm transition-colors truncate
                       ${activeId === heading.id
-                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 font-medium'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'text-primary bg-primary/10 font-medium'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                       }
                     `}
                     title={heading.text}
