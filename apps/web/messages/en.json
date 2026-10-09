@@ -43,32 +43,28 @@
     "name": "Son Pham",
     "role": "Full-Stack Developer",
     "taglines": [
-      "Building modern web experiences with React, TypeScript, and cutting-edge technologies",
-      "Crafting scalable micro-frontend architectures for enterprise applications",
-      "Exploring the intersection of security and user experience",
-      "Turning complex problems into elegant, maintainable solutions",
-      "Passionate about clean code, performance, and developer experience"
+      "Learning system design by building it, breaking it and writing it down",
+      "Linking concepts into a graph instead of a pile of notes",
+      "Watching code run in the stack and heap, one step at a time",
+      "Thinking like an attacker to build safer web apps",
+      "Preferring boring, deletable code over clever code"
     ],
-    "viewBlog": "Read My Blog",
-    "viewPlayground": "Explore Playground",
+    "viewBlog": "Read the blog",
     "blogSection": {
       "title": "Blog",
-      "description": "Deep dives into web development, architecture patterns, and lessons learned from building real-world applications.",
-      "cta": "Browse Articles"
+      "description": "Write-ups on architecture decisions: what was tried, what it cost, and what got deleted.",
+      "cta": "Browse articles"
     },
     "playgroundSection": {
       "title": "Playground",
-      "description": "Interactive experiments and learning labs. Currently featuring security challenges where you can think like a hacker.",
-      "cta": "Start Exploring"
+      "description": "Security labs for XSS, CSRF, JWT tampering and SQL injection. Attack them, then read the fix.",
+      "cta": "Start a lab"
     },
-    "featuredTopics": {
-      "title": "What I Write About",
-      "topics": {
-        "microfrontend": "Micro-Frontends",
-        "security": "Web Security",
-        "react": "React & TypeScript",
-        "architecture": "System Architecture"
-      }
+    "viewGraph": "Open the knowledge graph",
+    "graphSection": {
+      "title": "Knowledge Graph",
+      "description": "Concepts linked to each other, with a visualizer that runs their examples step by step.",
+      "cta": "Explore the graph"
     }
   },
   "playground": {

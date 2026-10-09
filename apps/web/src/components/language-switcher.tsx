@@ -26,16 +26,16 @@ export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
 
   return (
     <div className="flex items-center gap-1">
-      <Globe className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-      <div className="flex rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
+      <Globe className="w-4 h-4 text-muted-foreground" />
+      <div className="flex rounded-lg bg-muted p-1">
         {locales.map((loc) => (
           <button
             key={loc.code}
             onClick={() => switchLocale(loc.code)}
             className={`px-2 py-1 text-sm font-medium rounded-md transition-colors ${
               locale === loc.code
-                ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             {loc.label}

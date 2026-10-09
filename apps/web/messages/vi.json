@@ -43,32 +43,28 @@
     "name": "Son Pham",
     "role": "Full-Stack Developer",
     "taglines": [
-      "Xây dựng trải nghiệm web hiện đại với React, TypeScript và các công nghệ tiên tiến",
-      "Kiến trúc micro-frontend có khả năng mở rộng cho ứng dụng doanh nghiệp",
-      "Khám phá giao điểm giữa bảo mật và trải nghiệm người dùng",
-      "Biến các vấn đề phức tạp thành giải pháp thanh lịch, dễ bảo trì",
-      "Đam mê code sạch, hiệu năng và trải nghiệm developer"
+      "Học thiết kế hệ thống bằng cách dựng, phá và viết lại",
+      "Nối các khái niệm thành đồ thị thay vì một chồng ghi chú",
+      "Xem code chạy trong stack và heap, từng bước một",
+      "Nghĩ như kẻ tấn công để xây web an toàn hơn",
+      "Chọn code nhàm chán, dễ xoá hơn code khôn lỏi"
     ],
-    "viewBlog": "Đọc Blog",
-    "viewPlayground": "Khám Phá Playground",
+    "viewBlog": "Đọc blog",
     "blogSection": {
       "title": "Blog",
-      "description": "Đi sâu vào phát triển web, các mẫu kiến trúc và bài học từ việc xây dựng ứng dụng thực tế.",
-      "cta": "Xem Bài Viết"
+      "description": "Ghi chép về các quyết định kiến trúc: đã thử gì, trả giá gì, và đã xoá gì.",
+      "cta": "Xem bài viết"
     },
     "playgroundSection": {
       "title": "Playground",
-      "description": "Thí nghiệm tương tác và phòng lab học tập. Hiện đang có thử thách bảo mật nơi bạn có thể suy nghĩ như một hacker.",
-      "cta": "Bắt Đầu Khám Phá"
+      "description": "Lab bảo mật cho XSS, CSRF, JWT tampering và SQL injection. Tấn công thử rồi đọc cách vá.",
+      "cta": "Vào lab"
     },
-    "featuredTopics": {
-      "title": "Chủ Đề Tôi Viết",
-      "topics": {
-        "microfrontend": "Micro-Frontends",
-        "security": "Bảo Mật Web",
-        "react": "React & TypeScript",
-        "architecture": "Kiến Trúc Hệ Thống"
-      }
+    "viewGraph": "Mở knowledge graph",
+    "graphSection": {
+      "title": "Knowledge Graph",
+      "description": "Các khái niệm nối với nhau, kèm visualizer chạy ví dụ từng bước.",
+      "cta": "Khám phá đồ thị"
     }
   },
   "playground": {

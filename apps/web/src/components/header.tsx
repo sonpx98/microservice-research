@@ -30,14 +30,14 @@ export function Header({ locale }: HeaderProps) {
   }));
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex h-16 items-center justify-between">
           {/* Logo / Brand */}
           <div className="flex items-center gap-8">
             <Link 
               href={`/${locale}`}
-              className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              className="font-mono text-sm font-semibold tracking-widest text-foreground hover:text-primary transition-colors"
             >
               SP
             </Link>
@@ -48,10 +48,10 @@ export function Header({ locale }: HeaderProps) {
                 <Link 
                   key={link.href}
                   href={link.href}
-                  className={`text-sm font-medium transition-colors ${
+                  className={`font-mono text-xs uppercase tracking-wider transition-colors ${
                     link.active
-                      ? 'text-blue-600 dark:text-blue-400' 
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      ? 'text-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {link.label}
@@ -68,7 +68,7 @@ export function Header({ locale }: HeaderProps) {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="sm:hidden p-2 text-muted-foreground hover:text-foreground"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -78,7 +78,7 @@ export function Header({ locale }: HeaderProps) {
         
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="sm:hidden py-4 border-t border-gray-200 dark:border-gray-800">
+          <nav className="sm:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link 
@@ -87,8 +87,8 @@ export function Header({ locale }: HeaderProps) {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`text-sm font-medium transition-colors px-2 py-2 rounded-md ${
                     link.active
-                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50' 
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'text-primary bg-primary/10' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                   }`}
                 >
                   {link.label}

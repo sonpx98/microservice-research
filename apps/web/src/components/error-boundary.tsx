@@ -47,22 +47,22 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="flex flex-col items-center justify-center min-h-[200px] p-8 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-          <AlertTriangle className="w-12 h-12 text-red-500 mb-4" />
-          <h2 className="text-lg font-semibold text-red-700 dark:text-red-300 mb-2">
+        <div className="flex flex-col items-center justify-center min-h-[200px] p-8 rounded-lg bg-danger/10 border border-danger/30">
+          <AlertTriangle className="w-12 h-12 text-danger mb-4" />
+          <h2 className="text-lg font-semibold text-danger mb-2">
             Something went wrong
           </h2>
-          <p className="text-sm text-red-600 dark:text-red-400 text-center mb-4 max-w-md">
+          <p className="text-sm text-danger text-center mb-4 max-w-md">
             An error occurred while rendering this component. Please try refreshing the page.
           </p>
           {process.env.NODE_ENV === 'development' && this.state.error && (
-            <pre className="text-xs bg-red-100 dark:bg-red-900/40 p-2 rounded overflow-auto max-w-full mb-4">
+            <pre className="text-xs bg-danger/10 p-2 rounded overflow-auto max-w-full mb-4">
               {this.state.error.message}
             </pre>
           )}
           <button
             onClick={this.handleRetry}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-danger hover:bg-danger/90 text-danger-foreground rounded-lg transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Try Again

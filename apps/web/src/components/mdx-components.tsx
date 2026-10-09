@@ -29,7 +29,7 @@ export const mdxComponents: MDXComponents = {
   a: ({ href, children, ...props }) => (
     <Link 
       href={href as string} 
-      className="text-blue-600 dark:text-blue-400 underline underline-offset-4 hover:text-blue-800 dark:hover:text-blue-300"
+      className="text-primary underline underline-offset-4 hover:text-primary/80"
       {...props}
     >
       {children}
@@ -46,17 +46,17 @@ export const mdxComponents: MDXComponents = {
     </ol>
   ),
   blockquote: ({ children, ...props }) => (
-    <blockquote className="mt-6 border-l-4 border-gray-300 dark:border-gray-700 pl-6 italic" {...props}>
+    <blockquote className="mt-6 border-l-4 border-primary pl-6 italic" {...props}>
       {children}
     </blockquote>
   ),
   code: ({ children, ...props }) => (
-    <code className="relative rounded bg-gray-100 dark:bg-gray-800 px-[0.3rem] py-[0.2rem] text-sm font-mono" {...props}>
+    <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] text-sm font-mono" {...props}>
       {children}
     </code>
   ),
   pre: ({ children, ...props }) => (
-    <pre className="mb-4 mt-6 overflow-x-auto rounded-lg bg-gray-100 dark:bg-gray-900 p-4" {...props}>
+    <pre className="mb-4 mt-6 overflow-x-auto rounded-lg bg-muted p-4" {...props}>
       {children}
     </pre>
   ),
