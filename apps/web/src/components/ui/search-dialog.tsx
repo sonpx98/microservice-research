@@ -142,7 +142,7 @@ function SearchBody<T>({
           aria-label={placeholder}
           className="h-12 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />
-        {loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+        {ready && loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
         <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
           ESC
         </kbd>

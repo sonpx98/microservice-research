@@ -7,7 +7,7 @@ async function getReading(id: string) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:3000/api'}/readings/${id}`, { cache: 'no-store' });
     if (!res.ok) return null;
-    return res.json();
+    return await res.json();
   } catch (err) {
     return null;
   }

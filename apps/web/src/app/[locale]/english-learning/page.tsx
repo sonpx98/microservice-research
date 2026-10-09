@@ -17,7 +17,8 @@ async function getReadings(level?: string, topic?: string, q?: string) {
     // API now returns { data: [], total: ... }
     const res = await fetch(`${process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:3000/api'}/readings?${params.toString()}`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch readings');
-    return res.json();
+    // await, or a JSON parse failure escapes the try and 500s the page
+    return await res.json();
   } catch (err) {
     console.error(err);
     return { data: [], total: 0 };

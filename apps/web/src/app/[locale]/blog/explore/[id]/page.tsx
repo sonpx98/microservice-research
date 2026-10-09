@@ -23,7 +23,7 @@ async function getArticle(id: string) {
             return null;
         }
 
-        return res.json();
+        return await res.json();
     } catch (e) {
         return null;
     }
