@@ -6,9 +6,10 @@
     "dev": "next dev -p 5006",
     "build": "contentlayer2 build && next build",
     "start": "next start -p 5006",
-    "lint": "eslint . && node scripts/lint-tokens.mjs src",
+    "lint": "eslint . && node scripts/lint-tokens.mjs src && node scripts/lint-layout.mjs src",
     "type-check": "tsc --noEmit",
-    "lint:tokens": "node scripts/lint-tokens.mjs src"
+    "lint:tokens": "node scripts/lint-tokens.mjs src",
+    "lint:layout": "node scripts/lint-layout.mjs src"
   },
   "dependencies": {
     "@babel/parser": "^7.28.5",

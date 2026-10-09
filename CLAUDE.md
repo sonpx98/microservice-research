@@ -52,10 +52,22 @@ Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 - New color needs: reuse status (`success`/`warning`/`danger`/`info`), `highlight` or `chart-1..5` first.
   Add a contract token only when none fits, and add it to every theme block plus the `@theme inline` map.
 - Third-party widgets (reactflow, shiki, typography) are themed in `apps/web/src/app/globals.css`, never in components.
-- Pages use the templates in `apps/web/src/components/layout`: `PageShell` (standard page), `FullBleedPage`
-  (full-height canvas), `ArticleLayout` (long-form, owns `.prose`), `ViewSwitch` (URL-driven tabs).
-  Don't hand-roll page headers or hero sections.
-
+- **Build pages from the kit, not from raw markup.** `pnpm --filter web lint` also runs `scripts/lint-layout.mjs`.
+  - Page templates (`components/layout`): `PageShell` (standard), `FullBleedPage` (full-height canvas),
+    `ArticleLayout` (long-form, owns `.prose`), `LabShell` (playground labs). They own page widths
+    (`max-w-3xl` prose, `max-w-6xl` wide); pages never set `container` or `max-w-{4,5,7}xl`.
+  - Blocks (`components/layout`): `Section` (h2), `Panel` (the one surface: border, no shadow, rounded-lg, h3
+    header), `Callout` (tinted note), `ContentCard` (article lists), `ViewSwitch` (URL tabs), `Thumbnail`.
+  - Primitives (`components/ui`): `Button`, `Input`, `Textarea`, `Select`, `Chip` / `ChipGroup` (filters),
+    `SearchDialog` (every search box), `Dialog` (all overlays; `placement="bottom"` for sheets),
+    `DropdownMenu`, `Tabs`, `CodeBlock`, `Fab` / `FloatingCard` (floating chrome).
+  - Scale: surfaces `rounded-lg`, controls `rounded-md`, pills `rounded-full`. Surfaces use a border; only
+    overlays and floating chrome cast a shadow. Headings: page h1 (PageHeader), h2 (Section), h3 (Panel).
+  - Outside `components/ui` and `components/layout` the guard rejects raw `<button>` / `<input>` / `<textarea>`,
+    `fixed inset-0`, `rounded-{xl,2xl,3xl}`, `shadow-{md,lg,xl,2xl}` and ad-hoc page widths. A genuine
+    exception carries `layout-exempt: <reason>` on the same line.
+  - Playground labs compose `playground/_kit` (LevelSelector, SuccessPanel, AttemptsHistory, ResultDialog,
+    LabLoading); never copy those per lab.
 ## Verify before commit
 
 ```bash

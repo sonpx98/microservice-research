@@ -1,7 +1,7 @@
 import { getCrawledNews, getAvailableTags } from '@/lib/pika';
 import Link from 'next/link';
 import { BookOpen } from 'lucide-react';
-import { PageShell } from '@/components/layout';
+import { PageShell, Section } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { NewsList } from '@/components/blog/news-list';
 import { NewsListSkeleton } from '@/components/blog/news-skeleton';
@@ -26,12 +26,9 @@ async function NewsContent({
   return (
     <>
       <SearchFilter tags={tags} />
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold tracking-tight text-foreground">
-          {(await getTranslations('explore'))('latestUpdates')}
-        </h2>
-      </div>
-      <NewsList news={items} initialTotal={total} />
+      <Section title={(await getTranslations('explore'))('latestUpdates')}>
+        <NewsList news={items} initialTotal={total} />
+      </Section>
     </>
   );
 }

@@ -66,7 +66,7 @@ export function CommentSection({ locale }: CommentSectionProps) {
       ref={sectionRef}
       className="mt-12 pt-8 border-t border-border"
     >
-      <h2 className="text-2xl font-bold mb-6">{t('comments')}</h2>
+      <h2 className="mb-4 text-lg font-semibold tracking-tight text-foreground">{t('comments')}</h2>
 
       {shouldLoad ? (
         <GiscusWidget locale={locale} />

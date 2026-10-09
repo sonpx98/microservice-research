@@ -40,9 +40,24 @@
 
 `apps/web/scripts/lint-layout.mjs`, chained into `pnpm lint`. Outside `components/ui` and `components/layout` it rejects: `container`, `max-w-{4,5,7}xl`, `rounded-{xl,2xl,3xl}`, `shadow-{md,lg,xl,2xl}`, raw `<button` / `<input` / `<textarea`, `fixed inset-0`. Allowed exceptions are marked inline with `// layout-exempt: <reason>` on the same line.
 
+## Outcome
+
+| Item | Before | After |
+|---|---|---|
+| Layout guard violations | 210 | 0 |
+| Raw `<button>` (outside kit) | 77 | 0 |
+| Hand-rolled overlays | 7 | 0 (Dialog) |
+| Radius `xl`/`2xl` | 48 | 0 |
+| Search implementations | 3 (one never fetched) | 1 (`SearchDialog`) |
+| Lab component copies | 13 | 0 (`_kit`) |
+
+Added beyond the plan: `Chip`/`ChipGroup`, `SearchDialog`, `Fab`/`FloatingCard`, `CodeBlock`, `ContentCard`/`Thumbnail`,
+Dialog `placement="bottom"`, Panel `bodyClassName`. Dropped from the plan: `Toolbar` (a flex div). Removed: the hover
+"Netflix" card overlay, `ui/search-panel`, `PostSearchModal`, `PostTagFilter`, `blog-thumbnail`.
+
 ## Order
 
-- [ ] 1. Blocks, `Textarea`, `LabShell`, `Card` restyle, guard script (not yet in `lint`).
-- [ ] 2. Lab kit; migrate the four labs onto `LabShell` + kit (also fixes locale-less "Back to Playground").
-- [ ] 3. Migrate blog, explore detail, knowledge graph, visualizer, english-learning, home and chrome until the guard is clean.
-- [ ] 4. Chain `lint:layout` into `lint`; document in CLAUDE.md; ff-merge into `develop`.
+- [x] 1. Blocks, `Textarea`, `LabShell`, `Card` restyle, guard script (not yet in `lint`).
+- [x] 2. Lab kit; migrate the four labs onto `LabShell` + kit (also fixes locale-less "Back to Playground").
+- [x] 3. Migrate blog, explore detail, knowledge graph, visualizer, english-learning, home and chrome until the guard is clean.
+- [x] 4. Chain `lint:layout` into `lint`; document in CLAUDE.md; ff-merge into `develop`.
