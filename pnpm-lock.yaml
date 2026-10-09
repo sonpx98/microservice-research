@@ -105,6 +105,9 @@ importers:
       react-router-dom:
         specifier: ^7.18.3
         version: 7.18.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      theme:
+        specifier: workspace:*
+        version: link:../../packages/theme
       ws:
         specifier: ^8.18.0
         version: 8.21.3
