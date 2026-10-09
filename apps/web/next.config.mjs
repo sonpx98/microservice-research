@@ -56,16 +56,14 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Monaco editor requires cdn.jsdelivr.net for loading scripts and workers
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://giscus.app https://cdn.jsdelivr.net",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://giscus.app",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: https: blob:",
               `media-src 'self' blob: ${gatewayUrl}`,
               "frame-src https://giscus.app",
-              `connect-src 'self' https://giscus.app https://*.onrender.com ${gatewayUrl} http://127.0.0.1:3000 https://cdn.jsdelivr.net`,
-              // Monaco uses blob: URLs for web workers
-              "worker-src 'self' blob: https://cdn.jsdelivr.net",
+              `connect-src 'self' https://giscus.app https://*.onrender.com ${gatewayUrl} http://127.0.0.1:3000`,
+              "worker-src 'self' blob:",
             ].join('; '),
           },
         ],
