@@ -32,6 +32,7 @@
 
   --color-border: var(--border);
   --color-input: var(--input);
+  --color-overlay: var(--overlay);
 
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
