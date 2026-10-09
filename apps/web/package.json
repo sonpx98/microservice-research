@@ -48,6 +48,7 @@
     "shiki": "^1.22.2",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "^4.1.11",
+    "theme": "workspace:*",
     "use-debounce": "^10.0.6",
     "uuid": "^13.0.0"
   },

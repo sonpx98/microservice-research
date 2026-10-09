@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -7,9 +8,12 @@ import { ThemeScript } from '@/components/theme-script';
 import { Header } from '@/components/header';
 
 export const metadata: Metadata = {
-  title: 'Personal Blog',
-  description: 'A modern blog built with Next.js 15 and MDX',
+  title: 'Son Pham',
+  description: 'Notes and experiments on system design, runtimes and web security.',
 };
+
+const sans = Geist({ subsets: ['latin', 'latin-ext', 'vietnamese'], variable: '--font-geist-sans' });
+const mono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' });
 
 const locales = ['en', 'vi'];
 
@@ -33,7 +37,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <ThemeScript />
       </head>

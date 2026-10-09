@@ -1,0 +1,9 @@
+{
+  "name": "theme",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Design token contract and theme presets shared by every app. Plain CSS custom properties.",
+  "exports": {
+    "./theme.css": "./theme.css"
+  }
+}
