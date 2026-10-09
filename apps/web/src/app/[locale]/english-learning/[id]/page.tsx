@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { ArticleLayout } from '@/components/layout';
 import { QuizSection } from '../../../../components/english-learning/quiz-section';
 import { Calendar, Tag } from 'lucide-react';
 
@@ -21,35 +22,24 @@ export default async function ReadingDetailPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-7xl">
-        <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-primary/10 text-primary`}>
-                    Level {reading.level}
-                </span>
-                <span className="flex items-center text-sm text-muted-foreground">
-                    <Tag className="w-4 h-4 mr-1" />
-                    {reading.topic}
-                </span>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground mb-6 leading-tight">
-                {reading.title}
-            </h1>
-        </div>
-
-      <article className="prose lg:prose-lg max-w-none mb-12">
-        <div className="text-foreground">
-            {reading.content.split('\n\n').map((paragraph: string, idx: number) => (
-                <p key={idx} className="mb-4 leading-relaxed">
-                    {paragraph.trim()}
-                </p>
-            ))}
-        </div>
-      </article>
-
-      <hr className="border-border my-10" />
-
-      <QuizSection quizzes={reading.quizzes} />
-    </div>
+    <ArticleLayout
+      title={reading.title}
+      meta={
+        <>
+          <span className="rounded border border-primary/30 px-1.5 py-0.5 text-primary">Level {reading.level}</span>
+          <span className="inline-flex items-center gap-1">
+            <Tag className="h-3.5 w-3.5" />
+            {reading.topic}
+          </span>
+        </>
+      }
+    >
+      {reading.content.split('\n\n').map((paragraph: string, idx: number) => (
+        <p key={idx}>{paragraph.trim()}</p>
+      ))}
+      <div className="not-prose mt-12 border-t border-border pt-10">
+        <QuizSection quizzes={reading.quizzes} />
+      </div>
+    </ArticleLayout>
   );
 }
