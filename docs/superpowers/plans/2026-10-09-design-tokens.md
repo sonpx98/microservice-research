@@ -29,6 +29,16 @@
 
 **Terminal** (playground section, practice-hub): always dark, near-black surfaces, signal-green primary, amber warnings. Fits the security labs and the chat app.
 
+## Changes made during execution
+
+- `accent` stays a subtle neutral hover surface (shadcn menus and ghost buttons use it); the amber annotation color became a separate `highlight` token.
+- Added `overlay` (dialog scrims, image fades) because a black/50 scrim must stay dark in both modes.
+- Layout templates (Task 4) landed before the Algo Verse merge (Task 2) so the merged page used `FullBleedPage` directly.
+- The tokenize codemod is rule-based (hue family + shade + variant), not a fixed pair list; gradients were collapsed by a separate quote-safe pass.
+- practice-hub renames its variables to the contract names instead of aliasing them (avoids self-referencing `--border`, `--danger`, `--radius` and the `--muted` collision).
+- `lint-tokens` also rejects unknown `*-foreground` tokens (the codemod once produced `text-chart-4-foreground`).
+- A playground `LabShell` was not built: the four lab pages already share one structure and now use tokens.
+
 ## Token contract
 
 Every theme defines every name below. Components use only these (as Tailwind utilities).

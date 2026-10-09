@@ -3,10 +3,11 @@
 Personal blog + backend, one pnpm workspace.
 
 ```
-apps/web   Next.js 16 portfolio: blog, knowledge graph, algo-verse, security playground  (port 5006)
+apps/web   Next.js 16 portfolio: blog, knowledge graph + runtime visualizer, security playground  (port 5006)
 apps/api   NestJS: news crawler, english-learning (readings + conversations), Piper TTS   (port 3000)
 apps/mcp   stdio MCP server exposing the API as tools for Claude Desktop / Claude Code
-apps/practice-hub  Vite SPA + node/ws/sqlite realtime chat, self-contained  (client 5173, server 8787)
+apps/practice-hub  Vite SPA + node/ws/sqlite realtime chat  (client 5173, server 8787)
+packages/theme     design tokens: one contract, themes blueprint (light/dark) and terminal
 ```
 
 ## Run

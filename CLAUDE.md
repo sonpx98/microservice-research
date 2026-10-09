@@ -6,10 +6,11 @@ Personal blog + backend. pnpm workspace, Node 24 (`.nvmrc`). Solo project.
 
 | Path | What | Run |
 |---|---|---|
-| `apps/web` | Next.js 16 portfolio: blog, knowledge graph, algo-verse, security playground. Unlinked personal tools: english-learning, cv-generator | `pnpm dev:web` → :5006 |
+| `apps/web` | Next.js 16 portfolio: blog, knowledge graph (with the runtime visualizer), security playground. Unlinked personal tool: english-learning | `pnpm dev:web` → :5006 |
 | `apps/api` | NestJS: news crawler, readings + conversations CRUD, Piper TTS | `pnpm dev:api` → :3000/api |
 | `apps/mcp` | stdio MCP server exposing the API as tools for Claude Desktop/Code | `pnpm --filter mcp build` |
-| `apps/practice-hub` | Realtime chat practice app: Vite SPA + node `http`/`ws`/`node:sqlite`. Self-contained, shares nothing with web/api | `pnpm dev:hub` → :5173 + :8787 |
+| `apps/practice-hub` | Realtime chat practice app: Vite SPA + node `http`/`ws`/`node:sqlite`. Shares only `packages/theme` with web | `pnpm dev:hub` → :5173 + :8787 |
+| `packages/theme` | Design tokens: one contract, theme presets (`blueprint` light/dark, `terminal`) as plain CSS variables | imported by web and hub |
 
 Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 
@@ -32,10 +33,26 @@ Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 - Web reads the API through `NEXT_PUBLIC_GATEWAY_URL` (default `http://localhost:3000/api`); never hardcode hosts.
 - Don't add markdown session logs / `*_COMPLETE.md` files. Docs go in `readme.md` or `docs/`.
 - `apps/practice-hub` keeps its own stack (react-router, zustand, Vitest, Playwright) and its own storage.
-  Don't wire it into `apps/api` or next-intl; it is a standalone learning app sharing only the workspace.
-- Portfolio scope: the header nav lists only the four pillars (blog, knowledge graph, algo-verse, playground).
+  Don't wire it into `apps/api` or next-intl; it shares only the theme package.
+- Portfolio scope: the header nav lists only the three pillars (blog, knowledge graph, playground).
   New features either strengthen a pillar or stay unlinked. No feature-flag system; leave a link out instead.
 - Code, comments, commits in English. Chat in Vietnamese is fine.
+
+## Styling
+
+- **Colors come only from theme tokens.** Use token utilities (`bg-card`, `text-muted-foreground`,
+  `border-border`, `bg-danger/10`). No Tailwind palette classes (`gray-*`, `blue-*`, `white`, `black`),
+  no arbitrary colors (`bg-[#...]`), no color literals or inline color styles, no gradients.
+  `pnpm --filter web lint` runs `scripts/lint-tokens.mjs` and fails on any of these.
+- Tokens switch with the mode by themselves, so never pair a token with a `dark:` color variant.
+- Token contract lives in `packages/theme/theme.css`. A new theme = a new `[data-theme="name"]` block that
+  defines every contract token. A subtree opts in with `data-theme`; the playground layout and the hub use `terminal`.
+- New color needs: reuse status (`success`/`warning`/`danger`/`info`), `highlight` or `chart-1..5` first.
+  Add a contract token only when none fits, and add it to every theme block plus the `@theme inline` map.
+- Third-party widgets (reactflow, shiki, typography) are themed in `apps/web/src/app/globals.css`, never in components.
+- Pages use the templates in `apps/web/src/components/layout`: `PageShell` (standard page), `FullBleedPage`
+  (full-height canvas), `ArticleLayout` (long-form, owns `.prose`), `ViewSwitch` (URL-driven tabs).
+  Don't hand-roll page headers or hero sections.
 
 ## Verify before commit
 
@@ -47,6 +64,7 @@ pnpm --filter practice-hub typecheck && pnpm --filter practice-hub test && pnpm 
 ```
 
 No test suite except `apps/practice-hub` (Vitest + Playwright); elsewhere build + typecheck + lint is the gate. Web build needs dummy `KEYSTATIC_*` locally.
+Web `lint` includes the token guard. Web `build` runs `contentlayer2 build` first (a clean `next build` alone races contentlayer generation).
 
 ## Env
 

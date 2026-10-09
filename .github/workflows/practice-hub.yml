@@ -3,9 +3,9 @@ name: practice-hub
 on:
   push:
     branches: [master, develop]
-    paths: ['apps/practice-hub/**', '.github/workflows/practice-hub.yml']
+    paths: ['apps/practice-hub/**', 'packages/theme/**', '.github/workflows/practice-hub.yml']
   pull_request:
-    paths: ['apps/practice-hub/**', '.github/workflows/practice-hub.yml']
+    paths: ['apps/practice-hub/**', 'packages/theme/**', '.github/workflows/practice-hub.yml']
 
 jobs:
   test:
