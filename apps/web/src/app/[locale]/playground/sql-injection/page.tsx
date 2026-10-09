@@ -1,18 +1,11 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Shield } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { 
-  levels, 
-  sqlLevelExplanations, 
-  SQLAlertModal, 
-  SQLLevelSelector,
-  SQLSuccessModal,
-  SQLLoginForm,
-  SQLAttemptsHistory,
-} from './components';
+import { Database, Shield } from 'lucide-react';
+import { CodeBlock } from '@/components/ui/code-block';
+import { Callout, LabShell } from '@/components/layout';
+import { AttemptsHistory, LabLoading, LevelSelector, ResultDialog, SuccessPanel } from '../_kit';
+import { levels, sqlLevelExplanations, SQLLoginForm } from './components';
 
 export default function SQLInjectionPage() {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -106,137 +99,88 @@ export default function SQLInjectionPage() {
     resetLevel();
   };
 
-  // Loading skeleton
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen bg-muted">
-        <div className="bg-card border-b border-border">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-5 w-32" />
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-                  <Skeleton key={i} className="w-7 h-7 rounded-full" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Skeleton className="w-12 h-12 rounded-xl" />
-              <div>
-                <Skeleton className="h-6 w-48 mb-2" />
-                <Skeleton className="h-4 w-32" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const title = 'SQL injection';
+  if (!isHydrated) return <LabLoading title={title} />;
 
   return (
-    <div className="min-h-screen bg-muted">
-      {/* Header */}
-      <div className="fixed top-[60px] left-0 right-0 z-40 bg-card border-b border-border">
-        <div className="container mx-auto px-4 py-4 max-w-7xl">
-          <Link 
-            href="/playground"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Playground
-          </Link>
-        </div>
-      </div>
-
-      <div className="mt-[57px] container mx-auto px-4 py-8 max-w-7xl">
-        {/* Layout: Sidebar + Main Content */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Sidebar: Level Selector */}
-          <div className="lg:col-span-1">
-            <SQLLevelSelector
-              level={level}
-              currentLevel={currentLevel}
-              completedLevels={completedLevels}
-              showHint={showHint}
-              levels={levels}
-              onHintToggle={() => setShowHint(!showHint)}
-              onGoToLevel={goToLevel}
-            />
-          </div>
-
-          {/* Main Content: Login + Database + Results */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Success Modal */}
-            {showSuccess && (
-              <SQLSuccessModal
-                currentLevel={currentLevel}
-                totalLevels={levels.length}
-                explanation={sqlLevelExplanations[currentLevel]}
-                onNextLevel={nextLevel}
-              />
-            )}
-
-            {/* Login Form */}
-            <SQLLoginForm
-              username={username}
-              password={password}
-              onUsernameChange={setUsername}
-              onPasswordChange={setPassword}
-              onSubmit={handleSubmit}
-            />
-
-            {/* Attempts History */}
-            <SQLAttemptsHistory
-              attempts={attempts}
-              onReset={resetLevel}
-            />
-
-            {/* Security Tips */}
-            <div className="rounded-xl bg-primary/10 border border-primary/30 p-6">
-              <div className="flex items-start gap-4">
-                <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-primary mb-2">
-                    How to Prevent SQL Injection
-                  </h3>
-                  <ul className="space-y-2 text-sm text-primary">
-                    <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span><strong>Use Parameterized Queries</strong> - Never concatenate user input into SQL</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span><strong>Use ORM libraries</strong> - Sequelize, Prisma, TypeORM handle escaping</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span><strong>Input Validation</strong> - Whitelist allowed characters</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span><strong>Least Privilege</strong> - Database users should have minimal permissions</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* SQL Alert Modal */}
-      {alertData && (
-        <SQLAlertModal 
-          message={alertData.message}
-          data={alertData.data}
-          query={alertData.query}
-          onClose={() => setAlertData(null)} 
+    <LabShell
+      title={title}
+      description="Bypass a login form whose query is built by string concatenation."
+      sidebar={
+        <LevelSelector
+          levels={levels}
+          currentLevel={currentLevel}
+          completedLevels={completedLevels}
+          showHint={showHint}
+          onHintToggle={() => setShowHint(!showHint)}
+          onGoToLevel={goToLevel}
+        />
+      }
+    >
+      {showSuccess && (
+        <SuccessPanel
+          title="SQL injection succeeded"
+          currentLevel={currentLevel}
+          totalLevels={levels.length}
+          explanation={sqlLevelExplanations[currentLevel]}
+          onNext={nextLevel}
+          completeMessage="You have completed every SQL injection level."
         />
       )}
-    </div>
+
+      <SQLLoginForm
+        username={username}
+        password={password}
+        onUsernameChange={setUsername}
+        onPasswordChange={setPassword}
+        onSubmit={handleSubmit}
+        onReset={resetLevel}
+      />
+
+      <AttemptsHistory
+        title="Login attempts"
+        attempts={[...attempts].reverse().map((a) => ({
+          id: a.id,
+          success: a.result.success,
+          message: a.result.message,
+          detail: (
+            <>
+              User: <span className="font-mono text-warning">{a.username}</span>
+            </>
+          ),
+        }))}
+      />
+
+      <Callout tone="primary" icon={Shield} title="How to prevent SQL injection">
+        <ul className="flex list-disc flex-col gap-1 pl-4">
+          <li><strong>Use parameterized queries.</strong> Never concatenate user input into SQL.</li>
+          <li><strong>Use an ORM or query builder</strong> such as Prisma or TypeORM that escapes for you.</li>
+          <li><strong>Validate input</strong> against an allow-list of characters.</li>
+          <li><strong>Apply least privilege</strong> so the database user can do as little as possible.</li>
+        </ul>
+      </Callout>
+
+      <ResultDialog
+        open={alertData !== null}
+        onClose={() => setAlertData(null)}
+        icon={Database}
+        title="SQL injection succeeded"
+        description={alertData?.message ?? ''}
+      >
+        <div className="flex flex-col gap-1">
+          <p className="font-mono text-xs text-muted-foreground">Executed query</p>
+          <CodeBlock tone="success">{alertData?.query}</CodeBlock>
+        </div>
+        {alertData?.data && (
+          <div className="flex flex-col gap-1">
+            <p className="font-mono text-xs text-muted-foreground">Extracted data</p>
+            <CodeBlock className="max-h-40 overflow-y-auto">{JSON.stringify(alertData.data, null, 2)}</CodeBlock>
+          </div>
+        )}
+        <p className="text-xs text-muted-foreground">
+          In a real attack this could expose data, bypass authentication or drop tables.
+        </p>
+      </ResultDialog>
+    </LabShell>
   );
 }

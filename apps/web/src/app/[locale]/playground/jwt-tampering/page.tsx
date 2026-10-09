@@ -1,19 +1,9 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import {
-  LevelSelector,
-  TokenForger,
-  LivePreview,
-  SuccessModal,
-  AttemptsHistory,
-  jwtLevelExplanations,
-  jwtSolutions,
-  levels
-} from './components';
+import { LabShell } from '@/components/layout';
+import { AttemptsHistory, LabLoading, LevelSelector, SuccessPanel } from '../_kit';
+import { TokenForger, LivePreview, jwtLevelExplanations, jwtSolutions, levels } from './components';
 import { generateJWTPreview, validateJWTToken } from './utils/jwt-validators';
 
 export default function JWTTamperingPage() {
@@ -108,106 +98,76 @@ export default function JWTTamperingPage() {
     }
   };
 
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen bg-muted">
-        <div className="bg-card border-b border-border">
-          <div className="container mx-auto px-4 py-4">
-            <Skeleton className="h-5 w-32" />
-          </div>
-        </div>
-        <div className="container mx-auto px-4 py-8">
-          <Skeleton className="h-64 w-full" />
-        </div>
-      </div>
-    );
-  }
+  const title = 'JWT tampering';
+  if (!isHydrated) return <LabLoading title={title} />;
 
   return (
-    <div className="min-h-screen bg-muted">
-      {/* Header */}
-      <div className="fixed top-[60px] left-0 right-0 z-40 bg-card border-b border-border">
-        <div className="container mx-auto px-4 py-4 max-w-7xl">
-          <div className="flex items-center justify-between">
-            <Link 
-              href="/playground"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Playground
-            </Link>
-          </div>
-        </div>
+    <LabShell
+      title={title}
+      description="Forge a token the server accepts by abusing how it verifies signatures."
+      sidebar={
+        <LevelSelector
+          levels={levels}
+          currentLevel={currentLevel}
+          completedLevels={completedLevels}
+          showHint={showHint}
+          onHintToggle={() => setShowHint(!showHint)}
+          onGoToLevel={goToLevel}
+          solution={{
+            code: jwtSolutions[currentLevel],
+            visible: showSolution,
+            onToggle: () => setShowSolution(!showSolution),
+            onLoad: loadSolution,
+          }}
+        />
+      }
+    >
+      {showSuccess && (
+        <SuccessPanel
+          title={`Level ${currentLevel} complete`}
+          currentLevel={currentLevel}
+          totalLevels={levels.length}
+          explanation={jwtLevelExplanations[currentLevel]}
+          onNext={nextLevel}
+          completeMessage="You have completed every JWT level."
+        />
+      )}
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <TokenForger
+          header={header}
+          payload={payload}
+          signature={signature}
+          showSignature={showSignature}
+          onHeaderChange={setHeader}
+          onPayloadChange={setPayload}
+          onSignatureChange={setSignature}
+          onShowSignatureToggle={() => setShowSignature(!showSignature)}
+          onSubmit={handleForgeToken}
+          onReset={resetLevel}
+        />
+        <LivePreview
+          token={generateJWTPreview(header, payload, signature)}
+          header={header}
+          payload={payload}
+          signature={signature}
+          showSignature={showSignature}
+          copiedId={copiedId}
+          onCopy={copyToClipboard}
+        />
       </div>
 
-      <div className="mt-[57px] container mx-auto px-4 py-8 max-w-7xl">
-        {/* Layout: Sidebar + Main Content */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Sidebar: Level Selector */}
-          <div className="lg:col-span-1">
-            <LevelSelector
-              level={level}
-              currentLevel={currentLevel}
-              completedLevels={completedLevels}
-              showHint={showHint}
-              showSolution={showSolution}
-              levels={levels}
-              onHintToggle={() => setShowHint(!showHint)}
-              onSolutionToggle={() => setShowSolution(!showSolution)}
-              onLoadSolution={loadSolution}
-              onGoToLevel={goToLevel}
-              jwtLevelExplanations={jwtLevelExplanations}
-              jwtSolutions={jwtSolutions}
-            />
-          </div>
-
-          {/* Main Content: Form + Preview + History */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Success Modal */}
-            {showSuccess && (
-              <SuccessModal
-                currentLevel={currentLevel}
-                totalLevels={levels.length}
-                explanation={jwtLevelExplanations[currentLevel]}
-                onNext={nextLevel}
-              />
-            )}
-
-            {/* Two Panel Layout: Token Forger + Live Preview */}
-            <div className="grid lg:grid-cols-2 gap-6">
-              <TokenForger
-                header={header}
-                payload={payload}
-                signature={signature}
-                showSignature={showSignature}
-                onHeaderChange={setHeader}
-                onPayloadChange={setPayload}
-                onSignatureChange={setSignature}
-                onShowSignatureToggle={() => setShowSignature(!showSignature)}
-                onSubmit={handleForgeToken}
-                onReset={resetLevel}
-              />
-
-              <LivePreview
-                token={generateJWTPreview(header, payload, signature)}
-                header={header}
-                payload={payload}
-                signature={signature}
-                showSignature={showSignature}
-                copiedId={copiedId}
-                onCopy={copyToClipboard}
-              />
-            </div>
-
-            {/* Attempts History */}
-            <AttemptsHistory
-              attempts={attempts}
-              copiedId={copiedId}
-              onCopy={copyToClipboard}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+      <AttemptsHistory
+        title="Forge attempts"
+        attempts={[...attempts].reverse().map((a) => ({
+          id: a.id,
+          success: a.result.success,
+          message: a.result.message,
+          payload: a.token,
+        }))}
+        copiedId={copiedId}
+        onCopy={copyToClipboard}
+      />
+    </LabShell>
   );
 }

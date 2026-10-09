@@ -1,19 +1,16 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Skull, User } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { 
-  NetworkRequest, 
-  VictimSiteTab, 
-  MalwareSiteTab, 
-  levels, 
+import { Skull, User } from 'lucide-react';
+import { LabShell, Panel } from '@/components/layout';
+import { AttemptsHistory, LabLoading, LevelSelector, SuccessPanel } from '../_kit';
+import {
+  NetworkRequest,
+  VictimSiteTab,
+  MalwareSiteTab,
+  levels,
   csrfLevelExplanations,
   csrfSolutions,
-  CSRFLevelSelector,
-  CSRFSuccessModal,
-  CSRFAttemptsHistory,
 } from './components';
 
 // Validation logic extracted as a function
@@ -221,112 +218,89 @@ export default function CSRFChallengePage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen bg-muted">
-        <div className="bg-card border-b border-border">
-          <div className="container mx-auto px-4 py-4">
-            <Skeleton className="h-5 w-32" />
-          </div>
-        </div>
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <Skeleton className="h-64 w-full" />
-        </div>
-      </div>
-    );
-  }
+  const title = 'Cross-site request forgery (CSRF)';
+  if (!isHydrated) return <LabLoading title={title} />;
 
   return (
-    <div className="min-h-screen bg-muted">
-      {/* Header */}
-      <div className="fixed top-[60px] left-0 right-0 z-40 bg-card border-b border-border">
-        <div className="container mx-auto px-4 py-4 max-w-7xl">
-          <Link 
-            href="/playground"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Playground
-          </Link>
-        </div>
+    <LabShell
+      title={title}
+      description="Make a logged-in victim's browser send a bank transfer it never meant to send."
+      sidebar={
+        <LevelSelector
+          levels={levels}
+          currentLevel={currentLevel}
+          completedLevels={completedLevels}
+          showHint={showHint}
+          onHintToggle={() => setShowHint(!showHint)}
+          onGoToLevel={goToLevel}
+          solution={{
+            code: csrfSolutions[currentLevel],
+            visible: showSolution,
+            onToggle: () => setShowSolution(!showSolution),
+          }}
+        />
+      }
+    >
+      {showSuccess && (
+        <SuccessPanel
+          title="CSRF attack succeeded"
+          currentLevel={currentLevel}
+          totalLevels={levels.length}
+          explanation={csrfLevelExplanations[currentLevel]}
+          onNext={nextLevel}
+          completeMessage="You have completed every CSRF level."
+        />
+      )}
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Panel
+          title={
+            <span className="flex items-center gap-2 text-danger">
+              <Skull className="h-4 w-4" />
+              Malware site (attacker)
+            </span>
+          }
+        >
+          <MalwareSiteTab
+            payload={payload}
+            setPayload={setPayload}
+            handleSubmit={handleSubmit}
+            isAttacking={isAttacking}
+            attackerBalance={attackerBalance}
+            resetLevel={resetLevel}
+            currentLevel={currentLevel}
+          />
+        </Panel>
+        <Panel
+          padding="none"
+          title={
+            <span className="flex items-center gap-2 text-primary">
+              <User className="h-4 w-4" />
+              Victim site (bank)
+            </span>
+          }
+        >
+          <VictimSiteTab
+            victimEmail={victimEmail}
+            victimBalance={victimBalance}
+            networkRequests={networkRequests}
+            isAttacking={isAttacking}
+            attackerBalance={attackerBalance}
+          />
+        </Panel>
       </div>
 
-      <div className="mt-[57px] container mx-auto px-4 py-8 max-w-7xl">
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <CSRFLevelSelector
-              level={level}
-              currentLevel={currentLevel}
-              completedLevels={completedLevels}
-              showHint={showHint}
-              showSolution={showSolution}
-              levels={levels}
-              onHintToggle={() => setShowHint(!showHint)}
-              onSolutionToggle={() => setShowSolution(!showSolution)}
-              onGoToLevel={goToLevel}
-              csrfLevelExplanations={csrfLevelExplanations}
-              csrfSolutions={csrfSolutions}
-            />
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Success Modal */}
-            {showSuccess && (
-              <CSRFSuccessModal
-                currentLevel={currentLevel}
-                totalLevels={levels.length}
-                explanation={csrfLevelExplanations[currentLevel]}
-                onNextLevel={nextLevel}
-              />
-            )}
-
-            {/* Two-Panel Layout: Malware Site + Victim Site */}
-            <div className="grid lg:grid-cols-2 gap-6">
-              {/* Malware Site Panel */}
-              <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-border bg-danger/10 flex items-center gap-2">
-                  <Skull className="w-5 h-5 text-danger" />
-                  <h3 className="font-semibold text-danger">Malware Site (Attacker)</h3>
-                </div>
-                <MalwareSiteTab
-                  payload={payload}
-                  setPayload={setPayload}
-                  handleSubmit={handleSubmit}
-                  isAttacking={isAttacking}
-                  attackerBalance={attackerBalance}
-                  resetLevel={resetLevel}
-                  currentLevel={currentLevel}
-                />
-              </div>
-
-              {/* Victim Site Panel */}
-              <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-border bg-primary/10 flex items-center gap-2">
-                  <User className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold text-primary">Victim Site (Bank)</h3>
-                </div>
-                <VictimSiteTab
-                  victimEmail={victimEmail}
-                  victimBalance={victimBalance}
-                  networkRequests={networkRequests}
-                  isAttacking={isAttacking}
-                  attackerBalance={attackerBalance}
-                />
-              </div>
-            </div>
-
-            {/* Attempts History */}
-            <CSRFAttemptsHistory
-              attempts={attempts}
-              copiedId={copiedId}
-              onReset={resetLevel}
-              onCopy={copyToClipboard}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+      <AttemptsHistory
+        title="Attack attempts"
+        attempts={[...attempts].reverse().map((a) => ({
+          id: a.id,
+          success: a.result.success,
+          message: a.result.message,
+          payload: a.payload,
+        }))}
+        copiedId={copiedId}
+        onCopy={copyToClipboard}
+      />
+    </LabShell>
   );
 }

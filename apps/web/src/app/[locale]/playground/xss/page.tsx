@@ -1,19 +1,12 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Shield, RotateCcw } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { AlertTriangle, RotateCcw, Shield } from 'lucide-react';
+import { Callout, LabShell, Panel } from '@/components/layout';
 import { Button } from '@/components/ui/button';
-import { 
-  levelExplanations, 
-  levels, 
-  XSSAlertModal, 
-  XSSLevelSelector,
-  XSSSuccessModal,
-  XSSCommentForm,
-  XSSCommentsList,
-} from './components';
+import { CodeBlock } from '@/components/ui/code-block';
+import { LabLoading, LevelSelector, ResultDialog, SuccessPanel } from '../_kit';
+import { levelExplanations, levels, XSSCommentForm, XSSCommentsList } from './components';
 
 // XSS payload detection function
 function executeXSSPayload(html: string): { success: boolean; message?: string } {
@@ -128,172 +121,84 @@ export default function XSSChallengePage() {
     resetLevel();
   };
 
-  // Show loading state until hydrated to prevent flash
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen bg-muted">
-        <div className="bg-card border-b border-border">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-5 w-32" />
-              <div className="flex items-center gap-2 flex-wrap">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-                  <Skeleton key={i} className="w-8 h-8 rounded-full" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Skeleton className="w-12 h-12 rounded-xl" />
-              <div>
-                <Skeleton className="h-6 w-48 mb-2" />
-                <Skeleton className="h-4 w-32" />
-              </div>
-            </div>
-          </div>
-          <Skeleton className="h-64 w-full" />
-        </div>
-      </div>
-    );
-  }
+  const title = 'Cross-site scripting (XSS)';
+  if (!isHydrated) return <LabLoading title={title} />;
 
   return (
-    <div className="min-h-screen bg-muted">
-      {/* Header */}
-      <div className="fixed top-[60px] left-0 right-0 z-40 bg-card border-b border-border">
-        <div className="container mx-auto px-4 py-4 max-w-7xl">
-          <Link 
-            href="/playground"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Playground
-          </Link>
-        </div>
-      </div>
+    <LabShell
+      title={title}
+      description="Get a script to run through the comment box of a vulnerable blog."
+      sidebar={
+        <LevelSelector
+          levels={levels}
+          currentLevel={currentLevel}
+          completedLevels={completedLevels}
+          showHint={showHint}
+          onHintToggle={() => setShowHint(!showHint)}
+          onGoToLevel={goToLevel}
+        />
+      }
+    >
+      {showSuccess && (
+        <SuccessPanel
+          title="XSS attack succeeded"
+          currentLevel={currentLevel}
+          totalLevels={levels.length}
+          explanation={levelExplanations[currentLevel]}
+          onNext={nextLevel}
+          completeMessage="You have completed every XSS level."
+        />
+      )}
 
-      <div className="mt-[57px] container mx-auto px-4 py-8 max-w-7xl">
-        {/* Layout: Sidebar + Main Content */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Sidebar: Level Selector */}
-          <div className="lg:col-span-1">
-            <XSSLevelSelector
-              level={level}
-              currentLevel={currentLevel}
-              completedLevels={completedLevels}
-              showHint={showHint}
-              levels={levels}
-              onHintToggle={() => setShowHint(!showHint)}
-              onGoToLevel={goToLevel}
-            />
+      <Panel
+        title="How to Stay Safe Online: Security Tips"
+        description="Posted by admin · December 5, 2025"
+        padding="none"
+      >
+        <p className="border-b border-border p-6 text-sm text-foreground">
+          Welcome to my blog about web security! Today we&apos;ll discuss how to protect yourself from various
+          online threats. Remember to always use strong passwords and enable two-factor authentication on all your
+          accounts...
+        </p>
+        <div className="p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h4 className="text-sm font-semibold text-foreground">Comments ({comments.length})</h4>
+            <Button variant="ghost" size="sm" onClick={resetLevel}>
+              <RotateCcw />
+              Reset
+            </Button>
           </div>
-
-          {/* Main Content: Blog + Comments + History */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Success Modal */}
-            {showSuccess && (
-              <XSSSuccessModal
-                currentLevel={currentLevel}
-                totalLevels={levels.length}
-                explanation={levelExplanations[currentLevel]}
-                onNextLevel={nextLevel}
-              />
-            )}
-
-            {/* Fake Blog Post */}
-            <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden">
-              {/* Blog Header */}
-              <div className="p-6 border-b border-border">
-                <h2 className="text-xl font-bold text-foreground mb-2">
-                  How to Stay Safe Online: Security Tips
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  Posted by <span className="font-medium">admin</span> • December 5, 2025
-                </p>
-              </div>
-
-              {/* Blog Content */}
-              <div className="p-6 border-b border-border">
-                <p className="text-foreground">
-                  Welcome to my blog about web security! Today we&apos;ll discuss how to protect yourself 
-                  from various online threats. Remember to always use strong passwords and enable 
-                  two-factor authentication on all your accounts...
-                </p>
-              </div>
-
-              {/* Comments Section */}
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-foreground">
-                    Comments ({comments.length})
-                  </h3>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={resetLevel}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    Reset
-                  </Button>
-                </div>
-
-                {/* Comment Form */}
-                <XSSCommentForm
-                  comment={comment}
-                  hasFilter={!!level.filter}
-                  onCommentChange={setComment}
-                  onSubmit={handleSubmit}
-                />
-
-                {/* Comments List */}
-                <XSSCommentsList comments={comments} />
-              </div>
-            </div>
-
-            {/* Security Tips Section */}
-            <div className="p-6 rounded-xl bg-primary/10 border border-primary/30">
-              <div className="flex items-start gap-4">
-                <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-primary mb-2">
-                    How to Prevent XSS Attacks
-                  </h3>
-                  <ul className="space-y-2 text-sm text-primary">
-                    <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span><strong>Sanitize all user input</strong> - Use libraries like DOMPurify to clean HTML</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span><strong>Escape output</strong> - Convert special characters to HTML entities</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span><strong>Use Content Security Policy (CSP)</strong> - Restrict script sources</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span><strong>Set HttpOnly cookies</strong> - Prevent JavaScript from accessing session cookies</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* XSS Alert Modal */}
-          {alertMessage && (
-            <XSSAlertModal 
-              message={alertMessage} 
-              onClose={() => setAlertMessage(null)} 
-            />
-          )}
+          <XSSCommentForm
+            comment={comment}
+            hasFilter={!!level.filter}
+            onCommentChange={setComment}
+            onSubmit={handleSubmit}
+          />
+          <XSSCommentsList comments={comments} />
         </div>
-      </div>
-    </div>
+      </Panel>
+
+      <Callout tone="primary" icon={Shield} title="How to prevent XSS">
+        <ul className="flex list-disc flex-col gap-1 pl-4">
+          <li><strong>Sanitize user input</strong> with a library such as DOMPurify.</li>
+          <li><strong>Escape output</strong> by converting special characters to HTML entities.</li>
+          <li><strong>Set a Content Security Policy</strong> that restricts script sources.</li>
+          <li><strong>Use HttpOnly cookies</strong> so scripts cannot read the session.</li>
+        </ul>
+      </Callout>
+
+      <ResultDialog
+        open={alertMessage !== null}
+        onClose={() => setAlertMessage(null)}
+        icon={AlertTriangle}
+        title="XSS alert"
+        description="The injected script ran in the victim's browser."
+      >
+        <CodeBlock tone="success">{alertMessage}</CodeBlock>
+        <p className="text-xs text-muted-foreground">
+          In a real attack this could steal cookies, redirect users or rewrite the page.
+        </p>
+      </ResultDialog>
+    </LabShell>
   );
 }

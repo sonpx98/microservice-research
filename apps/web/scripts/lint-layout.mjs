@@ -7,15 +7,22 @@ import { join, sep } from 'node:path';
 
 const KIT = [`${sep}components${sep}ui${sep}`, `${sep}components${sep}layout${sep}`];
 
-const RULES = [
+// Class rules scan everything (classNames are often template literals).
+const CLASS_RULES = [
   ['ad-hoc page width (templates own widths)', /(?<![\w-])(?:container|max-w-(?:4xl|5xl|7xl))(?![\w-])/g],
   ['radius off-scale (use rounded-lg / -md / -full)', /(?<![\w-])(?:[\w-]+:)*rounded-(?:xl|2xl|3xl)(?![\w-])/g],
   ['surface shadow (surfaces use a border)', /(?<![\w-])(?:[\w-]+:)*shadow-(?:md|lg|xl|2xl)(?![\w-])/g],
+  ['hand-rolled overlay (use ui/dialog)', /(?<![\w-])fixed inset-0(?![\w-])/g],
+];
+// Element rules skip template-literal bodies: lab payloads are raw HTML strings, not JSX.
+const ELEMENT_RULES = [
   ['raw <button> (use ui/button)', /<button\b/g],
   ['raw <input> (use ui/input)', /<input\b/g],
   ['raw <textarea> (use ui/textarea)', /<textarea\b/g],
-  ['hand-rolled overlay (use ui/dialog)', /(?<![\w-])fixed inset-0(?![\w-])/g],
 ];
+
+const blankTemplates = (src) =>
+  src.replace(/`(?:\\.|[^`\\])*`/g, (m) => m.replace(/[^\n]/g, ' '));
 
 function walk(path, out = []) {
   if (statSync(path).isFile()) {
@@ -30,17 +37,20 @@ const roots = process.argv.slice(2);
 let hits = 0;
 for (const file of (roots.length ? roots : ['src']).flatMap((r) => walk(r))) {
   if (KIT.some((k) => file.includes(k))) continue;
-  readFileSync(file, 'utf8')
-    .split('\n')
-    .forEach((line, i) => {
-      if (line.includes('layout-exempt:')) return;
-      for (const [label, re] of RULES) {
-        for (const m of line.matchAll(re)) {
+  const src = readFileSync(file, 'utf8');
+  const lines = src.split('\n');
+  const jsxLines = blankTemplates(src).split('\n');
+  lines.forEach((line, i) => {
+    if (line.includes('layout-exempt:')) return;
+    for (const [rules, text] of [[CLASS_RULES, line], [ELEMENT_RULES, jsxLines[i]]]) {
+      for (const [label, re] of rules) {
+        for (const m of text.matchAll(re)) {
           hits++;
           console.log(`${file}:${i + 1}  ${label}: ${m[0]}`);
         }
       }
-    });
+    }
+  });
 }
 
 if (hits) {

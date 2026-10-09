@@ -1,6 +1,9 @@
 'use client';
 
-import { Eye, Copy, CheckCircle2 } from 'lucide-react';
+import { Eye, Copy, Check } from 'lucide-react';
+import { Panel } from '@/components/layout';
+import { Button } from '@/components/ui/button';
+import { CodeBlock } from '@/components/ui/code-block';
 
 interface LivePreviewProps {
   token: string;
@@ -22,78 +25,38 @@ export function LivePreview({
   onCopy,
 }: LivePreviewProps) {
   return (
-    <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden">
-      <div className="p-4 border-b border-border bg-primary/10">
-        <h3 className="font-semibold text-foreground flex items-center gap-2">
-          <Eye className="w-5 h-5" />
-          Live JWT Preview
-        </h3>
-        <p className="text-xs text-muted-foreground mt-1">
-          Real-time token generation
-        </p>
-      </div>
-
-      <div className="p-6">
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-foreground">
-              Generated Token
-            </label>
-            <button
-              onClick={() => onCopy(token, 0)}
-              className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium bg-border text-foreground rounded hover:bg-accent transition-colors"
-            >
-              {copiedId === 0 ? (
-                <>
-                  <CheckCircle2 className="w-3 h-3" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3 h-3" />
-                  Copy
-                </>
-              )}
-            </button>
+    <Panel
+      title={
+        <span className="flex items-center gap-2">
+          <Eye className="h-4 w-4 text-primary" />
+          Live preview
+        </span>
+      }
+      description="Token regenerated as you type"
+    >
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-foreground">Generated token</p>
+            <Button variant="outline" size="sm" onClick={() => onCopy(token, 0)}>
+              {copiedId === 0 ? <Check /> : <Copy />}
+              {copiedId === 0 ? 'Copied' : 'Copy'}
+            </Button>
           </div>
-          <div className="p-4 bg-background rounded-lg border border-input overflow-x-auto">
-            <code className="text-xs text-success font-mono break-all">
-              {token}
-            </code>
-          </div>
+          <CodeBlock tone="success">{token}</CodeBlock>
         </div>
 
-        <div className="space-y-3">
-          <div>
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-              Decoded Header
-            </h4>
-            <pre className="p-3 bg-primary/10 rounded-lg border border-primary/30 text-xs text-primary font-mono overflow-x-auto">
-              {header}
-            </pre>
+        {[
+          { label: 'Decoded header', value: header, tone: 'primary' as const },
+          { label: 'Decoded payload', value: payload, tone: 'primary' as const },
+          { label: 'Signature', value: showSignature ? signature : '•'.repeat(signature.length), tone: 'danger' as const },
+        ].map(({ label, value, tone }) => (
+          <div key={label} className="flex flex-col gap-2">
+            <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+            <CodeBlock tone={tone}>{value}</CodeBlock>
           </div>
-
-          <div>
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-              Decoded Payload
-            </h4>
-            <pre className="p-3 bg-primary/10 rounded-lg border border-primary/30 text-xs text-primary font-mono overflow-x-auto">
-              {payload}
-            </pre>
-          </div>
-
-          <div>
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-              Signature
-            </h4>
-            <div className="p-3 bg-danger/10 rounded-lg border border-danger/30">
-              <code className="text-xs text-danger font-mono break-all">
-                {showSignature ? signature : '•'.repeat(signature.length)}
-              </code>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
-    </div>
+    </Panel>
   );
 }
