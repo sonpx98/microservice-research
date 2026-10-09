@@ -120,6 +120,10 @@ export const KnowledgeGraphNode = defineDocumentType(() => ({
       type: 'string',
       required: true,
     },
+    // Id from src/lib/algo-verse/examples.ts; the note gets a "Run in visualizer" link.
+    visualize: {
+      type: 'string',
+    },
   },
   computedFields: {
     id: {

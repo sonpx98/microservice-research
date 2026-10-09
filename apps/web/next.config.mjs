@@ -26,6 +26,16 @@ const nextConfig = {
   },
 
   // Security Headers
+  // Algo Verse now lives inside the Knowledge Graph.
+  async redirects() {
+    return [
+      {
+        source: '/:locale/algo-verse',
+        destination: '/:locale/knowledge-graph?view=visualizer',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

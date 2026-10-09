@@ -1,5 +1,6 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import Link from 'next/link';
+import { Play, X } from 'lucide-react';
 import { KnowledgeGraphNode } from 'contentlayer/generated';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -48,6 +49,16 @@ export function NodeDetail({ node, onClose, onRelationshipClick }: NodeDetailPro
               {nodeType}
             </Badge>
           </div>
+
+          {node.visualize && (
+            <Link
+              href={`?view=visualizer&example=${encodeURIComponent(node.visualize)}`}
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              <Play className="h-4 w-4" />
+              Run in visualizer
+            </Link>
+          )}
 
           <Separator />
 

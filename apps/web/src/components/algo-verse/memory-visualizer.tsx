@@ -7,13 +7,16 @@ import { MemoryPanel } from './memory-panel';
 import { ASTExecutionEngine } from '@/lib/algo-verse/execution-engine-ast';
 import { generateAssemblyCode } from '@/lib/algo-verse/assembly-translator';
 import { createInitialCPUState, updateCPUState } from '@/lib/algo-verse/cpu-state-generator';
-import { codeExamples } from '@/lib/algo-verse/examples';
+import { codeExamples, getExampleById } from '@/lib/algo-verse/examples';
 import { ExecutionStep, CodeExample, Variable, AssemblyInstruction, CPUState } from '@/lib/algo-verse/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 
-export function MemoryVisualizer() {
-  const [code, setCode] = useState(codeExamples[0].code);
+// Parent passes key={exampleId} so a new example remounts instead of syncing state in an effect.
+export function MemoryVisualizer({ initialExampleId }: { initialExampleId?: string }) {
+  const [code, setCode] = useState(
+    () => (initialExampleId && getExampleById(initialExampleId)?.code) || codeExamples[0].code,
+  );
   const [engine, setEngine] = useState<ASTExecutionEngine | null>(null);
   const [currentStep, setCurrentStep] = useState<ExecutionStep | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);

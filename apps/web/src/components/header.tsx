@@ -11,12 +11,11 @@ interface HeaderProps {
   locale: string;
 }
 
-// Portfolio pillars: writing, linked concepts, runtime internals, security labs.
-// Personal tools (english-learning, cv-generator) stay routable but are not linked here.
+// Portfolio pillars: writing, linked concepts (with the runtime visualizer), security labs.
+// english-learning stays routable but is not linked here.
 const NAV = [
   { path: '/blog', label: 'Blog' },
   { path: '/knowledge-graph', label: 'Knowledge Graph' },
-  { path: '/algo-verse', label: 'Algo Verse' },
   { path: '/playground', label: 'Playground' },
 ];
 
