@@ -1,13 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Fuse from 'fuse.js';
+import { FileText } from 'lucide-react';
 import { Post } from 'contentlayer/generated';
-import { PostCard } from './post-card';
-import { PostSearchModal } from './PostSearchModal';
-import { PostTagFilter } from './PostTagFilter';
-import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
-import { Search } from 'lucide-react';
+import { PostCard } from './post-card';
+import { Panel } from '@/components/layout';
+import { Button } from '@/components/ui/button';
+import { Chip } from '@/components/ui/chip';
+import { ChipGroup } from '@/components/ui/chip-group';
+import { SearchDialog } from '@/components/ui/search-dialog';
 
 interface PostListProps {
   posts: Post[];
@@ -20,22 +24,20 @@ export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
   const tExplore = useTranslations('explore');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(postsPerPage);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  // Keyboard shortcut (Cmd/Ctrl + K)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsSearchOpen(true);
-      }
-      if (e.key === 'Escape') {
-        setIsSearchOpen(false);
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  const router = useRouter();
+  const fuse = useMemo(
+    () =>
+      new Fuse(posts, {
+        keys: [
+          { name: 'title', weight: 0.4 },
+          { name: 'excerpt', weight: 0.3 },
+          { name: 'tags', weight: 0.3 },
+        ],
+        threshold: 0.3,
+        minMatchCharLength: 2,
+      }),
+    [posts],
+  );
 
   const filteredPosts = selectedTag
     ? posts.filter(post => post.tags?.includes(selectedTag))
@@ -55,34 +57,37 @@ export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
 
   return (
     <div className="space-y-8">
-      {/* Search & Filter Section */}
-      <div className="bg-muted rounded-xl p-6 space-y-5">
-        {/* Search Bar */}
-        <button
-          onClick={() => setIsSearchOpen(true)}
-          className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground bg-card rounded-lg hover:bg-muted transition-colors border border-border shadow-sm"
-        >
-          <Search className="w-5 h-5" />
-          <span className="flex-1">{t('searchPlaceholder')}</span>
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-mono text-muted-foreground bg-muted rounded border border-border">
-            ⌘K
-          </kbd>
-        </button>
-
-        {/* Tags Filter */}
-        <PostTagFilter
-          tags={tags}
-          selectedTag={selectedTag}
-          onTagChange={handleTagChange}
-        />
-      </div>
-
-      {/* Search Modal */}
-      <PostSearchModal
-        posts={posts}
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-      />
+      <Panel>
+        <div className="flex flex-col gap-5">
+          <SearchDialog<Post>
+            placeholder={t('searchPlaceholder')}
+            search={(q) => fuse.search(q).slice(0, 8).map((r) => r.item)}
+            getKey={(post) => post._id}
+            onSelect={(post) => router.push(post.url)}
+            renderItem={(post) => (
+              <>
+                <FileText className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate font-medium">{post.title}</span>
+                  {post.excerpt && <span className="line-clamp-1 text-xs text-muted-foreground">{post.excerpt}</span>}
+                </span>
+              </>
+            )}
+          />
+          {tags.length > 0 && (
+            <ChipGroup label={t('filterByTag')}>
+              <Chip active={selectedTag === null} onClick={() => handleTagChange(null)}>
+                {t('allPosts')}
+              </Chip>
+              {tags.map((tag) => (
+                <Chip key={tag} active={selectedTag === tag} onClick={() => handleTagChange(tag)}>
+                  {tag}
+                </Chip>
+              ))}
+            </ChipGroup>
+          )}
+        </div>
+      </Panel>
 
       {/* Posts Grid */}
       {filteredPosts.length === 0 ? (
@@ -100,11 +105,7 @@ export function PostList({ posts, tags, postsPerPage = 6 }: PostListProps) {
           {/* Load More Button */}
           {hasMore && (
             <div className="flex justify-center pt-8">
-              <Button
-                variant="outline"
-                onClick={loadMore}
-                className="rounded-full"
-              >
+              <Button variant="outline" onClick={loadMore}>
                 {tExplore('loadMore')}
               </Button>
             </div>

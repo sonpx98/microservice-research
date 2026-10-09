@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
 import { streamingEvents, STREAMING_EVENTS } from '@/lib/streaming-events';
 import { sanitizeHtml } from '@/lib/sanitize';
@@ -167,13 +168,10 @@ export function StreamingContent({
       {/* Skip button */}
       {showSkipButton && (
         <div className="sticky top-20 z-10 flex justify-end mb-4">
-          <button
-            onClick={handleSkip}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-muted hover:bg-accent rounded-full transition-colors shadow-lg"
-          >
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span>Skip animation</span>
-          </button>
+          <Button variant="outline" size="sm" onClick={handleSkip} className="bg-popover">
+            <Sparkles className="text-primary" />
+            Skip animation
+          </Button>
         </div>
       )}
 

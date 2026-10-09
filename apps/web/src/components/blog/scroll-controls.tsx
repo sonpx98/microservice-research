@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Fab } from '@/components/ui/floating';
 
 interface ScrollControlsProps {
   className?: string;
@@ -51,28 +52,25 @@ export function ScrollControls({ className }: ScrollControlsProps) {
   return (
     <div className={cn("fixed bottom-6 right-6 z-40 flex flex-col gap-3", className)}>
         {/* Scroll To Bottom */}
-      <button
+      <Fab
         onClick={scrollToBottom}
-        className={`p-3 rounded-full bg-card text-muted-foreground shadow-lg border border-border hover:bg-muted transition-all duration-300 ${
-            showBottom ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none absolute'
-        }`}
+        className={cn('duration-300', showBottom ? 'opacity-100' : 'pointer-events-none absolute translate-y-4 opacity-0')}
         aria-label="Scroll to bottom"
-        title="Scroll to Bottom"
+        title="Scroll to bottom"
       >
-        <ArrowDown className="w-5 h-5" />
-      </button>
+        <ArrowDown />
+      </Fab>
 
       {/* Scroll To Top */}
-      <button
+      <Fab
+        variant="primary"
         onClick={scrollToTop}
-        className={`p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-300 ${
-          showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-        }`}
+        className={cn('duration-300', showTop ? 'opacity-100' : 'pointer-events-none translate-y-4 opacity-0')}
         aria-label="Scroll to top"
-        title="Scroll to Top"
+        title="Scroll to top"
       >
-        <ArrowUp className="w-5 h-5" />
-      </button>
+        <ArrowUp />
+      </Fab>
     </div>
   );
 }

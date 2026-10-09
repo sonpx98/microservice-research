@@ -7,3 +7,5 @@ export { ViewSwitch, type ViewSwitchItem } from './view-switch';
 export { Section, type SectionProps } from './section';
 export { Panel, type PanelProps } from './panel';
 export { Callout, type CalloutProps } from './callout';
+export { ContentCard, type ContentCardProps } from './content-card';
+export { Thumbnail } from './thumbnail';

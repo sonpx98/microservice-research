@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArticleLayout, Thumbnail } from '@/components/layout';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import { getTranslations } from 'next-intl/server';
 import { TableOfContents } from '@/components/blog/table-of-contents';
 import { ScrollControls } from '@/components/blog/scroll-controls';
@@ -44,86 +44,48 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
             <ScrollControls className="bottom-28" />
             <TableOfContents />
             <CodeBlockCopyButton />
-            <article className="container max-w-7xl py-12 px-4 md:px-6 mx-auto">
-                {/* Back Navigation */}
-                <div className="mb-8">
-                    <Link 
-                        href={`/${locale || 'en'}/blog/explore`}
-                        className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        {t('backToExplore')}
-                    </Link>
-                </div>
-            
-             {/* ... */}
-
-                {/* Header */}
-                <header className="mb-8 space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Badge variant="secondary" className="text-sm">
-                            {article.source || 'Aggregated'}
-                        </Badge>
+            <ArticleLayout
+                title={article.title}
+                meta={
+                    <>
+                        <Link href={`/${locale || 'en'}/blog/explore`} className="inline-flex items-center gap-1 hover:text-foreground">
+                            <ArrowLeft className="h-3.5 w-3.5" />
+                            {t('backToExplore')}
+                        </Link>
+                        <span aria-hidden>/</span>
+                        <span className="text-primary">{article.source || 'Aggregated'}</span>
                         {article.pubDate && (
-                            <time className="text-sm text-muted-foreground">
+                            <time>
                                 {new Date(article.pubDate).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', {
                                     year: 'numeric',
-                                    month: 'long', 
-                                    day: 'numeric'
+                                    month: 'long',
+                                    day: 'numeric',
                                 })}
                             </time>
                         )}
-                    </div>
-
-                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
-                        {article.title}
-                    </h1>
-                    
-                    {/* Meta info / Tags */}
-                    {article.tags && article.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 pt-2">
-                            {article.tags.map((tag: string) => (
-                                <Badge key={tag} variant="secondary">
-                                    {tag}
-                                </Badge>
-                            ))}
-                        </div>
-                    )}
-                </header>
-
-                {/* Featured Image */}
+                        {article.tags?.map((tag: string) => (
+                            <Badge key={tag} variant="secondary">
+                                {tag}
+                            </Badge>
+                        ))}
+                    </>
+                }
+            >
                 {article.thumbnail && (
-                    <div className="relative aspect-video w-full overflow-hidden rounded-xl mb-12 shadow-lg">
-                        <Image 
-                            src={article.thumbnail} 
-                            alt={article.title}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                        />
+                    <div className="not-prose mb-10 overflow-hidden rounded-lg border border-border">
+                        <Thumbnail src={article.thumbnail} alt={article.title} />
                     </div>
                 )}
-
-                {/* Content with Streaming Effect */}
-                <StreamingContent 
-                    html={article.content} 
-                    charsPerTick={30}
-                    tickInterval={15}
-                />
-
-                <Separator className="my-12" />
-                
-                <div className="flex justify-center">
-                    <a 
-                        href={article.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-                    >
-                        {t('readOn')} {article.source}
-                    </a>
+                <StreamingContent html={article.content} charsPerTick={30} tickInterval={15} />
+                <div className="not-prose mt-12 flex justify-center border-t border-border pt-8">
+                    <Button asChild>
+                        <a href={article.link} target="_blank" rel="noopener noreferrer">
+                            {t('readOn')} {article.source}
+                            <ExternalLink />
+                        </a>
+                    </Button>
                 </div>
-            </article>
+            </ArticleLayout>
         </>
     );
 }

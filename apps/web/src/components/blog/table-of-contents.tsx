@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { List } from 'lucide-react';
+import { Fab } from '@/components/ui/floating';
 import { useTableOfContents } from './hooks/useTableOfContents';
 import { MobileTOC } from './MobileTOC';
 import { DesktopTOC } from './DesktopTOC';
@@ -19,13 +20,14 @@ export function TableOfContents({ contentSelector = '.prose' }: TableOfContentsP
     <>
       {/* Mobile: Toggle Button - only if headings exist */}
       {headings.length > 0 && (
-        <button
+        <Fab
+          variant="primary"
           onClick={() => setIsOpen(!isOpen)}
-          className="lg:hidden fixed bottom-6 left-6 z-40 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors"
+          className="fixed bottom-6 left-6 z-40 lg:hidden"
           aria-label="Toggle table of contents"
         >
-          <List className="w-5 h-5" />
-        </button>
+          <List />
+        </Fab>
       )}
 
       {/* Mobile TOC */}

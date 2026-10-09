@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Bookmark, BookmarkCheck, ChevronUp } from 'lucide-react';
+import { Bookmark, BookmarkCheck, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Fab, FloatingCard } from '@/components/ui/floating';
 import { streamingEvents, STREAMING_EVENTS } from '@/lib/streaming-events';
 
 interface ReadingBookmarkProps {
@@ -210,64 +212,45 @@ export function ReadingBookmark({ slug, locale }: ReadingBookmarkProps) {
       {/* Resume reading prompt */}
       {showResumePrompt && savedBookmark && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
-          <div className="bg-card rounded-2xl shadow-2xl border border-border p-4 max-w-sm">
+          <FloatingCard className="max-w-sm">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Bookmark className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-foreground text-sm">
-                  Continue reading?
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
+              <Bookmark className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground">Continue reading?</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   You were {savedBookmark.scrollPercentage}% through this article
                 </p>
-                <div className="flex gap-2 mt-3">
-                  <button
-                    onClick={handleResume}
-                    className="flex-1 px-3 py-1.5 text-xs font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors"
-                  >
+                <div className="mt-3 flex gap-2">
+                  <Button size="sm" className="flex-1" onClick={handleResume}>
                     Resume
-                  </button>
-                  <button
-                    onClick={handleStartOver}
-                    className="flex-1 px-3 py-1.5 text-xs font-medium bg-muted hover:bg-accent text-foreground rounded-lg transition-colors"
-                  >
+                  </Button>
+                  <Button size="sm" variant="outline" className="flex-1" onClick={handleStartOver}>
                     Start over
-                  </button>
+                  </Button>
                 </div>
               </div>
-              <button
-                onClick={() => setShowResumePrompt(false)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <ChevronUp className="w-4 h-4" />
-              </button>
+              <Button size="icon-sm" variant="ghost" aria-label="Dismiss" onClick={() => setShowResumePrompt(false)}>
+                <X />
+              </Button>
             </div>
-          </div>
+          </FloatingCard>
         </div>
       )}
 
       {/* Floating bookmark button */}
-      <button
+      <Fab
+        variant={isBookmarked ? 'primary' : 'surface'}
         onClick={handleBookmark}
-        className={`fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 ${
-          isBookmarked
-            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-            : 'bg-card text-muted-foreground hover:text-primary border border-border'
-        }`}
+        className="fixed right-6 bottom-6 z-40"
+        aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark this position'}
         title={isBookmarked ? 'Remove bookmark' : 'Bookmark this position'}
       >
-        {isBookmarked ? (
-          <BookmarkCheck className="w-5 h-5" />
-        ) : (
-          <Bookmark className="w-5 h-5" />
-        )}
-      </button>
+        {isBookmarked ? <BookmarkCheck /> : <Bookmark />}
+      </Fab>
 
       {/* Current position indicator (when bookmarked) */}
       {isBookmarked && (
-        <div className="fixed bottom-20 right-6 z-40 text-xs text-muted-foreground bg-card px-2 py-1 rounded-full shadow border border-border">
+        <div className="fixed right-6 bottom-20 z-40 rounded-full border border-border bg-popover px-2 py-1 font-mono text-xs text-muted-foreground">
           {displayPercentage !== null ? displayPercentage : currentPercentage}%
         </div>
       )}
