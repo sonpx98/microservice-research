@@ -84,31 +84,6 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Typography plugin reads its palette from these; point them at tokens so prose follows the theme. */
-  .prose {
-    --tw-prose-body: var(--foreground);
-    --tw-prose-headings: var(--foreground);
-    --tw-prose-lead: var(--muted-foreground);
-    --tw-prose-links: var(--primary);
-    --tw-prose-bold: var(--foreground);
-    --tw-prose-counters: var(--muted-foreground);
-    --tw-prose-bullets: var(--border);
-    --tw-prose-hr: var(--border);
-    --tw-prose-quotes: var(--foreground);
-    --tw-prose-quote-borders: var(--primary);
-    --tw-prose-captions: var(--muted-foreground);
-    --tw-prose-code: var(--foreground);
-    --tw-prose-pre-code: var(--foreground);
-    --tw-prose-pre-bg: var(--muted);
-    --tw-prose-th-borders: var(--border);
-    --tw-prose-td-borders: var(--border);
-  }
-
-  .prose :where(code):not(:where(pre *))::before,
-  .prose :where(code):not(:where(pre *))::after {
-    content: none;
-  }
-
   /* Shiki emits both palettes; pick one per mode. */
   html:not(.dark) [data-rehype-pretty-code-figure] pre {
     background-color: var(--shiki-light-bg) !important;
@@ -149,52 +124,82 @@
     border-left-color: var(--primary);
   }
 
-  /* reactflow → tokens. Third-party adapter, kept here so components stay class-only. */
-  .react-flow__edge-path {
-    stroke: var(--border);
-  }
-  .react-flow__edge.selected .react-flow__edge-path,
-  .react-flow__edge:hover .react-flow__edge-path {
-    stroke: var(--primary);
-  }
-  .react-flow__edge-textbg {
-    fill: var(--popover);
-  }
-  .react-flow__edge-text {
-    fill: var(--muted-foreground);
-    font-family: var(--font-mono);
-    font-size: 11px;
-  }
-  /* Edge labels appear on hover only, so a dense graph stays readable. */
-  .knowledge-graph-edge .react-flow__edge-textbg,
-  .knowledge-graph-edge .react-flow__edge-text {
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-  }
-  .knowledge-graph-edge:hover .react-flow__edge-textbg,
-  .knowledge-graph-edge:hover .react-flow__edge-text {
-    opacity: 1;
-  }
-  .react-flow__controls {
-    box-shadow: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .react-flow__controls-button {
-    background: var(--card);
-    border-bottom-color: var(--border);
-    fill: var(--foreground);
-  }
-  .react-flow__controls-button:hover {
-    background: var(--accent);
-  }
-  .react-flow__attribution {
-    background: transparent;
-    color: var(--muted-foreground);
-  }
-
   :not(pre) > code {
     @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm;
   }
+}
+
+
+/*
+ * Unlayered on purpose. Tailwind puts @layer base first, so anything there loses to the typography
+ * plugin (utilities layer) and to reactflow's own unlayered stylesheet. These adapters must win.
+ */
+/* Typography plugin reads its palette from these; point them at tokens so prose follows the theme. */
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--border);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--primary);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
+.prose :where(code):not(:where(pre *))::before,
+.prose :where(code):not(:where(pre *))::after {
+  content: none;
+}
+
+/* reactflow → tokens. Third-party adapter, kept here so components stay class-only. */
+.react-flow .react-flow__edge-path {
+  stroke: var(--border);
+}
+.react-flow .react-flow__edge.selected .react-flow__edge-path,
+.react-flow .react-flow__edge:hover .react-flow__edge-path {
+  stroke: var(--primary);
+}
+.react-flow .react-flow__edge-textbg {
+  fill: var(--popover);
+}
+.react-flow .react-flow__edge-text {
+  fill: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+/* Edge labels appear on hover only, so a dense graph stays readable. */
+.react-flow .knowledge-graph-edge .react-flow__edge-textbg,
+.react-flow .knowledge-graph-edge .react-flow__edge-text {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.react-flow .knowledge-graph-edge:hover .react-flow__edge-textbg,
+.react-flow .knowledge-graph-edge:hover .react-flow__edge-text {
+  opacity: 1;
+}
+.react-flow .react-flow__controls {
+  box-shadow: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.react-flow .react-flow__controls-button {
+  background: var(--card);
+  border-bottom-color: var(--border);
+  fill: var(--foreground);
+}
+.react-flow .react-flow__controls-button:hover {
+  background: var(--accent);
+}
+.react-flow .react-flow__attribution {
+  background: transparent;
+  color: var(--muted-foreground);
 }
