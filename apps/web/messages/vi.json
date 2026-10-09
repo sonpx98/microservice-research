@@ -63,18 +63,10 @@
   "playground": {
     "title": "Playground",
     "description": "Phòng lab tương tác để học qua thực hành",
-    "badge": "Phòng Lab Tương Tác",
-    "taglines": [
-      "Phòng lab tương tác để học qua thực hành",
-      "Suy nghĩ như hacker, phòng thủ như chuyên gia",
-      "Thử thách bảo mật và thí nghiệm thực hành",
-      "Phá vỡ mọi thứ để học cách xây dựng tốt hơn"
-    ],
     "security": {
       "title": "Phòng Lab Bảo Mật",
       "description": "Suy nghĩ như một hacker. Học cách phòng thủ bằng cách tấn công.",
-      "challenges": "thử thách",
-      "comingSoon": "Sắp Ra Mắt"
+      "challenges": "thử thách"
     }
   },
   "explore": {

@@ -223,8 +223,8 @@ export default function CSRFChallengePage() {
 
   if (!isHydrated) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="min-h-screen bg-muted">
+        <div className="bg-card border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <Skeleton className="h-5 w-32" />
           </div>
@@ -237,13 +237,13 @@ export default function CSRFChallengePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="fixed top-[60px] left-0 right-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="fixed top-[60px] left-0 right-0 z-40 bg-card border-b border-border">
         <div className="container mx-auto px-4 py-4 max-w-7xl">
           <Link 
             href="/playground"
-            className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Playground
@@ -285,10 +285,10 @@ export default function CSRFChallengePage() {
             {/* Two-Panel Layout: Malware Site + Victim Site */}
             <div className="grid lg:grid-cols-2 gap-6">
               {/* Malware Site Panel */}
-              <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-red-50 dark:bg-red-900/20 flex items-center gap-2">
-                  <Skull className="w-5 h-5 text-red-600 dark:text-red-400" />
-                  <h3 className="font-semibold text-red-700 dark:text-red-300">Malware Site (Attacker)</h3>
+              <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-border bg-danger/10 flex items-center gap-2">
+                  <Skull className="w-5 h-5 text-danger" />
+                  <h3 className="font-semibold text-danger">Malware Site (Attacker)</h3>
                 </div>
                 <MalwareSiteTab
                   payload={payload}
@@ -302,10 +302,10 @@ export default function CSRFChallengePage() {
               </div>
 
               {/* Victim Site Panel */}
-              <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-blue-50 dark:bg-blue-900/20 flex items-center gap-2">
-                  <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  <h3 className="font-semibold text-blue-700 dark:text-blue-300">Victim Site (Bank)</h3>
+              <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-border bg-primary/10 flex items-center gap-2">
+                  <User className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold text-primary">Victim Site (Bank)</h3>
                 </div>
                 <VictimSiteTab
                   victimEmail={victimEmail}

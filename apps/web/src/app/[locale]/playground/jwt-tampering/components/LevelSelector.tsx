@@ -35,8 +35,8 @@ export function LevelSelector({
   return (
     <div className="space-y-6">
       {/* Level Progress */}
-      <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden p-6">
-        <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden p-6">
+        <h3 className="font-semibold text-foreground mb-4">
           Progress ({completedLevels.length}/{levels.length})
         </h3>
         <div className="grid grid-cols-5 gap-2">
@@ -46,10 +46,10 @@ export function LevelSelector({
               onClick={() => onGoToLevel(lvl.id)}
               className={`p-3 rounded-lg text-center font-medium text-sm transition-all cursor-pointer hover:opacity-80 ${
                 completedLevels.includes(lvl.id)
-                  ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
+                  ? 'bg-success/10 text-success'
                   : currentLevel === lvl.id
-                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ? 'bg-primary/10 text-primary'
+                  : 'bg-muted text-muted-foreground hover:bg-accent'
               }`}
             >
               {lvl.id}
@@ -59,29 +59,29 @@ export function LevelSelector({
       </div>
 
       {/* Current Level Info */}
-      <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-900/10 dark:to-cyan-900/10">
+      <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-border bg-primary/10">
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold text-foreground">
               {level.title}
             </h2>
-            <p className="mt-2 text-gray-700 dark:text-gray-300">
+            <p className="mt-2 text-foreground">
               {level.description}
             </p>
-            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-3 text-sm text-muted-foreground">
               <span className="font-medium">Scenario:</span> {level.scenario}
             </p>
           </div>
         </div>
 
         {/* Hint and Solution Buttons */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 flex gap-2 flex-wrap">
+        <div className="p-6 border-b border-border bg-muted flex gap-2 flex-wrap">
           <button
             onClick={onHintToggle}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
               showHint 
-                ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                ? 'bg-warning/10 text-warning'
+                : 'bg-muted text-muted-foreground hover:bg-accent'
             }`}
           >
             <Lightbulb className="w-4 h-4" />
@@ -91,8 +91,8 @@ export function LevelSelector({
             onClick={onSolutionToggle}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
               showSolution 
-                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                ? 'bg-primary/10 text-primary'
+                : 'bg-muted text-muted-foreground hover:bg-accent'
             }`}
           >
             <Code className="w-4 h-4" />
@@ -102,8 +102,8 @@ export function LevelSelector({
 
         {/* Hint Section */}
         {showHint && (
-          <div className="p-6 border-b border-gray-200 dark:border-gray-800 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-l-yellow-400">
-            <p className="text-sm text-yellow-800 dark:text-yellow-200">
+          <div className="p-6 border-b border-border bg-warning/10 border-l-4 border-l-warning">
+            <p className="text-sm text-warning">
               <Lightbulb className="w-4 h-4 inline mr-1" /> <strong>Hint:</strong> {level.hint}
             </p>
           </div>
@@ -111,19 +111,19 @@ export function LevelSelector({
 
         {/* Solution Section */}
         {showSolution && (
-          <div className="p-6 bg-blue-50 dark:bg-blue-900/20">
+          <div className="p-6 bg-primary/10">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-medium text-blue-900 dark:text-blue-100 flex items-center gap-2">
+              <p className="text-sm font-medium text-primary flex items-center gap-2">
                 <FileText className="w-4 h-4" /> Solution for Level {currentLevel}
               </p>
               <button
                 onClick={onLoadSolution}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-200 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded hover:bg-blue-300 dark:hover:bg-blue-900 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-primary/20 text-primary rounded hover:bg-primary/90 transition-colors"
               >
                 Load Solution
               </button>
             </div>
-            <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded border border-blue-300 dark:border-blue-700 text-xs overflow-x-auto font-mono">
+            <pre className="bg-background text-success p-4 rounded border border-primary/30 text-xs overflow-x-auto font-mono">
               {jwtSolutions[currentLevel]}
             </pre>
           </div>

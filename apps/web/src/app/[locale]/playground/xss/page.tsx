@@ -131,8 +131,8 @@ export default function XSSChallengePage() {
   // Show loading state until hydrated to prevent flash
   if (!isHydrated) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="min-h-screen bg-muted">
+        <div className="bg-card border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <Skeleton className="h-5 w-32" />
@@ -161,13 +161,13 @@ export default function XSSChallengePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="fixed top-[60px] left-0 right-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="fixed top-[60px] left-0 right-0 z-40 bg-card border-b border-border">
         <div className="container mx-auto px-4 py-4 max-w-7xl">
           <Link 
             href="/playground"
-            className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Playground
@@ -204,20 +204,20 @@ export default function XSSChallengePage() {
             )}
 
             {/* Fake Blog Post */}
-            <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+            <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden">
               {/* Blog Header */}
-              <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              <div className="p-6 border-b border-border">
+                <h2 className="text-xl font-bold text-foreground mb-2">
                   How to Stay Safe Online: Security Tips
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                <p className="text-muted-foreground text-sm">
                   Posted by <span className="font-medium">admin</span> • December 5, 2025
                 </p>
               </div>
 
               {/* Blog Content */}
-              <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-                <p className="text-gray-700 dark:text-gray-300">
+              <div className="p-6 border-b border-border">
+                <p className="text-foreground">
                   Welcome to my blog about web security! Today we&apos;ll discuss how to protect yourself 
                   from various online threats. Remember to always use strong passwords and enable 
                   two-factor authentication on all your accounts...
@@ -227,14 +227,14 @@ export default function XSSChallengePage() {
               {/* Comments Section */}
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                  <h3 className="font-semibold text-foreground">
                     Comments ({comments.length})
                   </h3>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={resetLevel}
-                    className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     <RotateCcw className="w-4 h-4 mr-2" />
                     Reset
@@ -255,28 +255,28 @@ export default function XSSChallengePage() {
             </div>
 
             {/* Security Tips Section */}
-            <div className="p-6 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+            <div className="p-6 rounded-xl bg-primary/10 border border-primary/30">
               <div className="flex items-start gap-4">
-                <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
+                <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                  <h3 className="font-semibold text-primary mb-2">
                     How to Prevent XSS Attacks
                   </h3>
-                  <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
+                  <ul className="space-y-2 text-sm text-primary">
                     <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       <span><strong>Sanitize all user input</strong> - Use libraries like DOMPurify to clean HTML</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       <span><strong>Escape output</strong> - Convert special characters to HTML entities</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       <span><strong>Use Content Security Policy (CSP)</strong> - Restrict script sources</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       <span><strong>Set HttpOnly cookies</strong> - Prevent JavaScript from accessing session cookies</span>
                     </li>
                   </ul>

@@ -63,18 +63,10 @@
   "playground": {
     "title": "Playground",
     "description": "Interactive labs to learn by doing",
-    "badge": "Interactive Learning Labs",
-    "taglines": [
-      "Interactive labs to learn by doing",
-      "Think like a hacker, defend like a pro",
-      "Hands-on security challenges and experiments",
-      "Break things to learn how to build them better"
-    ],
     "security": {
       "title": "Security Lab",
       "description": "Think like a hacker. Learn to defend by attacking.",
-      "challenges": "challenges",
-      "comingSoon": "Coming Soon"
+      "challenges": "challenges"
     }
   },
   "explore": {

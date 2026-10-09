@@ -110,8 +110,8 @@ export default function JWTTamperingPage() {
 
   if (!isHydrated) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="min-h-screen bg-muted">
+        <div className="bg-card border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <Skeleton className="h-5 w-32" />
           </div>
@@ -124,14 +124,14 @@ export default function JWTTamperingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="fixed top-[60px] left-0 right-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="fixed top-[60px] left-0 right-0 z-40 bg-card border-b border-border">
         <div className="container mx-auto px-4 py-4 max-w-7xl">
           <div className="flex items-center justify-between">
             <Link 
               href="/playground"
-              className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Playground

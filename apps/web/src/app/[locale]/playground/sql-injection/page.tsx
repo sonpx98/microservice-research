@@ -109,8 +109,8 @@ export default function SQLInjectionPage() {
   // Loading skeleton
   if (!isHydrated) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="min-h-screen bg-muted">
+        <div className="bg-card border-b border-border">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <Skeleton className="h-5 w-32" />
@@ -138,13 +138,13 @@ export default function SQLInjectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="fixed top-[60px] left-0 right-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="fixed top-[60px] left-0 right-0 z-40 bg-card border-b border-border">
         <div className="container mx-auto px-4 py-4 max-w-7xl">
           <Link 
             href="/playground"
-            className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Playground
@@ -196,28 +196,28 @@ export default function SQLInjectionPage() {
             />
 
             {/* Security Tips */}
-            <div className="rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-6">
+            <div className="rounded-xl bg-primary/10 border border-primary/30 p-6">
               <div className="flex items-start gap-4">
-                <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
+                <Shield className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                  <h3 className="font-semibold text-primary mb-2">
                     How to Prevent SQL Injection
                   </h3>
-                  <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
+                  <ul className="space-y-2 text-sm text-primary">
                     <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       <span><strong>Use Parameterized Queries</strong> - Never concatenate user input into SQL</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       <span><strong>Use ORM libraries</strong> - Sequelize, Prisma, TypeORM handle escaping</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       <span><strong>Input Validation</strong> - Whitelist allowed characters</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                       <span><strong>Least Privilege</strong> - Database users should have minimal permissions</span>
                     </li>
                   </ul>

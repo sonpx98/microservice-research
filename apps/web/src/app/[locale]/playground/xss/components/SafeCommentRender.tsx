@@ -5,13 +5,13 @@ export function SafeCommentRender({ html }: { html: string }) {
   const highlightDanger = (text: string) => {
     return text
       .replace(/(&lt;script[^&]*&gt;)([\s\S]*?)(&lt;\/script&gt;)/gi, 
-        '<span class="text-red-400 bg-red-500/10 px-1 rounded">$1$2$3</span>')
+        '<span class="text-danger bg-danger/10 px-1 rounded">$1$2$3</span>')
       .replace(/(on\w+\s*=\s*[&quot;'"][^&quot;'"]*[&quot;'"])/gi,
-        '<span class="text-orange-400 bg-orange-500/10 px-1 rounded">$1</span>')
+        '<span class="text-warning bg-warning/10 px-1 rounded">$1</span>')
       .replace(/(javascript:[^&quot;'"\s&]*)/gi,
-        '<span class="text-yellow-400 bg-yellow-500/10 px-1 rounded">$1</span>')
+        '<span class="text-warning bg-warning/10 px-1 rounded">$1</span>')
       .replace(/(&#[\dx]+;)/gi,
-        '<span class="text-purple-400">$1</span>');
+        '<span class="text-primary">$1</span>');
   };
 
   const escapeHtml = (text: string) => {
@@ -28,7 +28,7 @@ export function SafeCommentRender({ html }: { html: string }) {
 
   return (
     <div 
-      className="font-mono text-sm text-gray-700 dark:text-gray-300 break-all leading-relaxed"
+      className="font-mono text-sm text-foreground break-all leading-relaxed"
       dangerouslySetInnerHTML={{ __html: highlighted }}
     />
   );
