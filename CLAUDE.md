@@ -42,7 +42,9 @@ Infra: `docker-compose.yml` (mongo + api). `pnpm db` starts Mongo only.
 
 - **Colors come only from theme tokens.** Use token utilities (`bg-card`, `text-muted-foreground`,
   `border-border`, `bg-danger/10`). No Tailwind palette classes (`gray-*`, `blue-*`, `white`, `black`),
-  no arbitrary colors (`bg-[#...]`), no color literals or inline color styles, no gradients.
+  no arbitrary colors (`bg-[#...]`), no color literals, inline color styles or SVG color attributes, no decorative
+  gradients (a scrim fading to `overlay` is fine). Text on a filled token uses that token's `-foreground`;
+  text over an image scrim uses `overlay-foreground`.
   `pnpm --filter web lint` runs `scripts/lint-tokens.mjs` and fails on any of these.
 - Tokens switch with the mode by themselves, so never pair a token with a `dark:` color variant.
 - Token contract lives in `packages/theme/theme.css`. A new theme = a new `[data-theme="name"]` block that

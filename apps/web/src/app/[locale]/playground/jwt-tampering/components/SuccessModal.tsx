@@ -21,7 +21,7 @@ export function SuccessModal({
       <div className="p-6 border-b border-success/30">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-xl bg-success flex items-center justify-center flex-shrink-0">
-            <Trophy className="w-6 h-6 text-primary-foreground" />
+            <Trophy className="w-6 h-6 text-success-foreground" />
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-bold text-success mb-1">

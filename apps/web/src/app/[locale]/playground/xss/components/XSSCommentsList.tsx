@@ -28,7 +28,7 @@ export function XSSCommentsList({ comments }: XSSCommentsListProps) {
           className="p-4 rounded-lg bg-muted border border-border"
         >
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-full bg-danger flex items-center justify-center text-primary-foreground text-sm font-medium">
+            <div className="w-8 h-8 rounded-full bg-danger flex items-center justify-center text-danger-foreground text-sm font-medium">
               H
             </div>
             <span className="font-medium text-foreground">Hacker</span>

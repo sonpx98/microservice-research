@@ -6,7 +6,7 @@
  *   actions     primary primary-foreground secondary secondary-foreground accent accent-foreground ring
  *   emphasis    highlight highlight-foreground        (annotation marker, not an action)
  *   lines       border input
- *   overlay     overlay                               (scrim behind dialogs, already translucent)
+ *   overlay     overlay overlay-foreground            (scrim behind dialogs and image captions; always dark, text always light)
  *   status      success warning danger info (+ -foreground each)
  *   categorical chart-1 .. chart-5                    (graph node types, memory regions)
  *   shape       radius
@@ -42,6 +42,7 @@
   --border: oklch(0.9 0.012 250);
   --input: oklch(0.88 0.014 250);
   --overlay: oklch(0.22 0.03 260 / 0.45);
+  --overlay-foreground: oklch(0.985 0.004 250);
 
   --success: oklch(0.56 0.14 155);
   --success-foreground: oklch(0.985 0 0);
@@ -87,6 +88,7 @@
   --border: oklch(0.3 0.025 260);
   --input: oklch(0.32 0.025 260);
   --overlay: oklch(0.05 0.01 260 / 0.65);
+  --overlay-foreground: oklch(0.97 0.005 250);
 
   --success: oklch(0.72 0.15 155);
   --success-foreground: oklch(0.17 0.02 260);
@@ -130,6 +132,7 @@
   --border: oklch(0.28 0.015 160);
   --input: oklch(0.3 0.015 160);
   --overlay: oklch(0.05 0.005 160 / 0.7);
+  --overlay-foreground: oklch(0.95 0.02 150);
 
   --success: oklch(0.8 0.18 150);
   --success-foreground: oklch(0.15 0.008 160);

@@ -85,7 +85,7 @@ function NewsCard({ item }: { item: NewsItem }) {
                                 <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-overlay to-transparent" />
                                 
                                 <div className="absolute bottom-3 left-4 right-4">
-                                     <h4 className="font-bold text-lg leading-tight text-primary-foreground drop-shadow-sm line-clamp-2">
+                                     <h4 className="font-bold text-lg leading-tight text-overlay-foreground drop-shadow-sm line-clamp-2">
                                         {item.title}
                                     </h4>
                                 </div>

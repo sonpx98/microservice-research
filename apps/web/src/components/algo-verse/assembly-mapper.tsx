@@ -54,7 +54,7 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
                   >
                     {/* Line Number */}
                     <span className={`w-8 text-right flex-shrink-0 ${
-                      isActive ? 'text-primary-foreground' : 'text-muted-foreground'
+                      isActive ? 'text-success-foreground' : 'text-muted-foreground'
                     }`}>
                       {inst.lineNumber.toString().padStart(3, '0')}
                     </span>
@@ -64,18 +64,18 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
                       {/* Label or Instruction */}
                       {inst.instruction === 'LABEL' ? (
                         <span className={`font-bold ${
-                          isActive ? 'text-primary-foreground' : 'text-primary'
+                          isActive ? 'text-success-foreground' : 'text-primary'
                         }`}>
                           {inst.operands[0]}:
                         </span>
                       ) : (
                         <>
                           <span className={`w-12 font-bold ${
-                            isActive ? 'text-primary-foreground' : getInstructionColor(inst.instruction)
+                            isActive ? 'text-success-foreground' : getInstructionColor(inst.instruction)
                           }`}>
                             {inst.instruction}
                           </span>
-                          <span className={isActive ? 'text-primary-foreground' : 'text-muted-foreground'}>
+                          <span className={isActive ? 'text-success-foreground' : 'text-muted-foreground'}>
                             {inst.operands.join(', ')}
                           </span>
                         </>
@@ -84,7 +84,7 @@ export function AssemblyCodeMapper({ assemblyCode, currentSourceLine }: Assembly
 
                     {/* Source Line Indicator */}
                     <span className={`text-xs flex-shrink-0 ${
-                      isActive ? 'text-primary-foreground' : 'text-muted-foreground'
+                      isActive ? 'text-success-foreground' : 'text-muted-foreground'
                     }`}>
                       ← L{inst.sourceLineNumber}
                     </span>

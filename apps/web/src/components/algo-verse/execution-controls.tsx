@@ -80,9 +80,9 @@ export function ExecutionControls({
           title={isPlaying ? 'Pause' : 'Play'}
         >
           {isPlaying ? (
-            <Pause className="w-6 h-6 text-primary-foreground" fill="white" />
+            <Pause className="w-6 h-6" fill="currentColor" />
           ) : (
-            <Play className="w-6 h-6 text-primary-foreground" fill="white" />
+            <Play className="w-6 h-6" fill="currentColor" />
           )}
         </button>
 

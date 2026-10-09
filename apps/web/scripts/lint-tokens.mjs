@@ -14,8 +14,9 @@ const RULES = [
   ['arbitrary color', /(?<![\w-])[\w-]+-\[(?:#|rgb|hsl|oklch|color-mix)[^\]]*\]/g],
   ['inline color', /\b(?:color|background|backgroundColor|borderColor|fill|stroke)\s*:\s*['"`](?!var\(|transparent|currentColor|inherit|none)[^'"`]+['"`]/g],
   ['color literal', /['"`](?:#[0-9a-fA-F]{3,8}|rgba?\([^)]*\)|hsla?\([^)]*\))['"`]/g],
+  ['color attribute', /\b(?:fill|stroke|stopColor|floodColor|color)=["'](?!none|currentColor|transparent|inherit|url\()[^"']+["']/g],
   // "<token>-foreground" only exists for tokens that are surfaces in the contract.
-  ['unknown token', /(?<![\w-])(?:[\w-]+:)*(?:bg|text|border|ring|fill|stroke)-(?!(?:primary|secondary|accent|muted|card|popover|highlight|success|warning|danger|info|destructive)-foreground\b)[a-z]+(?:-\d)?-foreground\b/g],
+  ['unknown token', /(?<![\w-])(?:[\w-]+:)*(?:bg|text|border|ring|fill|stroke)-(?!(?:primary|secondary|accent|muted|card|popover|highlight|overlay|success|warning|danger|info|destructive)-foreground\b)[a-z]+(?:-\d)?-foreground\b/g],
 ];
 
 function walk(path, out = []) {

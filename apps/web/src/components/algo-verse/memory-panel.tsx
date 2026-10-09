@@ -76,7 +76,7 @@ export function MemoryPanel({
               <span
                 className={`px-1.5 py-0.5 rounded-full text-xs font-bold ${
                   activeTab === tab.id
-                    ? 'bg-card/20 text-primary-foreground'
+                    ? 'bg-primary-foreground/20 text-primary-foreground'
                     : 'bg-border text-foreground'
                 }`}
               >
